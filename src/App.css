@@ -1,38 +1,107 @@
-.App {
-  text-align: center;
+html, body, .app {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  /* overflow: hidden; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+* {
+  position: relative;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.menu-bar {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  transition: transform 0.25s;
+  transform: translateY(-75%);
+  background-color: black;
+  border: none;
+  border-bottom: darkslategrey 2px solid;
+  width: 100%;
+  height: max(50px, 8%);
+  display: flex;
+  flex-direction: row;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: stretch;
+}
+
+@keyframes disappear {
+  100% {
+    width: 0%;
+    height: 0%;
+    opacity: 0;
+  }
+}
+
+.menu-bar::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transform: translateY(100%);
+  width: 100%;
+  height: 50%;
+  background-color: rgb(60, 60, 60);
+}
+
+.menu-bar:hover::before {
+  animation: disappear;
+  animation-duration: 0.25s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.menu-bar:hover {
+  transform: translateY(0);
+}
+
+.menu-bar:active {
+  transform: translateY(-10%);
+}
+
+.menu-content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.menu-button {
   color: white;
+  font-family: monospace;
 }
 
-.App-link {
-  color: #61dafb;
+.board-drawing {
+  width: 100%;
+  height: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+canvas {
+  image-rendering: optimizeSpeed;
+}
+
+*:not(input) {
+  user-select: none;
 }

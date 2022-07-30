@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import { Vector2 } from './classes/Data/Vector2';
+import { BoardType, GameBoard } from './components/GameBoard';
+import { PointerDownTest } from './components/Temporary/PointerDownTest';
+import { matrixToVector2 } from './functions/conversions';
+import { nextGenerationKernel } from './functions/getNextGeneration';
 
 function App() {
+  const [board, setBoard] = useState<Vector2[]>([]);
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="menu-bar">
+        <div className="menu-content-container">
+          <button className='menu-button'> Create </button>
+          <button className='menu-button'> Explore </button>
+          <button className='menu-button'> Your Boards </button>
+          <button className='menu-button'> Profile </button> 
+        </div>
+      </div>
+ 
+      <GameBoard type={BoardType.BOUNDED} boardData={[board, setBoard]} />
+
+      {/* <PointerDownTest /> */}
+    </div> 
   );
 }
 
