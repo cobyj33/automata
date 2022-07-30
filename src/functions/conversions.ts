@@ -1,7 +1,8 @@
 import { Vector2 } from "../classes/Data/Vector2";
 import { Box, inBox } from "../interfaces/Box";
-import { getEnclosingBox } from "./getEnclosingBox";
 import { input } from "gpu.js";
+import { CellMatrix } from '../interfaces/CellMatrix';
+import { Set2D } from '../classes/Structures/Set2D';
 
 export function cellsToMatrix(cells: Vector2[]): number[][] {
     const boundingBox: Box = getEnclosingBox(cells);
@@ -17,6 +18,8 @@ export function cellsToMatrix(cells: Vector2[]): number[][] {
     cells.forEach(cell => matrix[cell.row - boundingBox.row][cell.col - boundingBox.col] = 1)
     return matrix;
 }
+
+
 
 export function cellsInBoxToMatrix(cells: Vector2[], boundingBox: Box) {
     const matrix : number[][] = Array.from({length: boundingBox.height}, val => new Array<number>(boundingBox.width).fill(0));
@@ -40,3 +43,53 @@ export function matrixToVector2(matrix: number[][]): Vector2[] {
 
     return cells;
 }
+
+
+export function getEnclosingBox(cells: Vector2[]): Box {
+    if (cells.length === 0) {
+        return {
+            row: 0,
+            col: 0,
+            width: 0,
+            height: 0,
+        }
+    }
+
+    let minRow = cells[0].row;
+    let maxRow = cells[0].row;
+    let minCol = cells[0].col;
+    let maxCol = cells[0].col;
+
+    for (let i = 0; i < cells.length; i++) {
+        if (cells[i].row < minRow) {
+            minRow = cells[i].row;
+        }
+        if (cells[i].col < minCol) {
+            minCol = cells[i].col;
+        }
+        if (cells[i].row > maxRow) {
+            maxRow = cells[i].row;
+        }
+        if (cells[i].col > maxCol) {
+            maxCol = cells[i].col;
+        }
+    }
+
+    return {
+        row: minRow,
+        col: minCol,
+        width: Math.abs(maxCol - minCol),
+        height: Math.abs(maxRow - minRow)
+    }
+}
+
+
+
+function partition(board: Vector2[]): CellMatrix[] {
+    const matrices: CellMatrix[] = [];
+    const set: Set2D = new Set2D(); 
+
+
+    return matrices;
+}
+

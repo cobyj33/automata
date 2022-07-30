@@ -1,5 +1,5 @@
 import { Vector2 } from "../classes/Data/Vector2"
-import { getEnclosingBox } from "../functions/getEnclosingBox";
+import { getEnclosingBox } from "../functions/conversions";
 import { Box, inBox } from "../interfaces/Box";
 
 test("inBox", () => {

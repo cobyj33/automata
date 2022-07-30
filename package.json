@@ -2,7 +2,7 @@
   "name": "conway_revamped",
   "version": "0.1.0",
   "private": true,
-    "homepage": "https://cobyj33.github.io/automata",
+  "homepage": "https://cobyj33.github.io/automata",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -18,8 +18,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-      "predeploy": "npm run build",
-      "deploy": "gh-pages -d build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -46,9 +46,11 @@
   "devDependencies": {
     "ajv": "^8.11.0",
     "ajv-keywords": "^5.1.0",
+    "firebase": "^9.9.1",
     "gh-pages": "^4.0.0",
     "gpu.js": "^2.15.2",
     "node-sass": "^7.0.1",
+    "react-firebase-hooks": "^5.0.3",
     "react-icons": "^4.4.0"
   }
 }

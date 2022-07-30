@@ -21,3 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# ctags for indexing
+/tags
+tags.lock
+tags.temp

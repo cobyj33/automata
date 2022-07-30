@@ -3,7 +3,7 @@ import { RefObject, useEffect, useRef } from 'react'
 import { Vector2 } from '../classes/Data/Vector2';
 import { View } from '../classes/Data/View'
 import { getGridDrawingKernel, renderBoard, renderBoardFromMatrix, renderGrid } from '../functions/drawing';
-import { useCanvasUpdater } from '../functions/useCanvasUpdater';
+import { useCanvasUpdater } from '../functions/hooks';
 import { CellMatrix } from '../interfaces/CellMatrix';
 import "./boarddrawing.scss"
 

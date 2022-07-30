@@ -22,7 +22,9 @@ import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaElli
 import { hasDuplicates, removeDuplicates } from '../functions/utilityFunctions';
 import { LayeredCanvas } from './LayeredCanvas';
 import { renderBoard } from '../functions/drawing';
-import { useCanvasUpdater } from '../functions/useCanvasUpdater';
+import { useCanvasUpdater } from '../functions/hooks';
+import { Conway } from '../classes/Automata/Conway';
+import { Automata } from '../interfaces/Automata';
 
 
 
@@ -39,6 +41,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   const [bounds, setBounds] = useState<Dimension>(new Dimension(400, 400));
   const [ghostTilePositions, setGhostTilePositions] = useState<Vector2[]>([]);
   const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>(Vector2.zero);
+    const [automata, setAutomata] = useState<Automata>(new Conway());
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
 
   useEffect( () => {
@@ -143,7 +146,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
     <div>
       <div style={{cursor: cursor}} ref={boardHolder} className="board-holder" onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
-          {rendering ?<BoundedGameRender start={board} view={view} bounds={bounds.toBox()}  />  : <BoundedBoardDrawing bounds={bounds.toBox()} view={view} board={board} />}
+          {rendering ? <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds.toBox()}  />  : <BoundedBoardDrawing bounds={bounds.toBox()} view={view} board={board} />}
           <canvas style={{}} className="board-drawing" ref={ghostCanvas} />
         </LayeredCanvas>
       </div>

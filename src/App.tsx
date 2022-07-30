@@ -2,9 +2,6 @@ import { useState } from 'react';
 import './App.css';
 import { Vector2 } from './classes/Data/Vector2';
 import { BoardType, GameBoard } from './components/GameBoard';
-import { PointerDownTest } from './components/Temporary/PointerDownTest';
-import { matrixToVector2 } from './functions/conversions';
-import { nextGenerationKernel } from './functions/getNextGeneration';
 
 function App() {
   const [board, setBoard] = useState<Vector2[]>([]);

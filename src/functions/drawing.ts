@@ -47,25 +47,6 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
     context.restore();
   }
 
-// export function renderGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View) {
-//     context.save();
-//     context.lineWidth = 1;
-//     context.strokeStyle = 'black';
-//     context.beginPath()
-//     for (let y = -view.offset().row; y <= canvas.height; y += view.cellSize) {
-//       context.moveTo(0, y);
-//       context.lineTo(canvas.width, y);
-//     }
-    
-//     for (let x = -view.offset().col; x <= canvas.width; x += view.cellSize) {
-//       context.moveTo(x, 0);
-//       context.lineTo(x, canvas.height);
-//     }
-
-//     context.stroke();
-//     context.restore();
-//   }
-
 function gridDrawingKernelFunction(this: IKernelFunctionThis, viewOffsetRow: number, viewOffsetCol: number, viewCellSize: number) {
   if ((this.thread.x - viewOffsetCol) % viewCellSize < 1 && (this.thread.x - viewOffsetCol) % viewCellSize > -1) {
     this.color(0, 0, 0, 1);
