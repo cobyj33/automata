@@ -1,9 +1,8 @@
 import { PointerEvent } from "react";
 import { removeDuplicates } from "../../functions/utilityFunctions";
-import { LineSegment } from "../Data/LineSegment";
-import { Vector2 } from "../Data/Vector2";
+import { Vector2 } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
-import { EditorData } from "./EditorData";
+import {getLine} from '../../functions/shapes';
 
 export class LineEditMode extends EditMode {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
@@ -11,22 +10,22 @@ export class LineEditMode extends EditMode {
     end: Vector2 | undefined;
     get cells(): Vector2[] {
         if (this.start !== undefined && this.end !== undefined) {
-            return new LineSegment(this.start, this.end).toCells();
+            return getLine(this.start, this.end); 
         }
         return []
     }
 
     onPointerDown(event: PointerEvent<Element>) {
         this.start = this.data.getHoveredCell(event);
-        this.end = this.start.clone();
+        this.end = { ...this.start }
     }
 
     onPointerMove(event: PointerEvent<Element>) {
         if (this.data.isPointerDown && this.start !== undefined && this.end !== undefined) {
             const hoveredCell = this.data.getHoveredCell(event);
-            if (!this.end.equals(hoveredCell)) {
+            if (!(this.end.row === hoveredCell.row && this.end.col === hoveredCell.col)) {
                 const toRemove = new Set<string>(this.cells.map(cell => JSON.stringify(cell)));
-                const [ghostTilePositions, setGhostTilePositions] = this.data.ghostTilePositions;
+                const [, setGhostTilePositions] = this.data.ghostTilePositions;
                 setGhostTilePositions( positions => positions.filter( cell => !toRemove.has(JSON.stringify(cell)) ) )
                 this.end = hoveredCell;
                 setGhostTilePositions( positions => positions.concat( this.cells ) )
@@ -36,11 +35,11 @@ export class LineEditMode extends EditMode {
 
     onPointerUp(event: PointerEvent<Element>) {
         if (this.start !== undefined && this.end !== undefined) {
-            const [board, setBoard] = this.data.boardData;
-            const newCells = new LineSegment(this.start, this.end).toCells();
+            const [, setBoard] = this.data.boardData;
+            const newCells: Vector2[] = getLine(this.start, this.end); 
             setBoard(board =>  removeDuplicates(board.concat(newCells)))
-            const [ghostTilePositions, setGhostTilePositions] = this.data.ghostTilePositions;
-            const toRemove = new Set<string>(new LineSegment(this.start, this.end).toCells().map(cell => JSON.stringify(cell)));
+            const [, setGhostTilePositions] = this.data.ghostTilePositions;
+            const toRemove = new Set<string>(newCells.map(cell => JSON.stringify(cell)));
             setGhostTilePositions( positions => positions.filter( cell =>  !toRemove.has(JSON.stringify(cell)) ) )
         }
 

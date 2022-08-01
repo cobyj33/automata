@@ -1,9 +1,13 @@
 import { KeyboardEvent, PointerEvent } from "react";
+import {getLine} from "../../functions/shapes";
 import { removeDuplicates } from "../../functions/utilityFunctions"
-import { LineSegment } from "../Data/LineSegment";
-import { Vector2 } from "../Data/Vector2";
+import { Vector2 } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
-import { EditorData } from "./EditorData";
+
+type LineSegment = {
+    first: Vector2,
+    second: Vector2
+}
 
 export class BoxEditMode extends EditMode {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
@@ -17,24 +21,29 @@ export class BoxEditMode extends EditMode {
         return []
     };
 
-    private get boxCells(): Vector2[] { return removeDuplicates(this.currentBox.flatMap(line => line.toCells())) ?? [] }
+    private get boxCells(): Vector2[] { return removeDuplicates(this.currentBox.flatMap(line => getLine(line.first, line.second))) ?? [] }
 
     onPointerDown(event: PointerEvent<Element>) {
         this.start = this.data.getHoveredCell(event);
-        this.end = this.start.clone();
+        this.end = {...this.start };
     }
 
     onPointerMove(event: PointerEvent<Element>) {
         if (this.data.isPointerDown && this.start !== undefined && this.end !== undefined) {
             const hoveredCell = this.data.getHoveredCell(event);
-            if (!this.end.equals(hoveredCell)) {
+            if (!( this.end.row === hoveredCell.row && this.end.col === hoveredCell.col  )) {
                 const toRemove = new Set<string>(this.boxCells.map(cell => JSON.stringify(cell)));
-                const [ghostTilePositions, setGhostTilePositions] = this.data.ghostTilePositions;
+                const { 1: setGhostTilePositions } = this.data.ghostTilePositions;
                 setGhostTilePositions( positions => positions.filter( cell => !toRemove.has(JSON.stringify(cell)) ) )
 
                 if (this.boxLocked) {
                     const sideLength: number = Math.min(Math.abs(hoveredCell.row - this.start.row), Math.abs(hoveredCell.col - this.start.col));
-                    this.end = this.start.add( new Vector2( hoveredCell.row < this.start.row ? -sideLength : sideLength, hoveredCell.col < this.start.col ? -sideLength : sideLength ) )
+
+                    this.end = {
+                        row: this.start.row + ( hoveredCell.row < this.start.row ? -sideLength : sideLength ),
+                        col: this.start.col + ( hoveredCell.col < this.start.col ? -sideLength : sideLength )       
+                    }
+                    // this.end = this.start.add( new Vector2( hoveredCell.row < this.start.row ? -sideLength : sideLength, hoveredCell.col < this.start.col ? -sideLength : sideLength ) )
                 } else {
                     this.end = hoveredCell;
                 }
@@ -47,7 +56,7 @@ export class BoxEditMode extends EditMode {
     onPointerUp(event: PointerEvent<Element>) {
         console.log(this.start, this.end);
         if (this.start !== undefined && this.end !== undefined) {
-            const [board, setBoard] = this.data.boardData;
+            const { 1: setBoard } = this.data.boardData;
             console.log('box cell count:' + this.boxCells.length);
             // this.boxCells.forEach(cell => {
             //     if (board.inBounds(cell.row, cell.col)) {
@@ -57,7 +66,7 @@ export class BoxEditMode extends EditMode {
 
             setBoard(board => removeDuplicates(board.concat(this.boxCells)))
 
-            const [ghostTilePositions, setGhostTilePositions] = this.data.ghostTilePositions;
+            const { 1: setGhostTilePositions } = this.data.ghostTilePositions;
             const toRemove = new Set<string>(this.boxCells.map(cell => JSON.stringify(cell)));
             setGhostTilePositions( positions => positions.filter( cell =>  !toRemove.has(JSON.stringify(cell)) ) )
         }
@@ -67,9 +76,14 @@ export class BoxEditMode extends EditMode {
     }
 
     box(start: Vector2, end: Vector2): LineSegment[] {
-        const firstCorner = new Vector2(start.row, end.col);
-        const secondCorner = new Vector2(end.row, start.col);
-        return [new LineSegment(start, firstCorner), new LineSegment(firstCorner, end), new LineSegment(end, secondCorner), new LineSegment(secondCorner, start)];
+        const firstCorner = { row: start.row, col: end.col }
+        const secondCorner = {row: end.row, col: start.col }
+        return [
+            {first: start, second: firstCorner },
+            {first: firstCorner, second: end },
+            {first: end, second: secondCorner },
+            {first: secondCorner, second: start }
+        ];
     }
 
     onKeyDown(event: KeyboardEvent<Element>) {

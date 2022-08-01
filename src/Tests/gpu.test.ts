@@ -1,9 +1,9 @@
-import { getNextConwayGenerationFunction } from "../classes/Automata/Conway";
+import { getLifeKernel } from "../functions/generationFunctions";
 import { isEqualNumberMatrix } from "../functions/matrixFunctions";
 import { gpu } from "../globals";
 
 test('next generation acorn', () => {
-    const nextGenerationKernel = gpu.createKernel(getNextConwayGenerationFunction).setOutput([9, 5])
+    const nextGenerationKernel = getLifeKernel("B2/S23").setOutput([9, 5])
     const originalMatrix = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 1, 0, 0, 1, 1, 1, 0],
@@ -60,7 +60,7 @@ test('matrix equality of non-square matrices', () => {
 })
 
 test('next generation', () => {
-    const nextGenerationKernel = gpu.createKernel(getNextConwayGenerationFunction).setOutput([3, 4])
+    const nextGenerationKernel = getLifeKernel("B2/S23").setOutput([3, 4])
     const originalMatrix = [
             [0, 1, 0],
             [0, 0, 1],

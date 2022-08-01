@@ -1,4 +1,4 @@
-import { IComparer } from "../interfaces/IEqualityComparer";
+type IComparer<T> = (first: T, second: T) => boolean;
 
 export function removeDuplicates<T>(list: T[]): T[] {
     const tracker = new Set<string>([])

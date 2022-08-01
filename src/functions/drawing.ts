@@ -1,17 +1,16 @@
-import { IKernelFunctionThis, IKernelRunShortcut } from "gpu.js";
-import { Vector2 } from "../classes/Data/Vector2";
-import { View } from "../classes/Data/View";
+import { IKernelFunctionThis } from "gpu.js";
+import { Vector2 } from "../interfaces/Vector2";
+import { getViewOffset, View } from "../interfaces/View";
 import { gpu } from "../globals";
 import { Box, inBox } from "../interfaces/Box";
 import { CellMatrix } from "../interfaces/CellMatrix";
-import { isInBounds } from "./validation";
 
 export function getViewArea(canvas: HTMLCanvasElement, view: View): Box {
     return {
-    row: view.coordinates.row,
-    col: view.coordinates.col,
-    width: Math.ceil(canvas.width / view.cellSize),
-    height: Math.ceil(canvas.height / view.cellSize)
+        row: view.coordinates.row,
+        col: view.coordinates.col,
+        width: Math.ceil(canvas.width / view.cellSize),
+        height: Math.ceil(canvas.height / view.cellSize)
     } 
 }
 
@@ -29,15 +28,18 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
     context.restore();
   }
 
-  export function renderBoardFromMatrix(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, board: CellMatrix) {
+  export function renderBoardFromMatrix(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, cellMatrix: CellMatrix) {
     context.save();
     context.fillStyle = 'white';
-    const startCoordinates = new Vector2((board.topLeft.row - view.coordinates.row) * view.cellSize, (board.topLeft.col - view.coordinates.col) * view.cellSize)
+      const startCoordinates: Vector2 = {
+          row: (cellMatrix.topLeft.row - view.coordinates.row) * view.cellSize,
+          col: (cellMatrix.topLeft.col - view.coordinates.col) * view.cellSize
+      }
     // const viewArea: Box = getViewArea(canvas, view);
     context.beginPath();
-    for (let row = 0; row < board.matrix.length; row++) {
-      for (let col = 0; col < board.matrix[0].length; col++) {
-          if (board.matrix[row][col] === 1) {
+    for (let row = 0; row < cellMatrix.height; row++) {
+      for (let col = 0; col < cellMatrix.width; col++) {
+          if (cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
             context.rect(startCoordinates.col + (col * view.cellSize), startCoordinates.row + (row * view.cellSize), view.cellSize, view.cellSize);
           }
       }
@@ -66,12 +68,12 @@ export function renderGrid(canvas: HTMLCanvasElement, context: CanvasRenderingCo
       context.lineWidth = 1;
       context.strokeStyle = 'black';
       context.beginPath()
-      for (let y = -view.offset().row; y <= canvas.height; y += view.cellSize) {
+      for (let y = -getViewOffset(view).row; y <= canvas.height; y += view.cellSize) {
         context.moveTo(0, y);
         context.lineTo(canvas.width, y);
       }
       
-      for (let x = -view.offset().col; x <= canvas.width; x += view.cellSize) {
+      for (let x = -getViewOffset(view).col; x <= canvas.width; x += view.cellSize) {
         context.moveTo(x, 0);
         context.lineTo(x, canvas.height);
       }

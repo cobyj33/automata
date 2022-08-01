@@ -1,11 +1,10 @@
-import React, { KeyboardEvent, MutableRefObject, PointerEvent, useEffect, useRef, useState, WheelEvent } from 'react'
-import { Dimension } from '../classes/Data/Dimension';
-import { Vector2 } from '../classes/Data/Vector2';
-import { View } from '../classes/Data/View';
+import { KeyboardEvent, MutableRefObject, PointerEvent, useEffect, useRef, useState, WheelEvent } from 'react'
+import { Vector2 } from '../interfaces/Vector2';
+import { View } from '../interfaces/View';
 import { BoxEditMode } from '../classes/Editor/BoxEditMode';
 import { DrawEditMode } from '../classes/Editor/DrawEditMode';
 import { EditMode } from '../classes/Editor/EditMode';
-import { EditorData } from '../classes/Editor/EditorData';
+import { EditorData } from '../interfaces/EditorData';
 import { EllipseEditMode } from '../classes/Editor/EllipseEditMode';
 import { EraseEditMode } from '../classes/Editor/EraseEditMode';
 import { LineEditMode } from '../classes/Editor/LineEditMode';
@@ -14,19 +13,14 @@ import { ZoomEditMode } from '../classes/Editor/ZoomEditMode';
 import { getHoveredCell, pointerPositionInElement } from '../functions/editorFunctions';
 import { useHistory, useIsPointerDown } from '../functions/hooks';
 import { StatefulData } from '../interfaces/StatefulData';
-import { BoardDrawing } from './BoardDrawing';
 import { BoundedBoardDrawing } from './BoundedBoardDrawing';
 import { BoundedGameRender } from './BoundedGameRender';
-import { GameRender } from './GameRender';
-import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo, FaHammer } from "react-icons/fa"
-import { hasDuplicates, removeDuplicates } from '../functions/utilityFunctions';
+import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
 import { LayeredCanvas } from './LayeredCanvas';
 import { renderBoard } from '../functions/drawing';
 import { useCanvasUpdater } from '../functions/hooks';
-import { Conway } from '../classes/Automata/Conway';
-import { Automata } from '../interfaces/Automata';
-
-
+import { isValidLifeString } from '../functions/generationFunctions';
+import {Box} from '../interfaces/Box';
 
 
 export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
@@ -35,13 +29,19 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   const ghostCanvas = useRef<HTMLCanvasElement>(null);
   const [cursor, setCursor] = useState<string>('');
   
-  const [view, setView] = useState<View>(new View(new Vector2(0, 0), 10));
+    const [view, setView] = useState<View>({
+        coordinates: {
+            row: 0,
+            col: 0
+        },
+        cellSize: 10
+    });
   const [board, setBoard] = boardData;
   const [rendering, setRendering] = useState<boolean>(false);
-  const [bounds, setBounds] = useState<Dimension>(new Dimension(400, 400));
+  const [bounds, setBounds] = useState<Box>({ row: 0, col: 0, width: 200, height: 200 });
   const [ghostTilePositions, setGhostTilePositions] = useState<Vector2[]>([]);
-  const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>(Vector2.zero);
-    const [automata, setAutomata] = useState<Automata>(new Conway());
+  const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>({ row: 0, col: 0 });
+  const [automata, setAutomata] = useState<string>("B3/S23");
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
 
   useEffect( () => {
@@ -90,7 +90,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onPointerMove?.(event);
     const currentHoveredCell = getCurrentHoveredCell(event)
-    if (!lastHoveredCell.equals(currentHoveredCell)) {
+    if (!(lastHoveredCell.row === currentHoveredCell.row && lastHoveredCell.col === currentHoveredCell.col)) {
       setLastHoveredCell(currentHoveredCell)
     }
   }
@@ -99,7 +99,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onPointerDown?.(event);
     const currentHoveredCell = getCurrentHoveredCell(event)
-    if (!lastHoveredCell.equals(currentHoveredCell)) {
+    if (!(lastHoveredCell.row === currentHoveredCell.row && lastHoveredCell.col === currentHoveredCell.col)) {
       setLastHoveredCell(currentHoveredCell)
     }
   }
@@ -142,27 +142,64 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
 
   useCanvasUpdater(ghostCanvas)
 
+    const [automataInput, setAutomataInput] = useState<string>("");
   return (
     <div>
       <div style={{cursor: cursor}} ref={boardHolder} className="board-holder" onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
-          {rendering ? <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds.toBox()}  />  : <BoundedBoardDrawing bounds={bounds.toBox()} view={view} board={board} />}
+          {rendering ? <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} />  : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
           <canvas style={{}} className="board-drawing" ref={ghostCanvas} />
         </LayeredCanvas>
       </div>
 
-      <div className="editing-buttons"> 
-        <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
-        <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
-        <button className={`edit-button ${ editMode === EditorEditMode.ZOOM ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ZOOM)}> <FaSearch /> </button>
-        <button className={`edit-button ${ editMode === EditorEditMode.ERASE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ERASE)}> <FaEraser /> </button>
-        <button className={`edit-button ${ editMode === EditorEditMode.LINE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.LINE)}> <FaLine /> </button>
-        <button className={`edit-button ${ editMode === EditorEditMode.BOX ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.BOX)}> <FaBox /> </button>
-        <button className={`edit-button ${ editMode === EditorEditMode.ELLIPSE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ELLIPSE)}> <FaEllipsisH /> </button>
-        <button className={`edit-button ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-        <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
-        <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
+
+      <div className="board-ui">
+
+        <div className="board-ui-bar top-bar">
+            
+        </div>
+      
+        <div className="middle-area">
+            
+            <div className="board-ui-bar left-bar">
+                <div className="rule-editor">
+                    <span> Current Rule: { automata } </span>
+                  <input className={`rule-string-input ${ isValidLifeString(automataInput) ? 'valid' : 'invalid'  }`}   onChange={e => {
+                      setAutomataInput(e.target.value);
+                      if (isValidLifeString(e.target.value)) {
+                          setAutomata(e.target.value)
+                      }
+                  }} value={automataInput} />
+
+                </div>
+
+            </div>
+            
+            <div className="middle-separator"> </div>
+            <div className="board-ui-bar right-bar">
+                
+            </div>
+
+        </div>
+
+        <div className="board-ui-bar bottom-bar">
+          <div className="editing-buttons"> 
+            <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.ZOOM ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ZOOM)}> <FaSearch /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.ERASE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ERASE)}> <FaEraser /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.LINE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.LINE)}> <FaLine /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.BOX ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.BOX)}> <FaBox /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.ELLIPSE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ELLIPSE)}> <FaEllipsisH /> </button>
+            <button className={`edit-button ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+            <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
+            <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
+          </div>
+
+        </div>
+
       </div>
+
     </div>
   )
 }

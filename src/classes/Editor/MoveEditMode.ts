@@ -1,17 +1,21 @@
-import React, { PointerEvent } from "react";
-import { Vector2 } from "../Data/Vector2";
-import { View } from "../Data/View";
+import { PointerEvent } from "react";
+import { Vector2, vector2ToLength } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
+import {addVector2} from "../../interfaces/Vector2";
 
 export class MoveEditMode extends EditMode{
     cursor() { return 'move' }
      
     onPointerMove(event: PointerEvent<Element>) {
-        const [view, setView] = this.data.viewData;
+        const [, setView] = this.data.viewData;
         if (this.data.isPointerDown === true) {
-            const movementDirection: Vector2 = new Vector2(event.movementY, event.movementX);
-            if (movementDirection.length !== 0) {
-                setView(view => view.withCoordinates( view.coordinates.add(movementDirection.toLength(20 / view.cellSize)) ));
+            const movementDirection: Vector2 = {
+                row: event.movementY,
+                col: event.movementX
+            } 
+
+            if (!(movementDirection.row === 0 && movementDirection.col === 0)) {
+                setView(view => ({...view, coordinates: addVector2(view.coordinates, vector2ToLength(movementDirection, 20 / view.cellSize) ) })  );
             }
         }
     }

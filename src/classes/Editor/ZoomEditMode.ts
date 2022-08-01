@@ -1,24 +1,31 @@
 import { KeyboardEvent, PointerEvent, WheelEvent } from "react";
-import { Vector2 } from "../Data/Vector2";
+import { dotProductVector2, Vector2, vector2Normalized } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
 
+const zoomDirection = { 
+    row: -1,
+    col: -1
+}
+
 export class ZoomEditMode extends EditMode {
-    zoomDirection: Vector2 = new Vector2(-1, -1);
     cursor() { return 'url("https://img.icons8.com/external-royyan-wijaya-detailed-outline-royyan-wijaya/24/000000/external-magnifying-glass-interface-royyan-wijaya-detailed-outline-royyan-wijaya.png"), nwse-resize' }
 
     onPointerMove(event: PointerEvent<Element>) {
-        const [view, setView] = this.data.viewData;
+        const [, setView] = this.data.viewData;
         if (this.data.isPointerDown === true) {
-        const movementVector: Vector2 = new Vector2(event.movementY, event.movementX);
-        if (movementVector.length > 0) {
-            setView(view.withCellSize( Math.max(2, view.cellSize + Math.trunc(Vector2.dotProduct(this.zoomDirection, movementVector.normalized()  )) )  ));
+            const movementVector: Vector2 = {
+                row: event.movementY,
+                col: event.movementX
+            } 
+            if (!(movementVector.row === 0 && movementVector.col === 0)) {
+                setView(view =>  ({ ...view, cellSize:  Math.max(2, view.cellSize + Math.trunc(dotProductVector2(zoomDirection, vector2Normalized(movementVector)) )  ) }) )
             }
         }
     }
 
     onWheel(event: WheelEvent<Element>) {
-        const [view, setView] = this.data.viewData;
+        const [, setView] = this.data.viewData;
         const movementY = event.deltaY / 50;
-        setView(view.withCellSize( Math.max(2, view.cellSize +  movementY)  ));
+        setView(view => ({...view, cellSize: Math.max(2, view.cellSize +  movementY) }) )
     }
 }

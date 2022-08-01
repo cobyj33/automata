@@ -1,6 +1,10 @@
-import { Vector2 } from "../classes/Data/Vector2";
+import { Vector2 } from "./Vector2";
+import {Box, getEnclosingBox} from "./Box";
 
 export interface CellMatrix {
     topLeft: Vector2;
-    matrix: number[][];
+    matrix: number[];
+    width: number;
+    height: number;
 }
+

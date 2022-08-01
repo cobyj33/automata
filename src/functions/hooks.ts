@@ -1,13 +1,9 @@
-import { KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { EditMode } from "../classes/Editor/EditMode";
-import { EditorData } from "../classes/Editor/EditorData";
+import { MutableRefObject, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { HistoryStack } from "../classes/Structures/HistoryStack";
-import { EventHolder } from "../interfaces/EventHolder";
-import { IComparer, IEqualityComparer } from "../interfaces/IEqualityComparer";
-import { IEquatable } from "../interfaces/IEquatable";
 import { StatefulData } from "../interfaces/StatefulData";
 
 type Action = () => void;
+type IComparer<T> = (first: T, second: T) => boolean;
 export function useIsPointerDown(target: RefObject<HTMLElement>) {
     const isPointerDown: MutableRefObject<boolean> = useRef<boolean>(false);
     const setPointerTrue: Action = useCallback(() => isPointerDown.current = true, [])

@@ -1,12 +1,17 @@
-import React, { MutableRefObject, useRef, useState } from 'react'
-import { Board } from '../classes/Data/Board';
-import { Vector2 } from '../classes/Data/Vector2';
-import { View } from '../classes/Data/View';
+import { MutableRefObject, useRef, useState } from 'react'
+import { Vector2 } from "../interfaces/Vector2"
+import { View } from "../interfaces/View"
 import { StatefulData } from '../interfaces/StatefulData';
 import { BoardDrawing } from './BoardDrawing'
 
 export const UnboundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
-  const [view, setView] = useState<View>(new View(new Vector2(0, 0), 10));
+    const [view, setView] = useState<View>({
+        coordinates: {
+            row: 0,
+            col: 0
+        },
+        cellSize: 10
+    });
   const [board, setBoard] = boardData
   const isPointerDown: MutableRefObject<boolean> = useRef<boolean>(false);
 

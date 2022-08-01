@@ -1,10 +1,8 @@
-import React from 'react'
-import { Vector2 } from '../classes/Data/Vector2'
+import { Vector2 } from '../interfaces/Vector2'
 import { StatefulData } from '../interfaces/StatefulData'
-import { BoardDrawing } from './BoardDrawing'
 import { BoundedGameBoard } from './BoundedGameBoard'
 import { UnboundedGameBoard } from './UnboundedGameBoard'
-import "./gameboard.scss"
+import "./styles/gameboard.scss"
 
 export enum BoardType { BOUNDED, UNBOUNDED }
 

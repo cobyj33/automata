@@ -1,6 +1,6 @@
-import { StatefulData } from "../../interfaces/StatefulData";
-import { Vector2 } from "../Data/Vector2";
-import { View } from "../Data/View";
+import { StatefulData } from "./StatefulData";
+import { Vector2 } from "./Vector2";
+import { View } from "./View";
 import { PointerEvent } from "react";
 
 export interface EditorData {

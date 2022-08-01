@@ -1,9 +1,8 @@
-import { Vector2 } from "../classes/Data/Vector2"
-import { getEnclosingBox } from "../functions/conversions";
-import { Box, inBox } from "../interfaces/Box";
+import { Box, inBox, getEnclosingBox } from "../interfaces/Box";
+import { Vector2 } from "../interfaces/Vector2"
 
 test("inBox", () => {
-    const cell: Vector2 = new Vector2(1, 0);
+    const cell: Vector2 = { row: 1, col: 0 };
     const box: Box = {
         row: -1,
         col: -1,
@@ -14,12 +13,12 @@ test("inBox", () => {
 })
 
 test('getEnclosingBox', () => {
-    const box = getEnclosingBox([new Vector2(2, 0),
-        new Vector2(5, 0),
-        new Vector2(3, 1),
-        new Vector2(7, 4),
-        new Vector2(2, 2),
-        new Vector2(3, 3),
+    const box = getEnclosingBox([{ row: 2, col: 0 },
+        { row: 5, col: 0 },
+        { row: 3, col: 1 },
+        { row: 7, col: 4 },
+        { row: 2, col: 2 },
+        { row: 3, col: 3 },
     ])
 
     console.log(box)

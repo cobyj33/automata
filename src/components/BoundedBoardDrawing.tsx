@@ -1,7 +1,7 @@
-import React, { RefObject, useEffect, useRef } from 'react'
-import { Vector2 } from '../classes/Data/Vector2';
-import { View } from '../classes/Data/View';
-import { getViewArea, renderBoard, renderGrid } from '../functions/drawing';
+import { RefObject, useEffect, useRef } from 'react'
+import { Vector2 } from '../interfaces/Vector2';
+import { View } from '../interfaces/View';
+import { getViewArea, } from '../functions/drawing';
 import { useCanvasUpdater } from '../functions/hooks';
 import { Box } from '../interfaces/Box';
 import { CellMatrix } from '../interfaces/CellMatrix';

@@ -1,5 +1,6 @@
 import { KeyboardEvent, PointerEvent, WheelEvent } from "react";
-import { EditorData } from "./EditorData";
+import { EditorData } from "../../interfaces/EditorData"
+
 
 export abstract class EditMode {
     protected data: EditorData;

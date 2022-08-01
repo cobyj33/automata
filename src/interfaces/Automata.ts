@@ -1,8 +1,6 @@
-import { IKernelRunShortcut } from 'gpu.js';
-import { Metadata } from './Metadata';
 
-
-export interface Automata {
-    getMetadata(): Metadata;    
-    getKernel(): IKernelRunShortcut
+export interface AutomataData {
+    name: string;
+    description: string,
+    rule: string
 }
