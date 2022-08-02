@@ -35,11 +35,13 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
           row: (cellMatrix.topLeft.row - view.coordinates.row) * view.cellSize,
           col: (cellMatrix.topLeft.col - view.coordinates.col) * view.cellSize
       }
+      const viewArea: Box = getViewArea(canvas, view);
+      
     // const viewArea: Box = getViewArea(canvas, view);
     context.beginPath();
     for (let row = 0; row < cellMatrix.height; row++) {
       for (let col = 0; col < cellMatrix.width; col++) {
-          if (cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
+          if (inBox( { row: cellMatrix.topLeft.row + row, col: cellMatrix.topLeft.col + col }, viewArea ) && cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
             context.rect(startCoordinates.col + (col * view.cellSize), startCoordinates.row + (row * view.cellSize), view.cellSize, view.cellSize);
           }
       }
@@ -81,3 +83,46 @@ export function renderGrid(canvas: HTMLCanvasElement, context: CanvasRenderingCo
       context.stroke();
       context.restore();
     }
+
+
+function pathHexagon(context: CanvasRenderingContext2D, x: number, y: number, diameter: number) {
+    const radius = diameter / 2;
+    const vertices = Array.from({length: 6},  (element ,index) => ( {
+        row: y + radius * (-Math.sin( index * Math.PI / 3 )),
+        col: x + radius * Math.cos( index * Math.PI / 3 )
+    }  ))
+
+    for (let i = 0; i < vertices.length - 1; i++) {
+        context.moveTo(vertices[i].col, vertices[i].row);
+        context.lineTo(vertices[i + 1].col, vertices[i + 1].row);
+    }
+    context.moveTo(vertices[vertices.length - 1].col, vertices[vertices.length - 1].row);
+    context.lineTo(x + radius, y);
+}
+
+
+const sqrt3 = Math.sqrt(3);
+function drawHexagonalGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View): void {
+    const hexagonDiameter = view.cellSize;
+    const hexagonRadius = hexagonDiameter / 2;
+    const sideLength = hexagonRadius * sqrt3 / 2;
+    const centerToSide = hexagonRadius * Math.sin(Math.PI / 3);
+    
+    console.log(hexagonDiameter, hexagonRadius, sideLength, centerToSide);
+    
+    const viewOffset = getViewOffset(view);
+    let y = -viewOffset.row;
+    let x = -viewOffset.col;
+    context.beginPath();
+    for (let i = 0; y < canvas.height; i++) {
+        x = i % 2 === 0 ? -viewOffset.col : -( viewOffset.col + hexagonRadius + sideLength / 2 );
+        for (let j = 0; x < canvas.width; j++) {
+            pathHexagon(context, x, y, hexagonDiameter);
+            x += hexagonDiameter + sideLength;
+        }
+        y += centerToSide;
+    }
+    context.stroke();
+}
+
+

@@ -1,5 +1,8 @@
 import { IConstants, IKernelFunctionThis, IKernelRunShortcut } from "gpu.js"
 import { gpu } from "../globals"
+import { Vector2 } from '../interfaces/Vector2';
+import { cellMatrixToVector2, partition } from "./conversions"
+import { CellMatrix } from '../interfaces/CellMatrix';
 
 type LifeStringData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string) {
@@ -62,7 +65,7 @@ export function getLifeKernel(lifeString: string): IKernelRunShortcut {
     }
 }
 
-export function getNextLifeLikeGenerationFunction(this: ILifeKernelThis, matrix: number[], width: number, height: number) {
+export function getNextLifeLikeGenerationFunction(this: ILifeKernelThis, matrix: number[] | Float32Array, width: number, height: number) {
     let neighbors = 0;
     const currentRow = Math.trunc(this.thread.x / width);
     const currentCol = this.thread.x - (currentRow * width);
@@ -92,4 +95,22 @@ export function getNextLifeLikeGenerationFunction(this: ILifeKernelThis, matrix:
     }
 
     return 0;
+}
+
+
+async function getNextGeneration(board: Vector2[], lifeString: string): Promise<Vector2[]> {
+    let newBoard: Vector2[] = []
+    const renderingKernel = getLifeKernel(lifeString).setDynamicOutput(true).setDynamicArguments(true).setOutput([10]);
+
+    const matrices: CellMatrix[] = partition(board);
+    matrices.map(cellMatrix => ({
+        ...cellMatrix,
+        matrix: [...renderingKernel.setOutput([cellMatrix.width * cellMatrix.height])(cellMatrix.matrix, cellMatrix.width, cellMatrix.height) as number[]] 
+    }))
+
+    matrices.forEach(cellMatrix => {
+       newBoard.push(...cellMatrixToVector2(cellMatrix)) 
+    })
+
+    return newBoard;
 }

@@ -1,5 +1,5 @@
 import { Vector2 } from "../interfaces/Vector2";
-import { Box, getEnclosingBox } from "../interfaces/Box";
+import { Box, getEnclosingBox, inBox } from "../interfaces/Box";
 import { CellMatrix } from '../interfaces/CellMatrix';
 import { Set2D } from '../classes/Structures/Set2D';
 
@@ -58,7 +58,28 @@ export function cellMatrixToVector2(cellMatrix: CellMatrix): Vector2[] {
 export function partition(board: Vector2[]): CellMatrix[] {
     const matrices: CellMatrix[] = [];
     const set: Set2D = new Set2D(); 
+    
+    const boxes: Box[] = []
+    const groups: Vector2[][] = []
 
+    board.forEach(pos => set.add(pos.row, pos.col));
+    
+    board.forEach(pos => {
+        const selectedBoxIndex = boxes.findIndex(box => inBox(pos, box));
+        if (selectedBoxIndex !== null && selectedBoxIndex !== undefined) {
+            
+        } else {
+
+        }
+    })
+
+    boxes.map(box => ({
+        row: box.row - 1,
+        col: box.col - 1,
+        width: box.width + 2,
+        height: box.height + 2
+    }))
+    
     return matrices;
 }
 
