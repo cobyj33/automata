@@ -15,7 +15,7 @@ export class MoveEditMode extends EditMode{
             } 
 
             if (!(movementDirection.row === 0 && movementDirection.col === 0)) {
-                setView(view => ({...view, coordinates: addVector2(view.coordinates, vector2ToLength(movementDirection, 20 / view.cellSize) ) })  );
+                setView(view => ({...view, ...addVector2(view, vector2ToLength(movementDirection, 20 / view.cellSize) ) })  );
             }
         }
     }

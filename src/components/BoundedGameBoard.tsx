@@ -30,10 +30,8 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   const [cursor, setCursor] = useState<string>('');
   
     const [view, setView] = useState<View>({
-        coordinates: {
-            row: 0,
-            col: 0
-        },
+        row: 0,
+        col: 0,
         cellSize: 10
     });
   const [board, setBoard] = boardData;

@@ -7,8 +7,8 @@ import { CellMatrix } from "../interfaces/CellMatrix";
 
 export function getViewArea(canvas: HTMLCanvasElement, view: View): Box {
     return {
-        row: view.coordinates.row,
-        col: view.coordinates.col,
+        row: view.row,
+        col: view.col,
         width: Math.ceil(canvas.width / view.cellSize),
         height: Math.ceil(canvas.height / view.cellSize)
     } 
@@ -21,7 +21,7 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
     const shownCells = board.filter(cell => inBox(cell, viewArea));
     context.beginPath();
     for (let i = 0; i < shownCells.length; i++) {
-      context.rect( (shownCells[i].col - view.coordinates.col) * view.cellSize, (shownCells[i].row - view.coordinates.row) * view.cellSize, view.cellSize, view.cellSize);
+      context.rect( (shownCells[i].col - view.col) * view.cellSize, (shownCells[i].row - view.row) * view.cellSize, view.cellSize, view.cellSize);
     }
     context.fill();
 
@@ -32,8 +32,8 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
     context.save();
     context.fillStyle = 'white';
       const startCoordinates: Vector2 = {
-          row: (cellMatrix.topLeft.row - view.coordinates.row) * view.cellSize,
-          col: (cellMatrix.topLeft.col - view.coordinates.col) * view.cellSize
+          row: (cellMatrix.topLeft.row - view.row) * view.cellSize,
+          col: (cellMatrix.topLeft.col - view.col) * view.cellSize
       }
       const viewArea: Box = getViewArea(canvas, view);
       

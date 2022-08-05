@@ -12,7 +12,7 @@ export function pointerPositionInElement(event: PointerEvent<Element>, element: 
 
 export const getHoveredCell = (pointerPosition: Vector2, view: View) => {
     return {
-        row:  Math.trunc((pointerPosition.row / view.cellSize) + view.coordinates.row),
-        col: Math.trunc((pointerPosition.col / view.cellSize) + view.coordinates.col) 
+        row:  Math.trunc((pointerPosition.row / view.cellSize) + view.row),
+        col: Math.trunc((pointerPosition.col / view.cellSize) + view.col) 
     }
 }

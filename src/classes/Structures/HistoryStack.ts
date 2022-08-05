@@ -31,7 +31,7 @@ export class HistoryStack<T> {
     }
 
     back(): void {
-        if (this.history.length == 0) {
+        if (this.history.length === 0) {
             console.error("ATTEMPTED TO MOVE BACKWARD IN EMPTY HISTORY")
         } else if (this.index <= 0) {
             console.error("ALREADY AT BACK OF HISTORY")
@@ -46,21 +46,21 @@ export class HistoryStack<T> {
     }
     
     peekLatest(): T {
-        if (this.history.length == 0) {
+        if (this.history.length === 0) {
             console.error("EMPTY HISTORY")
         }
         return this.history[this.history.length - 1]
     }
 
     peek(): T {
-        if (this.history.length == 0) {
+        if (this.history.length === 0) {
             console.error("EMPTY HISTORY")
         }
         return this.history[this.index]
     }
  
     forward(): void {
-        if (this.history.length == 0) {
+        if (this.history.length === 0) {
             console.error("EMPTY HISTORY")
             return;
         } else if (this.index >= this.history.length) {
@@ -76,7 +76,7 @@ export class HistoryStack<T> {
     }
 
     pushState(data: T): void {
-        if (this.history.length == 0) {
+        if (this.history.length === 0) {
             this.history = this.history.concat([data]);
         } else {
             this.history = this.history.slice(0, this.index + 1).concat([data]);

@@ -1,4 +1,4 @@
-import { KeyboardEvent, PointerEvent, WheelEvent } from "react";
+import { PointerEvent, WheelEvent } from "react";
 import { dotProductVector2, Vector2, vector2Normalized } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
 

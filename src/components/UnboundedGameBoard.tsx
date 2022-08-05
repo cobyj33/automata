@@ -6,10 +6,8 @@ import { BoardDrawing } from './BoardDrawing'
 
 export const UnboundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
     const [view, setView] = useState<View>({
-        coordinates: {
-            row: 0,
-            col: 0
-        },
+        row: 0,
+        col: 0,
         cellSize: 10
     });
   const [board, setBoard] = boardData

@@ -19,7 +19,7 @@ export function isEqualNumberMatrix(first: number[][], second: number[][]) {
 }
 
 export function padMatrixSides(matrix: number[][], amount: number): number[][] {
-    const newMatrix = Array.from({ length: matrix.length + (amount * 2)}, val => new Array<number>(matrix[0].length + (amount * 2)).fill(0));
+    const newMatrix = Array.from({ length: matrix.length + (amount * 2)}, () => new Array<number>(matrix[0].length + (amount * 2)).fill(0));
     
     for (let row = 0; row < matrix.length; row++) {
         for (let col = 0; col < matrix[row].length; col++) {
