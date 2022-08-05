@@ -98,6 +98,51 @@ export function getNextLifeLikeGenerationFunction(this: ILifeKernelThis, matrix:
 }
 
 
+interface IElementaryConstants extends IConstants {
+    rule: number[];
+}
+
+interface IElementaryFunctionThis extends IKernelFunctionThis {
+    constants: IElementaryConstants;
+}
+
+export function getElementaryFunction(rule: number) {
+    if (rule < 0 || rule > 255) {
+        throw new Error(`INVALID ELEMENTARY AUTOMATA RULE: RULE {${rule}} MUST BE 0 <= rule <= 255`);
+    }
+
+    const binaryRule: string = rule.toString(2).padStart(7, '0');
+    const rules: number[] = new Array<number>(7).fill(0);
+    for (let i = 0; i < 6; i++) {
+        rules[i] = Number.parseInt(binaryRule.charAt(6 - i));
+    }
+
+    return gpu.createKernel(getNextElementaryGenerationKernelFunction).setConstants( { rule: rules } );
+}
+
+export function getNextElementaryGenerationKernelFunction(this: IElementaryFunctionThis, line: number[], width: number) {
+    let value = 0;
+
+    if (this.thread.x - 1 >= 0 && this.thread.x - 1 < width) {
+        if (line[this.thread.x - 1] === 1) {
+            value += 4;
+        }
+    } 
+    
+    if (line[this.thread.x] === 1) {
+        value += 2;
+    }
+
+    if (this.thread.x + 1 >= 0 && this.thread.x + 1 < width) {
+        if (line[this.thread.x + 1] === 1) {
+            value += 1;
+        }
+    }
+
+    return this.constants.rule[value];
+}
+
+
 async function getNextGeneration(board: Vector2[], lifeString: string): Promise<Vector2[]> {
     let newBoard: Vector2[] = []
     const renderingKernel = getLifeKernel(lifeString).setDynamicOutput(true).setDynamicArguments(true).setOutput([10]);
