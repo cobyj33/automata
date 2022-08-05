@@ -89,7 +89,8 @@ test('matrix to cells', () => {
     ]
 
     const cells: Vector2[] = cellMatrixToVector2( {
-        topLeft: { row: 0, col: 0 },
+        row: 0,
+        col: 0,
         matrix: matrix.flatMap(row => row),
         width: matrix[0].length,
         height: matrix.length
