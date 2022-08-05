@@ -2,8 +2,17 @@ import { PointerEvent } from "react";
 import { removeDuplicates } from "../../functions/utilityFunctions";
 import { EditMode } from "./EditMode";
 import { getLine } from "../../functions/shapes";
+import { StatefulData } from "../../interfaces/StatefulData"
+import { Vector2 } from "../../interfaces/Vector2"
 
-export class DrawEditMode extends EditMode {
+interface DrawData {
+    boardData: StatefulData<Vector2[]>,
+    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
+    lastHoveredCell: Vector2,
+    isPointerDown: boolean,
+}
+
+export class DrawEditMode extends EditMode<DrawData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {

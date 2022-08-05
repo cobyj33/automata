@@ -2,6 +2,7 @@ import { KeyboardEvent, PointerEvent } from "react";
 import {getLine} from "../../functions/shapes";
 import { removeDuplicates } from "../../functions/utilityFunctions"
 import { Vector2 } from "../../interfaces/Vector2";
+import { StatefulData } from "../../interfaces/StatefulData";
 import { EditMode } from "./EditMode";
 
 type LineSegment = {
@@ -9,7 +10,14 @@ type LineSegment = {
     second: Vector2
 }
 
-export class BoxEditMode extends EditMode {
+interface BoxData {
+    boardData: StatefulData<Vector2[]>,
+    ghostTilePositions: StatefulData<Vector2[]>,
+    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
+    isPointerDown: boolean,
+}
+
+export class BoxEditMode extends EditMode<BoxData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     start: Vector2 | undefined;
     end: Vector2 | undefined;

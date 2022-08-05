@@ -2,8 +2,16 @@ import { PointerEvent } from "react";
 import { Vector2, vector2ToLength } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
 import {addVector2} from "../../interfaces/Vector2";
+import { StatefulData } from '../../interfaces/StatefulData';
+import { View } from '../../interfaces/View';
 
-export class MoveEditMode extends EditMode{
+
+interface MoveData {
+    viewData: StatefulData<View>;
+    isPointerDown: boolean
+}
+
+export class MoveEditMode extends EditMode<MoveData>{
     cursor() { return 'move' }
      
     onPointerMove(event: PointerEvent<Element>) {

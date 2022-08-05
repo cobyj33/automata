@@ -3,8 +3,16 @@ import { removeDuplicates } from "../../functions/utilityFunctions";
 import { Vector2 } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
 import {getLine} from '../../functions/shapes';
+import {StatefulData} from "../../interfaces/StatefulData";
 
-export class LineEditMode extends EditMode {
+interface LineData {
+    boardData: StatefulData<Vector2[]>,
+    ghostTilePositions: StatefulData<Vector2[]>,
+    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
+    isPointerDown: boolean,
+}
+
+export class LineEditMode extends EditMode<LineData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     start: Vector2 | undefined;
     end: Vector2 | undefined;

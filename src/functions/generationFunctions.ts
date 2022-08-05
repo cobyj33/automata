@@ -106,7 +106,7 @@ interface IElementaryFunctionThis extends IKernelFunctionThis {
     constants: IElementaryConstants;
 }
 
-export function getElementaryFunction(rule: number) {
+export function getElementaryKernel(rule: number) {
     if (rule < 0 || rule > 255) {
         throw new Error(`INVALID ELEMENTARY AUTOMATA RULE: RULE {${rule}} MUST BE 0 <= rule <= 255`);
     }

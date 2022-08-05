@@ -23,8 +23,8 @@ import { isValidLifeString } from '../functions/generationFunctions';
 import {Box} from '../interfaces/Box';
 
 
+enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, BOX, LINE, ELLIPSE };
 export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
-  enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, BOX, LINE, ELLIPSE };
   const boardHolder = useRef<HTMLDivElement>(null);
   const ghostCanvas = useRef<HTMLCanvasElement>(null);
   const [cursor, setCursor] = useState<string>('');

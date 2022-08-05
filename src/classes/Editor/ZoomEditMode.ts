@@ -1,5 +1,7 @@
 import { PointerEvent, WheelEvent } from "react";
+import {StatefulData} from "../../interfaces/StatefulData";
 import { dotProductVector2, Vector2, vector2Normalized } from "../../interfaces/Vector2";
+import {View} from "../../interfaces/View";
 import { EditMode } from "./EditMode";
 
 const zoomDirection = { 
@@ -7,7 +9,12 @@ const zoomDirection = {
     col: -1
 }
 
-export class ZoomEditMode extends EditMode {
+interface ZoomData {
+    viewData: StatefulData<View>;
+    isPointerDown: boolean
+}
+
+export class ZoomEditMode extends EditMode<ZoomData> {
     cursor() { return 'url("https://img.icons8.com/external-royyan-wijaya-detailed-outline-royyan-wijaya/24/000000/external-magnifying-glass-interface-royyan-wijaya-detailed-outline-royyan-wijaya.png"), nwse-resize' }
 
     onPointerMove(event: PointerEvent<Element>) {
