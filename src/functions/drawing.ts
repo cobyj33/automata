@@ -32,8 +32,8 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
     context.save();
     context.fillStyle = 'white';
       const startCoordinates: Vector2 = {
-          row: (cellMatrix.topLeft.row - view.row) * view.cellSize,
-          col: (cellMatrix.topLeft.col - view.col) * view.cellSize
+          row: (cellMatrix.row - view.row) * view.cellSize,
+          col: (cellMatrix.col - view.col) * view.cellSize
       }
       const viewArea: Box = getViewArea(canvas, view);
       
@@ -41,7 +41,7 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
     context.beginPath();
     for (let row = 0; row < cellMatrix.height; row++) {
       for (let col = 0; col < cellMatrix.width; col++) {
-          if (inBox( { row: cellMatrix.topLeft.row + row, col: cellMatrix.topLeft.col + col }, viewArea ) && cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
+          if (inBox( { row: cellMatrix.row + row, col: cellMatrix.col + col }, viewArea ) && cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
             context.rect(startCoordinates.col + (col * view.cellSize), startCoordinates.row + (row * view.cellSize), view.cellSize, view.cellSize);
           }
       }

@@ -1,8 +1,6 @@
 import { Vector2 } from "./Vector2";
 
-export interface Box {
-    row: number;
-    col: number;
+export interface Box extends Vector2 {
     width: number;
     height: number;
 }

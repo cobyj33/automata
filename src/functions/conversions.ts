@@ -12,7 +12,8 @@ export function cellsToCellMatrix(cells: Vector2[]): CellMatrix {
 
     cells.forEach(cell => matrix[(cell.row - boundingBox.row) * boundingBox.width + (cell.col - boundingBox.col)] = 1);
     return {
-        topLeft: { row: boundingBox.row, col: boundingBox.col },
+        row: boundingBox.row,
+        col: boundingBox.col,
         matrix: matrix,
         width: boundingBox.width,
         height: boundingBox.height
@@ -35,7 +36,8 @@ export function cellsInBoxToCellMatrix(cells: Vector2[], boundingBox: Box) {
     const matrix : number[] = new Array<number>(boundingBox.width * boundingBox.height).fill(0);
     cells.forEach(cell => matrix[(cell.row - boundingBox.row) * boundingBox.width + (cell.col - boundingBox.col)] = 1);
     return {
-        topLeft: { row: boundingBox.row, col: boundingBox.col },
+        row: boundingBox.row,
+        col: boundingBox.col,
         matrix: matrix,
         width: boundingBox.width,
         height: boundingBox.height
@@ -47,7 +49,7 @@ export function cellMatrixToVector2(cellMatrix: CellMatrix): Vector2[] {
     for (let row = 0; row < cellMatrix.height; row++) {
         for (let col = 0; col < cellMatrix.width; col++) {
             if (cellMatrix.matrix[row * cellMatrix.height + col] == 1) {
-                cells.push({row: cellMatrix.topLeft.row + row, col: cellMatrix.topLeft.col + col });
+                cells.push({row: cellMatrix.row + row, col: cellMatrix.col + col });
             }
         }
     }
