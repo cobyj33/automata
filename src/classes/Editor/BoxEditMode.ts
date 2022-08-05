@@ -10,7 +10,7 @@ type LineSegment = {
     second: Vector2
 }
 
-interface BoxData {
+export interface BoxData {
     boardData: StatefulData<Vector2[]>,
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,

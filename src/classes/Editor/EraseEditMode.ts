@@ -4,7 +4,7 @@ import { getLine } from "../../functions/shapes";
 import { StatefulData } from "../../interfaces/StatefulData"
 import { Vector2 } from "../../interfaces/Vector2"
 
-interface EraseData {
+export interface EraseData {
     boardData: StatefulData<Vector2[]>,
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,

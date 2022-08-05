@@ -5,7 +5,7 @@ import { getLine } from "../../functions/shapes";
 import { StatefulData } from "../../interfaces/StatefulData"
 import { Vector2 } from "../../interfaces/Vector2"
 
-interface DrawData {
+export interface DrawData {
     boardData: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,
     lastHoveredCell: Vector2,

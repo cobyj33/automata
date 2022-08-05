@@ -27,7 +27,7 @@ function App() {
       // </div>
       }
  
-      <GameBoard type={BoardType.BOUNDED} boardData={[board, setBoard]} />
+      <GameBoard type={BoardType.ELEMENTARY} boardData={[board, setBoard]} />
 
       {/* <PointerDownTest /> */}
     </div> 

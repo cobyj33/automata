@@ -2,19 +2,19 @@ import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEven
 import { View } from "../interfaces/View"
 import { Vector2 } from "../interfaces/Vector2"
 import {BoundedBoardDrawing} from "./BoundedBoardDrawing";
-import { CellMatrix } from "../interfaces/CellMatrix";import {ElementaryDrawEditMode} from "../classes/Editor/Elementary/ElementaryDrawEditMode";
-import {ElementaryLineEditMode} from "../classes/Editor/Elementary/ElementaryLineEditMode";
+import { CellMatrix } from "../interfaces/CellMatrix";
+import { ElementaryDrawEditMode, ElementaryDrawData } from "../classes/Editor/Elementary/ElementaryDrawEditMode";
+import {ElementaryLineEditMode, ElementaryLineData } from "../classes/Editor/Elementary/ElementaryLineEditMode";
+import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
 import { useHistory, useIsPointerDown, useCanvasUpdater } from "../functions/hooks";
 import { ElementaryBoardRender } from "./ElementaryBoardRender";
 import { StatefulData } from "../interfaces/StatefulData"
 import { pointerPositionInElement, getHoveredCell } from '../functions/editorFunctions';
-import { ZoomEditMode } from '../classes/Editor/ZoomEditMode';
-import { MoveEditMode } from '../classes/Editor/MoveEditMode';
+import { ZoomEditMode, ZoomData } from '../classes/Editor/ZoomEditMode';
+import { MoveEditMode, MoveData } from '../classes/Editor/MoveEditMode';
 import { EditMode } from '../classes/Editor/EditMode';
-import { ElementaryEraseEditMode } from '../classes/Editor/Elementary/ElementaryEraseEditMode';
-
-enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, LINE };
+import { ElementaryEraseEditMode, ElementaryEraseData } from '../classes/Editor/Elementary/ElementaryEraseEditMode';
 
 interface ElementaryEditorData {
     boardData: StatefulData<CellMatrix>;
@@ -25,6 +25,9 @@ interface ElementaryEditorData {
     isPointerDown: boolean;
 }
 
+enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, LINE };
+type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData | MoveData | ZoomData | ElementaryEditorData;
+
 export const ElementaryBoard = () => {
     const [view, setView] = useState<View>({
         row: 0,
@@ -32,8 +35,6 @@ export const ElementaryBoard = () => {
         cellSize: 50
     });
 
-    const [rule, setRule] = useState<number>(110);
-    
     const [cellMatrix, setCellMatrix] = useState<CellMatrix>({
         row: 0,
         col: 0,
@@ -44,10 +45,9 @@ export const ElementaryBoard = () => {
 
     const boardHolder = useRef(null);
   const [cursor, setCursor] = useState<string>('');
-  const [bounds, setBounds] = useState<Box>({ row: 0, col: 0, width: 200, height: 200 });
   const [ghostTilePositions, setGhostTilePositions] = useState<number[]>([]);
+    const [rule, setRule] = useState<number>(110);
   const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
-  const [automata, setAutomata] = useState<string>("B3/S23");
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
 
   // useEffect( () => {
@@ -78,7 +78,7 @@ export const ElementaryBoard = () => {
   }
   
   const [editMode, setEditMode] = useState<EditorEditMode>(EditorEditMode.MOVE);
-  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<ElementaryEditorData>}> = useRef({ 
+  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<DataUnion>}> = useRef({ 
     [EditorEditMode.DRAW]: new ElementaryDrawEditMode(getElementaryEditorData()),
     [EditorEditMode.ZOOM]: new ZoomEditMode(getElementaryEditorData()),
     [EditorEditMode.MOVE]: new MoveEditMode(getElementaryEditorData()),
@@ -151,10 +151,18 @@ export const ElementaryBoard = () => {
     return (
         <div ref={boardHolder} style={{cursor: cursor}} className="board-holder" onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <div className="elementary-board">       
-            { rendering ? <ElementaryBoardRender view={view} start={cellMatrix.matrix} rule={rule} /> : 
+            { rendering ? <ElementaryBoardRender view={view} start={[...cellMatrix.matrix]} rule={rule} /> : 
                 <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix} />
             }
         </div>
+            <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.ZOOM ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ZOOM)}> <FaSearch /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.ERASE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ERASE)}> <FaEraser /> </button>
+            <button className={`edit-button ${ editMode === EditorEditMode.LINE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.LINE)}> <FaLine /> </button>
+            <button className={`edit-button ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+            <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
+            <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
     </div>
     )
 }

@@ -6,7 +6,7 @@ import {getLine} from '../../../functions/shapes';
 import { StatefulData } from "../../../interfaces/StatefulData"
 import { CellMatrix } from "../../../interfaces/CellMatrix"
 
-interface LineData {
+export interface ElementaryLineData {
     boardData: StatefulData<CellMatrix>,
     ghostTilePositions: StatefulData<number[]>,
     getHoveredCell: (event: PointerEvent<Element>) => number,
@@ -19,7 +19,7 @@ function range(first: number, second: number): number[] {
     return Array.from({length: distance}, (val, index) => index + min);
 }
 
-export class ElementaryLineEditMode extends EditMode<LineData> {
+export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     start: number | undefined;
     end: number | undefined;
@@ -31,26 +31,36 @@ export class ElementaryLineEditMode extends EditMode<LineData> {
 
     onPointerMove(event: PointerEvent<Element>) {
         if (this.data.isPointerDown && this.start !== undefined && this.start !== null && this.end !== undefined && this.end !== null) {
+            let start = this.start
+            let end = this.end;
             const hoveredCell = this.data.getHoveredCell(event);
-            if (!(this.end === hoveredCell)) {
-                const toRemove = new Set<number>(range(this.start, this.end));
+            if (!(end === hoveredCell)) {
+                const toRemove = new Set<number>(range(start, end));
                 const [, setGhostTilePositions] = this.data.ghostTilePositions;
                 setGhostTilePositions( positions => positions.filter( col => !toRemove.has( col ) ))
-                this.end = hoveredCell;
-                setGhostTilePositions( positions => positions.concat( range(this.start, this.end) ) )
+                end = hoveredCell;
+                setGhostTilePositions( positions => positions.concat( range(start, end) ) )
             }
+            this.start = start;
+            this.end = end;
         }
     }
 
     onPointerUp(event: PointerEvent<Element>) {
         if (this.start !== undefined && this.end !== undefined && this.start !== null && this.end !== null) {
+            let start = this.start
+            let end = this.end;
             const [, setBoard] = this.data.boardData;
-            const newCells: Vector2[] = getLine(this.start, this.end); 
+            const line: number[] = range(start, end); 
             setBoard(cellMatrix => {
-                const line: number[] = range(this.start, this.end);
-                line.forEach(num => cellMatrix.matrix[num] = 0);
+                const newMatrix = [...cellMatrix.matrix]
+                line.forEach(num => newMatrix[num] = 1);
+                return {
+                    ...cellMatrix,
+                    matrix: newMatrix
+                }
             })
-            const toRemove = new Set<number>(range(this.start, this.end));
+            const toRemove = new Set<number>(line);
             const [, setGhostTilePositions] = this.data.ghostTilePositions;
             setGhostTilePositions( positions => positions.filter( col => !toRemove.has( col ) ))
         }

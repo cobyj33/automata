@@ -5,7 +5,7 @@ import { EditMode } from "./EditMode";
 import {getLine} from '../../functions/shapes';
 import {StatefulData} from "../../interfaces/StatefulData";
 
-interface LineData {
+export interface LineData {
     boardData: StatefulData<Vector2[]>,
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,

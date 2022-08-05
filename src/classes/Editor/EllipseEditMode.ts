@@ -5,7 +5,7 @@ import { getEllipse } from "../../functions/shapes";
 import { EditMode } from "./EditMode";
 import { StatefulData } from "../../interfaces/StatefulData";
 
-interface EllipseData {
+export interface EllipseData {
     boardData: StatefulData<Vector2[]>,
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,

@@ -34,7 +34,8 @@ export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], v
 
                     return ({
                         ...cellMatrix,
-                        matrix: (renderingKernel.current([...cellMatrix.matrix].slice(-cellMatrix.width), cellMatrix.width) as number[])
+                        height: cellMatrix.height + 1,
+                        matrix: cellMatrix.matrix.concat([...(renderingKernel.current([...cellMatrix.matrix].slice(-cellMatrix.width), cellMatrix.width) as number[])])
                     })  }   );
                 setCurrentGeneration(currentGeneration => currentGeneration + 1);
             })

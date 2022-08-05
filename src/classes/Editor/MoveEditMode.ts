@@ -6,7 +6,7 @@ import { StatefulData } from '../../interfaces/StatefulData';
 import { View } from '../../interfaces/View';
 
 
-interface MoveData {
+export interface MoveData {
     viewData: StatefulData<View>;
     isPointerDown: boolean
 }

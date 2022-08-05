@@ -1,15 +1,14 @@
 import { KeyboardEvent, MutableRefObject, PointerEvent, useEffect, useRef, useState, WheelEvent } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View';
-import { BoxEditMode } from '../classes/Editor/BoxEditMode';
-import { DrawEditMode } from '../classes/Editor/DrawEditMode';
+import { BoxEditMode, BoxData } from '../classes/Editor/BoxEditMode';
+import { DrawEditMode, DrawData } from '../classes/Editor/DrawEditMode';
 import { EditMode } from '../classes/Editor/EditMode';
-import { EditorData } from '../interfaces/EditorData';
-import { EllipseEditMode } from '../classes/Editor/EllipseEditMode';
-import { EraseEditMode } from '../classes/Editor/EraseEditMode';
-import { LineEditMode } from '../classes/Editor/LineEditMode';
-import { MoveEditMode } from '../classes/Editor/MoveEditMode';
-import { ZoomEditMode } from '../classes/Editor/ZoomEditMode';
+import { EllipseEditMode, EllipseData } from '../classes/Editor/EllipseEditMode';
+import { EraseEditMode, EraseData } from '../classes/Editor/EraseEditMode';
+import { LineEditMode, LineData } from '../classes/Editor/LineEditMode';
+import { MoveEditMode, MoveData } from '../classes/Editor/MoveEditMode';
+import { ZoomEditMode, ZoomData } from '../classes/Editor/ZoomEditMode';
 import { getHoveredCell, pointerPositionInElement } from '../functions/editorFunctions';
 import { useHistory, useIsPointerDown } from '../functions/hooks';
 import { StatefulData } from '../interfaces/StatefulData';
@@ -23,7 +22,20 @@ import { isValidLifeString } from '../functions/generationFunctions';
 import {Box} from '../interfaces/Box';
 
 
+interface EditorData {
+    boardData: StatefulData<Vector2[]>;
+    viewData: StatefulData<View>;
+    lastHoveredCell: Vector2;
+    isPointerDown: boolean;
+    getHoveredCell: (event: PointerEvent<Element>) => Vector2;
+    ghostTilePositions: StatefulData<Vector2[]>
+}
+
 enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, BOX, LINE, ELLIPSE };
+type UnionData = MoveData | ZoomData | DrawData | EraseData | BoxData | LineData | EllipseData | EditorData;
+
+
+
 export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
   const boardHolder = useRef<HTMLDivElement>(null);
   const ghostCanvas = useRef<HTMLCanvasElement>(null);
@@ -70,7 +82,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   }
   
   const [editMode, setEditMode] = useState<EditorEditMode>(EditorEditMode.MOVE);
-  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode}> = useRef({ 
+  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<UnionData>}> = useRef({ 
     [EditorEditMode.DRAW]: new DrawEditMode(getEditorData()),
     [EditorEditMode.ZOOM]: new ZoomEditMode(getEditorData()),
     [EditorEditMode.MOVE]: new MoveEditMode(getEditorData()),

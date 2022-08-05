@@ -9,7 +9,7 @@ const zoomDirection = {
     col: -1
 }
 
-interface ZoomData {
+export interface ZoomData {
     viewData: StatefulData<View>;
     isPointerDown: boolean
 }

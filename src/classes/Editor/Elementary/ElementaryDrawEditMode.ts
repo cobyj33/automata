@@ -11,14 +11,14 @@ function range(first: number, second: number): number[] {
     return Array.from({length: distance}, (val, index) => index + min);
 }
 
-interface DrawData {
+export interface ElementaryDrawData {
     boardData: StatefulData<CellMatrix>,
     getHoveredCell: (event: PointerEvent<Element>) => number,
     lastHoveredCell: number,
     isPointerDown: boolean,
 }
 
-export class ElementaryDrawEditMode extends EditMode<DrawData> {
+export class ElementaryDrawEditMode extends EditMode<ElementaryDrawData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {
