@@ -15,6 +15,7 @@ import { ZoomEditMode, ZoomData } from '../classes/Editor/ZoomEditMode';
 import { MoveEditMode, MoveData } from '../classes/Editor/MoveEditMode';
 import { EditMode } from '../classes/Editor/EditMode';
 import { ElementaryEraseEditMode, ElementaryEraseData } from '../classes/Editor/Elementary/ElementaryEraseEditMode';
+import './styles/elementary.scss'
 
 interface ElementaryEditorData {
     boardData: StatefulData<CellMatrix>;
@@ -24,6 +25,8 @@ interface ElementaryEditorData {
     lastHoveredCell: number;
     isPointerDown: boolean;
 }
+
+const defaultWidth = 1000;
 
 enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, LINE };
 type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData | MoveData | ZoomData | ElementaryEditorData;
@@ -38,15 +41,15 @@ export const ElementaryBoard = () => {
     const [cellMatrix, setCellMatrix] = useState<CellMatrix>({
         row: 0,
         col: 0,
-        width: 100,
+        width: 1000,
         height: 1,
-        matrix: new Array<number>(100).fill(0)
+        matrix: new Array<number>(1000).fill(0)
     });
 
     const boardHolder = useRef(null);
   const [cursor, setCursor] = useState<string>('');
   const [ghostTilePositions, setGhostTilePositions] = useState<number[]>([]);
-    const [rule, setRule] = useState<number>(110);
+    const [rule, setRule] = useState<number>(30);
   const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
 
@@ -78,6 +81,7 @@ export const ElementaryBoard = () => {
   }
   
   const [editMode, setEditMode] = useState<EditorEditMode>(EditorEditMode.MOVE);
+
   const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<DataUnion>}> = useRef({ 
     [EditorEditMode.DRAW]: new ElementaryDrawEditMode(getElementaryEditorData()),
     [EditorEditMode.ZOOM]: new ZoomEditMode(getElementaryEditorData()),
@@ -147,22 +151,68 @@ export const ElementaryBoard = () => {
   // useCanvasUpdater(ghostCanvas)
     
     const [rendering, setRendering] = useState<boolean>(false);  
-
+    const [inputRule, setInputRule] = useState<string>("");
     return (
-        <div ref={boardHolder} style={{cursor: cursor}} className="board-holder" onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
-        <div className="elementary-board">       
+        <div  >
+        <div className="elementary-board board-holder" ref={boardHolder} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
             { rendering ? <ElementaryBoardRender view={view} start={[...cellMatrix.matrix]} rule={rule} /> : 
                 <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix} />
             }
         </div>
-            <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.ZOOM ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ZOOM)}> <FaSearch /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.ERASE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ERASE)}> <FaEraser /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.LINE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.LINE)}> <FaLine /> </button>
-            <button className={`edit-button ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-            <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
-            <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
+
+
+      <div className="board-ui">
+
+        <div className="board-ui-bar top-bar">
+            
+        </div>
+      
+        <div className="middle-area">
+            
+            <div className="board-ui-bar left-bar">
+
+            </div>
+            
+            <div className="middle-separator"> </div>
+            <div className="board-ui-bar right-bar">
+                
+            </div>
+
+        </div>
+
+        <div className="board-ui-bar bottom-bar">
+          <div className="editing-buttons"> 
+                <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
+                <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
+                <button className={`edit-button ${ editMode === EditorEditMode.ZOOM ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ZOOM)}> <FaSearch /> </button>
+                <button className={`edit-button ${ editMode === EditorEditMode.ERASE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ERASE)}> <FaEraser /> </button>
+                <button className={`edit-button ${ editMode === EditorEditMode.LINE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.LINE)}> <FaLine /> </button>
+                <button className={`edit-button ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+                <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
+                <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
+        </div>
+
+
+            <div className="rule-input-area">
+
+        <input className={`rule-input ${Number(inputRule) === rule ? 'valid' : 'invalid'}`} onChange={e => {
+                    const input = Number(e.target.value)
+                    setInputRule(e.target.value);
+                    if (!isNaN(input)) {
+
+                        if (input >= 0 && input <= 255) {
+                            setRule(input);
+                        }
+
+                    }
+
+                }} value={inputRule}  />
+
+            </div>
+        </div>
+
+      </div>
+
     </div>
     )
 }

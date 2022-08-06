@@ -113,7 +113,7 @@ export function getElementaryKernel(rule: number) {
 
     const binaryRule: string = rule.toString(2).padStart(8, '0');
     const rules: number[] = new Array<number>(8).fill(0);
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
         rules[i] = Number.parseInt(binaryRule.charAt(7 - i));
         // rules[i] = Number.parseInt(binaryRule.charAt(i));
     }
