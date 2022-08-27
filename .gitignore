@@ -26,3 +26,4 @@ yarn-error.log*
 /tags
 tags.lock
 tags.temp
+package-lock.json
