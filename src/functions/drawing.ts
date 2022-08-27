@@ -1,4 +1,3 @@
-import { IKernelFunctionThis } from "gpu.js";
 import { Vector2 } from "../interfaces/Vector2";
 import { getViewOffset, View } from "../interfaces/View";
 import { Box, inBox } from "../interfaces/Box";
