@@ -47,7 +47,6 @@
     "ajv-keywords": "^5.1.0",
     "firebase": "^9.9.1",
     "gh-pages": "^4.0.0",
-    "gpu.js": "^2.15.2",
     "node-sass": "^7.0.1",
     "react-firebase-hooks": "^5.0.3",
     "react-icons": "^4.4.0"

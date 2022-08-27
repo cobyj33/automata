@@ -1,3 +1,42 @@
+export function isEqualArrays<T>(first: T[], second: T[]) {
+    if (first.length !== second.length) {
+        return false;
+    }
+
+    const firstMap: Map<T, number> = new Map<T, number>();
+    
+    first.forEach(value => {
+        const currentValue: number | undefined = firstMap.get(value);
+        if (currentValue !== undefined && currentValue !== null) {
+            firstMap.set(value, currentValue + 1);
+        } else {
+            firstMap.set(value, 1);
+        }
+    });
+
+    const secondMap: Map<T, number> = new Map<T, number>();
+    second.forEach(value =>  {
+        const currentValue: number | undefined = secondMap.get(value);
+        if (currentValue !== undefined && currentValue !== null) {
+            secondMap.set(value, currentValue + 1);
+        } else {
+            secondMap.set(value, 1);
+        }
+    })
+    
+    if (firstMap.keys.length !== secondMap.keys.length) {
+        return false;
+    }
+    
+    let matching: boolean = true;
+    firstMap.forEach((value, key) => {
+        if (secondMap.get(key) !== value) {
+            matching = false;
+        }
+    })
+
+    return matching;
+}
 
 export function isValidCellMatrix(matrix: number[][]) {
     if (!isValidMatrix(matrix)) return false;

@@ -4,9 +4,11 @@ import { Vector2 } from "../../interfaces/Vector2";
 import { EditMode } from "./EditMode";
 import {getLine} from '../../functions/shapes';
 import {StatefulData} from "../../interfaces/StatefulData";
+import { Box } from "../../interfaces/Box";
 
 export interface LineData {
     boardData: StatefulData<Vector2[]>,
+    boundsData: StatefulData<Box>,
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,
     isPointerDown: boolean,
@@ -44,7 +46,9 @@ export class LineEditMode extends EditMode<LineData> {
     onPointerUp(event: PointerEvent<Element>) {
         if (this.start !== undefined && this.end !== undefined) {
             const [, setBoard] = this.data.boardData;
-            const newCells: Vector2[] = getLine(this.start, this.end); 
+            const [bounds] = this.data.boundsData;
+            const newCells: Vector2[] = getLine(this.start, this.end).filter(cell => cell.row >= bounds.row && cell.col >= bounds.col && cell.row < bounds.row + bounds.height && cell.col < bounds.col + bounds.width);
+
             setBoard(board =>  removeDuplicates(board.concat(newCells)))
             const [, setGhostTilePositions] = this.data.ghostTilePositions;
             const toRemove = new Set<string>(newCells.map(cell => JSON.stringify(cell)));

@@ -1,8 +1,6 @@
 import { PointerEvent } from "react";
 import { EditMode } from "../EditMode";
-import { getLine } from "../../../functions/shapes";
 import { StatefulData } from "../../../interfaces/StatefulData"
-import { Vector2 } from "../../../interfaces/Vector2"
 import { CellMatrix } from "../../../interfaces/CellMatrix"
 
 function range(first: number, second: number): number[] {
@@ -28,7 +26,7 @@ export class ElementaryDrawEditMode extends EditMode<ElementaryDrawData> {
         setCellMatrix(cellMatrix => {
             
             if (hoveredCell >= cellMatrix.col && hoveredCell < cellMatrix.col + cellMatrix.width) {
-                const newMatrix: number[] = [...cellMatrix.matrix];
+                const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
                 newMatrix[hoveredCell] = 1;
                 return {
                     ...cellMatrix,
@@ -47,11 +45,11 @@ export class ElementaryDrawEditMode extends EditMode<ElementaryDrawData> {
         if (this.data.isPointerDown) {
             setCellMatrix(cellMatrix => {
                 const line: number[] = range(lastHoveredCell, hoveredCell);
-                const newMatrix: number[] = [...cellMatrix.matrix];
+                const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
+
                 line.forEach(hoveredCell => {
                     if (hoveredCell >= cellMatrix.col && hoveredCell < cellMatrix.col + cellMatrix.width) {
                         newMatrix[hoveredCell] = 1;
-                    
                     }
                 })
 

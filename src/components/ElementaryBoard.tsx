@@ -43,7 +43,7 @@ export const ElementaryBoard = () => {
         col: 0,
         width: 1000,
         height: 1,
-        matrix: new Array<number>(1000).fill(0)
+        matrix: new Uint8ClampedArray(1000)
     });
 
     const boardHolder = useRef(null);

@@ -7,7 +7,7 @@ export function cellsToCellMatrix(cells: Vector2[]): CellMatrix {
     const boundingBox: Box = getEnclosingBox(cells);
     boundingBox.width += 1;
     boundingBox.height += 1;
-    const matrix: number[] = new Array<number>(boundingBox.width * boundingBox.height).fill(0);
+    const matrix: Uint8ClampedArray = new Uint8ClampedArray(boundingBox.width * boundingBox.height);
 
 
     cells.forEach(cell => matrix[(cell.row - boundingBox.row) * boundingBox.width + (cell.col - boundingBox.col)] = 1);
@@ -32,8 +32,9 @@ export function cellsToCellMatrix(cells: Vector2[]): CellMatrix {
 //     return matrix;
 // }
 
-export function cellsInBoxToCellMatrix(cells: Vector2[], boundingBox: Box) {
-    const matrix : number[] = new Array<number>(boundingBox.width * boundingBox.height).fill(0);
+export function cellsInBoxToCellMatrix(cells: Vector2[], boundingBox: Box): CellMatrix {
+    const matrix: Uint8ClampedArray = new Uint8ClampedArray(boundingBox.width * boundingBox.height);
+
     cells.forEach(cell => matrix[(cell.row - boundingBox.row) * boundingBox.width + (cell.col - boundingBox.col)] = 1);
     return {
         row: boundingBox.row,

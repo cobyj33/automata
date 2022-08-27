@@ -61,7 +61,7 @@ export function scaleVector2(vector: Vector2, scale: number): Vector2 {
     return { row: vector.row * scale, col: vector.col * scale }
 }
 
-export function int(vector: Vector2): Vector2 {
+export function vector2Int(vector: Vector2): Vector2 {
     return { row: Math.trunc(vector.row), col: Math.trunc(vector.col) }
 }
 

@@ -1,45 +1,7 @@
 import { Vector2 } from "../interfaces/Vector2"
 import { cellMatrixToVector2, cellsToCellMatrix } from "../functions/conversions"
+import { isEqualArrays } from "../functions/validation"
 
-function isEqualArrays<T>(first: T[], second: T[]) {
-    if (first.length !== second.length) {
-        return false;
-    }
-
-    const firstMap: Map<T, number> = new Map<T, number>();
-    
-    first.forEach(value => {
-        const currentValue: number | undefined = firstMap.get(value);
-        if (currentValue !== undefined && currentValue !== null) {
-            firstMap.set(value, currentValue + 1);
-        } else {
-            firstMap.set(value, 1);
-        }
-    });
-
-    const secondMap: Map<T, number> = new Map<T, number>();
-    second.forEach(value =>  {
-        const currentValue: number | undefined = secondMap.get(value);
-        if (currentValue !== undefined && currentValue !== null) {
-            secondMap.set(value, currentValue + 1);
-        } else {
-            secondMap.set(value, 1);
-        }
-    })
-    
-    if (firstMap.keys.length !== secondMap.keys.length) {
-        return false;
-    }
-    
-    let matching: boolean = true;
-    firstMap.forEach((value, key) => {
-        if (secondMap.get(key) !== value) {
-            matching = false;
-        }
-    })
-
-    return matching;
-}
 
 test('isEqualArrays', () => {
     expect(isEqualArrays([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])).toBe(true);
@@ -55,15 +17,15 @@ test('isEqualArrays - Duplicates', () => {
 
 test('cells To Matrix', () => {
 
-    const start: number[] = [
+    const start: Uint8ClampedArray = new Uint8ClampedArray([
         [1, 1, 0, 0, 1, 1, 1],
         [0, 0, 0, 1, 0, 0, 0],
         [0, 1, 0, 0, 0, 0, 0],
-    ].flatMap(row => row);
+    ].flat());
 
     console.log("start: ", start);
 
-    const finish: number[]  = cellsToCellMatrix([
+    const finish: Uint8ClampedArray = cellsToCellMatrix([
         { row: 0, col:  1},
         { row: 0, col:  2},
         { row: 2, col:  2},
@@ -75,8 +37,7 @@ test('cells To Matrix', () => {
 
     console.log("finish: ", finish);
 
-
-    expect(isEqualArrays(start, finish)).toBe(true);
+    expect(isEqualArrays(Array.from(start), Array.from(finish))).toBe(true);
 })
 
 test('matrix to cells', () => {
@@ -86,12 +47,12 @@ test('matrix to cells', () => {
         [0, 0, 0, 0, 1, 0, 0, 0, 0],
         [0, 0, 1, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    ]
+    ];
 
     const cells: Vector2[] = cellMatrixToVector2( {
         row: 0,
         col: 0,
-        matrix: matrix.flatMap(row => row),
+        matrix: new Uint8ClampedArray(matrix.flat()),
         width: matrix[0].length,
         height: matrix.length
     })

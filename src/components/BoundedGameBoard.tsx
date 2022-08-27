@@ -24,6 +24,7 @@ import {Box} from '../interfaces/Box';
 
 interface EditorData {
     boardData: StatefulData<Vector2[]>;
+    boundsData: StatefulData<Box>;
     viewData: StatefulData<View>;
     lastHoveredCell: Vector2;
     isPointerDown: boolean;
@@ -73,6 +74,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   function getEditorData(): EditorData {
     return {
       boardData: [board, setBoard],
+        boundsData: [bounds, setBounds],
       viewData: [view, setView],
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell,

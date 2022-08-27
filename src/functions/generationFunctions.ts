@@ -1,10 +1,6 @@
-import { IConstants, IKernelFunctionThis, IKernelRunShortcut } from "gpu.js"
-import { gpu } from "../globals"
-import { Vector2 } from '../interfaces/Vector2';
-import { cellMatrixToVector2, partition } from "./conversions"
 import { CellMatrix } from '../interfaces/CellMatrix';
 
-type LifeStringData = { birth: number[], survival: number[] }
+type LifeRuleData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string) {
     const sides = lifeString.split("/");
     if (sides.length !== 2) {
@@ -19,12 +15,32 @@ export function isValidLifeString(lifeString: string) {
     return true;
 }
 
-export function createLifeString(survivalNums: number[], birthNums: number[]) {
+function canMakeLifeString(survivalNums: number[], birthNums: number[]): boolean {
+    if (survivalNums.some(num => num < 0 || num > 8) || birthNums.some(num => num < 0 || num > 8)) {
+        return false;
+    }
+    if (survivalNums.length > 8 || birthNums.length > 8) {
+        return false;
+    }
+    if (survivalNums.length !== new Set<number>(survivalNums).size || birthNums.length !== new Set<number>(birthNums).size ) {
+        return false;
+    }
+    
 
+    return true;
 }
 
-export function parseLifeLikeString(lifeString: string): LifeStringData {
-    let lifeData: LifeStringData = {birth: [], survival: []};
+export function createLifeString(survivalNums: number[], birthNums: number[]): string {
+    if (!canMakeLifeString(survivalNums, birthNums)) {
+        console.error("CANNOT MAKE LIFE STRING FROM ", survivalNums, " AND ", birthNums);
+        return "B3/S23";
+    }
+    
+    return "B".concat( birthNums.join("")  ).concat('/S').concat( survivalNums.join("") );
+}
+
+export function parseLifeLikeString(lifeString: string): LifeRuleData {
+    let lifeData: LifeRuleData = {birth: [], survival: []};
     if (!isValidLifeString(lifeString)) {
         return lifeData;
     } 
@@ -45,122 +61,169 @@ export function parseLifeLikeString(lifeString: string): LifeStringData {
     return lifeData;
 }
 
-interface ILifeKernelConstants extends IConstants {
-    birth: number[],
-    birthCount: number,
-    survival: number[],
-    survivalCount: number
-}
-
-interface ILifeKernelThis extends IKernelFunctionThis {
-    constants: ILifeKernelConstants
-}
-
-export function getLifeKernel(lifeString: string): IKernelRunShortcut {
-    if (isValidLifeString(lifeString)) {
-        const lifeData = parseLifeLikeString(lifeString);
-      return gpu.createKernel(getNextLifeLikeGenerationFunction).setConstants( { ...lifeData, birthCount: lifeData.birth.length, survivalCount: lifeData.survival.length } );
-    } else {
-        throw new Error("CANNOT GET KERNEL FROM INVALID LIFE STRING: " + lifeString);
-    }
-}
-
-export function getNextLifeLikeGenerationFunction(this: ILifeKernelThis, matrix: number[] | Float32Array, width: number, height: number) {
+export function getNextLifeLikeGenerationFunction(matrix: Uint8ClampedArray, index: number, lineSize: number, ruleData: LifeRuleData): number {
     let neighbors = 0;
-    const currentRow = Math.trunc(this.thread.x / width);
-    const currentCol = this.thread.x - (currentRow * width);
+    const height = Math.trunc(matrix.length / lineSize);
+    const currentRow = Math.trunc(index / lineSize);
+    const currentCol = index - (currentRow * lineSize);
 
     for (let row = currentRow - 1; row <= currentRow + 1; row++) {
         for (let col = currentCol - 1; col <= currentCol + 1; col++) {
-            if (row >= 0 && row < height && col >= 0 && col < width) {
-                if (matrix[row * width + col] == 1 && !(row === currentRow && col === currentCol)) {
+            if (row >= 0 && row < height && col >= 0 && col < lineSize) {
+                if (matrix[row * lineSize + col] == 1 && !(row === currentRow && col === currentCol)) {
                     neighbors++;
                 }
             }
         }
     }
     
-    if (matrix[currentRow * width + currentCol] === 1) {
-        for (let i = 0; i < this.constants.survivalCount; i++) {
-            if (neighbors === this.constants.survival[i]) {
-                return 1;
-            }
-        }
-    } else if (matrix[currentRow * width + currentCol] === 0) {
-        for (let i = 0; i < this.constants.birthCount; i++) {
-            if (neighbors === this.constants.birth[i]) {
-                return 1;
-            }
-        }
+    if (matrix[currentRow * lineSize + currentCol] === 1) {
+        return ruleData.survival.some(survivalValue => survivalValue === neighbors) ? 1 : 0;
+    } else if (matrix[currentRow * lineSize + currentCol] === 0) {
+        return ruleData.birth.some(birthValue => birthValue === neighbors) ? 1 : 0;
     }
 
     return 0;
 }
 
+export function getNextLifeGeneration(cellMatrix: CellMatrix, ruleString: string): Uint8ClampedArray  {
+    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix.length);
+    if (!isValidLifeString(ruleString)) {
+        console.error("Cannot parse invalid life string: ", ruleString);
+        output.set(cellMatrix.matrix, 0);
+        return output;
+    }
 
-interface IElementaryConstants extends IConstants {
-    rule: number[];
+    const ruleData = parseLifeLikeString(ruleString);
+    for (let i = 0; i < output.length; i++) {
+        output[i] = getNextLifeLikeGenerationFunction(cellMatrix.matrix, i, cellMatrix.width, ruleData);
+    }
+
+    return output;
 }
 
-interface IElementaryFunctionThis extends IKernelFunctionThis {
-    constants: IElementaryConstants;
+export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleString: string): Promise<Uint8ClampedArray>  {
+    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix.length);
+    if (!isValidLifeString(ruleString)) {
+        console.error("Cannot parse invalid life string: ", ruleString);
+        output.set(cellMatrix.matrix, 0);
+        return output;
+    }
+
+    const ruleData = parseLifeLikeString(ruleString);
+    for (let i = 0; i < output.length; i++) {
+        await ( async () => output[i] = getNextLifeLikeGenerationFunction(cellMatrix.matrix, i, cellMatrix.width, ruleData) )();
+    }
+
+    return output;
 }
 
-export function getElementaryKernel(rule: number) {
-    if (rule < 0 || rule > 255) {
+// export function getLifeKernel(lifeString: string): IKernelRunShortcut {
+//     if (isValidLifeString(lifeString)) {
+//         const lifeData = parseLifeLikeString(lifeString);
+//       return gpu.createKernel(getNextLifeLikeGenerationFunction).setConstants( { ...lifeData, birthCount: lifeData.birth.length, survivalCount: lifeData.survival.length } );
+//     } else {
+//         throw new Error("CANNOT GET KERNEL FROM INVALID LIFE STRING: " + lifeString);
+//     }
+// }
+
+
+function isValidElementaryRule(rule: number): boolean {
+    return rule >= 0 && rule <= 255;
+}
+
+function getElementaryRules(rule: number): Uint8ClampedArray {
+    if (!isValidElementaryRule(rule)) {
         throw new Error(`INVALID ELEMENTARY AUTOMATA RULE: RULE {${rule}} MUST BE 0 <= rule <= 255`);
     }
 
     const binaryRule: string = rule.toString(2).padStart(8, '0');
-    const rules: number[] = new Array<number>(8).fill(0);
+    const rules: Uint8ClampedArray = new Uint8ClampedArray(8);
+
     for (let i = 0; i < 8; i++) {
         rules[i] = Number.parseInt(binaryRule.charAt(7 - i));
-        // rules[i] = Number.parseInt(binaryRule.charAt(i));
     }
-        
-    console.log(rules);
 
-    console.log(binaryRule);
-
-    return gpu.createKernel(getNextElementaryGenerationKernelFunction).setConstants( { rule: rules } );
+    return rules;
 }
 
-export function getNextElementaryGenerationKernelFunction(this: IElementaryFunctionThis, line: number[], width: number) {
+function getNextElementaryGenerationFunction(line: Uint8ClampedArray, index: number, rules: Uint8ClampedArray): number  {
     let value = 0;
 
-    if (this.thread.x - 1 >= 0 && this.thread.x - 1 < width) {
-        if (line[this.thread.x - 1] === 1) {
+    if (index - 1 >= 0 && index - 1 < line.length) {
+        if (line[index - 1] === 1) {
             value += 4;
         }
     } 
     
-    if (line[this.thread.x] === 1) {
+    if (line[index] === 1) {
         value += 2;
     }
 
-    if (this.thread.x + 1 >= 0 && this.thread.x + 1 < width) {
-        if (line[this.thread.x + 1] === 1) {
+    if (index + 1 >= 0 && index + 1 < line.length) {
+        if (line[index + 1] === 1) {
             value += 1;
         }
     }
 
-    return this.constants.rule[value];
+    return rules[value];
 }
 
+export function getNextElementaryGeneration(currentGeneration: Uint8ClampedArray, numberRule: number): Uint8ClampedArray {
+    const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
+    if (!isValidElementaryRule(numberRule)) {
+        console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
+        for (let i = 0; i < output.length; i++) {
+            output[i] = currentGeneration[i];
+        }
+        return output;
+    }
 
-async function getNextGeneration(board: Vector2[], lifeString: string): Promise<Vector2[]> {
-    let newBoard: Vector2[] = []
-    const renderingKernel = getLifeKernel(lifeString).setDynamicOutput(true).setDynamicArguments(true).setOutput([10]);
-
-    const matrices: CellMatrix[] = partition(board);
-    matrices.map(cellMatrix => ({
-        ...cellMatrix,
-        matrix: [...renderingKernel.setOutput([cellMatrix.width * cellMatrix.height])(cellMatrix.matrix, cellMatrix.width, cellMatrix.height) as number[]] 
-    }))
-
-    matrices.forEach(cellMatrix => {
-       newBoard.push(...cellMatrixToVector2(cellMatrix)) 
-    })
-
-    return newBoard;
+    const rules: Uint8ClampedArray = getElementaryRules(numberRule);
+    for (let i = 0; i < currentGeneration.length; i++) {
+        output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules);
+    }
+    return output;
 }
+
+export async function getNextElementaryGenerationAsync(currentGeneration: Uint8ClampedArray, numberRule: number): Promise<Uint8ClampedArray> {
+    const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
+    if (!isValidElementaryRule(numberRule)) {
+        console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
+        for (let i = 0; i < output.length; i++) {
+            output[i] = currentGeneration[i];
+        }
+        return output;
+    }
+
+    const rules: Uint8ClampedArray = getElementaryRules(numberRule);
+    for (let i = 0; i < currentGeneration.length; i++) {
+        await ( async () => output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules))();
+    }
+
+    return output;
+}
+
+// export function getElementaryKernel(rule: number) {
+
+//     return gpu.createKernel(getNextElementaryGenerationKernelFunction).setConstants( { rule: rules } );
+// }
+
+
+
+// async function getNextGeneration(board: Vector2[], lifeString: string): Promise<Vector2[]> {
+//     let newBoard: Vector2[] = []
+//     const renderingKernel = getLifeKernel(lifeString).setDynamicOutput(true).setDynamicArguments(true).setOutput([10]);
+
+//     const matrices: CellMatrix[] = partition(board);
+//     matrices.map(cellMatrix => ({
+//         ...cellMatrix,
+//         matrix: [...renderingKernel.setOutput([cellMatrix.width * cellMatrix.height])(cellMatrix.matrix, cellMatrix.width, cellMatrix.height) as number[]] 
+//     }))
+
+//     matrices.forEach(cellMatrix => {
+//        newBoard.push(...cellMatrixToVector2(cellMatrix)) 
+//     })
+
+//     return newBoard;
+// }

@@ -1,7 +1,6 @@
 import { IKernelFunctionThis } from "gpu.js";
 import { Vector2 } from "../interfaces/Vector2";
 import { getViewOffset, View } from "../interfaces/View";
-import { gpu } from "../globals";
 import { Box, inBox } from "../interfaces/Box";
 import { CellMatrix } from "../interfaces/CellMatrix";
 
@@ -51,19 +50,19 @@ export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingC
     context.restore();
   }
 
-function gridDrawingKernelFunction(this: IKernelFunctionThis, viewOffsetRow: number, viewOffsetCol: number, viewCellSize: number) {
-  if ((this.thread.x - viewOffsetCol) % viewCellSize < 1 && (this.thread.x - viewOffsetCol) % viewCellSize > -1) {
-    this.color(0, 0, 0, 1);
-  } else if ((this.thread.y - viewOffsetRow) % viewCellSize < 1 && (this.thread.y - viewOffsetRow) % viewCellSize > -1) {
-    this.color(0, 0, 0, 1);
-  } else {
-    this.color(0.25, 0.25, 0.25, 1);
-  }
-}
+// function gridDrawingKernelFunction(this: IKernelFunctionThis, viewOffsetRow: number, viewOffsetCol: number, viewCellSize: number) {
+//   if ((this.thread.x - viewOffsetCol) % viewCellSize < 1 && (this.thread.x - viewOffsetCol) % viewCellSize > -1) {
+//     this.color(0, 0, 0, 1);
+//   } else if ((this.thread.y - viewOffsetRow) % viewCellSize < 1 && (this.thread.y - viewOffsetRow) % viewCellSize > -1) {
+//     this.color(0, 0, 0, 1);
+//   } else {
+//     this.color(0.25, 0.25, 0.25, 1);
+//   }
+// }
 
-export function getGridDrawingKernel() {
-  return gpu.createKernel(gridDrawingKernelFunction).setDynamicOutput(true).setOutput([100, 100]).setGraphical(true);
-}
+// export function getGridDrawingKernel() {
+//   return gpu.createKernel(gridDrawingKernelFunction).setDynamicOutput(true).setOutput([100, 100]).setGraphical(true);
+// }
 
 export function renderGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View) {
       context.save();

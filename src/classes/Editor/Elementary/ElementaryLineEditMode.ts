@@ -53,7 +53,7 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
             const [, setBoard] = this.data.boardData;
             const line: number[] = range(start, end); 
             setBoard(cellMatrix => {
-                const newMatrix = [...cellMatrix.matrix]
+                const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
                 line.forEach(num => newMatrix[num] = 1);
                 return {
                     ...cellMatrix,
