@@ -1,5 +1,3 @@
-
-
 export interface Vector2 {
     readonly row: number;
     readonly col: number;
