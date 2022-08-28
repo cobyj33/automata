@@ -5,6 +5,37 @@ export interface Color {
     readonly alpha: number;
 }
 
+const fillerColor: Color = { red: 0, green: 0, blue: 0, alpha: 0 };
+
+export const getColorFromCSS = (function() {
+    const canvas = document.createElement("canvas") as HTMLCanvasElement;
+    canvas.width = 1;
+    canvas.height = 1;
+    const canvasContext = canvas.getContext("2d");
+    return (cssColorName: string): Color => {
+        if (canvasContext !== null && canvasContext !== undefined) {
+            canvasContext.fillStyle = cssColorName;
+            canvasContext.fillRect(0, 0, 1, 1);
+            const imageData: ImageData = canvasContext.getImageData(0, 0, 1, 1);
+            return {
+                red: imageData.data[0],
+                green: imageData.data[1],
+                blue: imageData.data[2],
+                alpha: imageData.data[3]
+            }
+        } 
+        return {...fillerColor};
+    }
+    
+})();
+
+export function isColorObject(obj: any): boolean {
+    if ("red" in obj && "green" in obj && "blue" in obj && "alpha" in obj){
+        return typeof(obj["red"]) === "number" && typeof(obj["blue"]) === "number" && typeof(obj["green"]) === "number" && typeof(obj["alpha"]) == "number"
+    }
+    return false;
+}
+
 
 export function colorToRGBString(color: Color): string {
     return `rgb(${color.red}, ${color.green}, ${color.blue})`;

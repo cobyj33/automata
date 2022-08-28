@@ -105,7 +105,29 @@ export function useHistory<T>(stateData: StatefulData<T>, comparer: IComparer<T>
     return [undo, redo];
 }
 
-export function useCanvasUpdater(canvasRef: RefObject<HTMLCanvasElement>) {
+export function useWebGL2CanvasUpdater(canvasRef: RefObject<HTMLCanvasElement>) {
+    useEffect(() => {
+        function updateCanvasSize() {
+          const canvas: HTMLCanvasElement | null = canvasRef.current;
+          if (canvas !== null) {
+            const rect: DOMRect = canvas.getBoundingClientRect();
+              canvas.width = rect.width;
+              canvas.height = rect.height;
+            const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
+            if (gl !== null) {
+                gl.viewport(0, 0, canvas.width, canvas.height);
+                }
+            }
+        }
+    
+        updateCanvasSize();
+        window.addEventListener('resize', updateCanvasSize);
+        return () => window.removeEventListener('resize', updateCanvasSize);
+      }, [])
+
+}
+
+export function useCanvas2DUpdater(canvasRef: RefObject<HTMLCanvasElement>) {
     useEffect(() => {
         function updateCanvasSize() {
           const canvas: HTMLCanvasElement | null = canvasRef.current;

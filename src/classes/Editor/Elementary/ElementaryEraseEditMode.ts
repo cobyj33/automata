@@ -14,12 +14,17 @@ export interface ElementaryEraseData {
     getHoveredCell: (event: PointerEvent<Element>) => number,
     lastHoveredCell: number,
     isPointerDown: boolean,
+    isRendering: boolean;
 }
 
 export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            return;
+        }
+
         const [, setCellMatrix] = this.data.boardData;
         const hoveredCell = this.data.getHoveredCell(event);
         
@@ -39,6 +44,10 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
     }
 
     onPointerMove(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            return;
+        }
+
         const [, setCellMatrix] = this.data.boardData;
         const hoveredCell: number = this.data.getHoveredCell(event);
         const lastHoveredCell: number = this.data.lastHoveredCell;

@@ -2,53 +2,57 @@ import { RefObject, useEffect, useRef } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View'
 import { renderBoard, renderBoardFromMatrix, renderGrid } from '../functions/drawing';
-import { useCanvasUpdater } from '../functions/hooks';
+import { useWebGL2CanvasUpdater } from '../functions/hooks';
 import { CellMatrix } from '../interfaces/CellMatrix';
 import "./styles/boarddrawing.scss"
 import {LayeredCanvas} from './LayeredCanvas';
+import {getColorFromCSS} from '../interfaces/Color';
 
 export const BoardDrawing = ({ board, view, className }: { board: Vector2[] | CellMatrix, view: View, className?: string }) => {
-  const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
+  // const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
     const boardCanvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
     const gridCanvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
 
 
-function isCellMatrix(board: Vector2[] | CellMatrix) {
-    return !Array.isArray(board);
-}
+// function isCellMatrix(board: Vector2[] | CellMatrix) {
+//     return !Array.isArray(board);
+// }
 
-function isVector2Array(board: Vector2[] | CellMatrix) {
-    return Array.isArray(board);
-}
+// function isVector2Array(board: Vector2[] | CellMatrix) {
+//     return Array.isArray(board);
+// }
 
-    const lastBoard = useRef<Vector2[] | CellMatrix>(board);
-    const lastView = useRef<View>(view);
+// const lastBoard = useRef<Vector2[] | CellMatrix>(board);
+const lastView = useRef<View>(view);
 
-    function renderBoardCanvas() {
-        const canvas: HTMLCanvasElement | null = boardCanvasRef.current;
-        if (canvas !== null && canvas !== undefined) {
-          const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
-          if (context !== null && context !== undefined) {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.fillStyle = 'gray';
-            context.fillRect(0, 0, canvas.width, canvas.height);
-            if (Array.isArray(board)) {
-              renderBoard(canvas, context, view, board as Vector2[]);
-            } else {
-              renderBoardFromMatrix(canvas, context, view, board as CellMatrix);
-            }
+function renderBoardCanvas() {
+    const canvas: HTMLCanvasElement | null = boardCanvasRef.current;
+    if (canvas !== null && canvas !== undefined) {
+      const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
+      if (gl !== null && gl !== undefined) {
+        const color = getColorFromCSS("gray");
+        gl.clearColor(color.red / 255, color.green / 255, color.blue / 255, 1);
+        gl.clearColor(0.15, 0.15, 0.15, 1);
+          gl.clear(gl.COLOR_BUFFER_BIT);
 
-          }
+        if (Array.isArray(board)) {
+          renderBoard(gl, view, board as Vector2[]);
+        } else {
+          renderBoardFromMatrix(gl, view, board as CellMatrix);
         }
+
+      }
     }
+}
 
     function renderGridCanvas() {
         const canvas: HTMLCanvasElement | null = gridCanvasRef.current;
         if (canvas !== null && canvas !== undefined) {
-          const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
-          if (context !== null && context !== undefined) {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            renderGrid(canvas, context, view);
+          const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
+          if (gl !== null && gl !== undefined) {
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            renderGrid(gl, view);
           }
         }
     }
@@ -66,8 +70,9 @@ function isVector2Array(board: Vector2[] | CellMatrix) {
             renderAll();
         }
     }, [view]);
-    useCanvasUpdater(boardCanvasRef);
-    useCanvasUpdater(gridCanvasRef);
+
+    useWebGL2CanvasUpdater(boardCanvasRef);
+    useWebGL2CanvasUpdater(gridCanvasRef);
 
     useEffect(renderAll, [])
   

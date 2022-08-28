@@ -10,12 +10,17 @@ export interface DrawData {
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,
     lastHoveredCell: Vector2,
     isPointerDown: boolean,
+        isRendering: boolean;
 }
 
 export class DrawEditMode extends EditMode<DrawData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            return;
+        }
+
         const [, setBoard] = this.data.boardData;
         const hoveredCell = this.data.getHoveredCell(event);
 
@@ -26,7 +31,7 @@ export class DrawEditMode extends EditMode<DrawData> {
         const [, setBoard] = this.data.boardData;
         const hoveredCell = this.data.getHoveredCell(event);
         const lastHoveredCell = this.data.lastHoveredCell;
-        if (this.data.isPointerDown) {
+        if (this.data.isPointerDown && !this.data.isRendering) {
             setBoard(board => removeDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )) )
         }
     }

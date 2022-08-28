@@ -26,7 +26,6 @@ export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], v
                         newMatrix.set(newLine, cellMatrix.matrix.length);
 
                         setCellMatrix(cellMatrix => { 
-
                             return {
                                 ...cellMatrix,
                                 height: cellMatrix.height + 1,

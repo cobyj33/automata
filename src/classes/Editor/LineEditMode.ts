@@ -12,6 +12,7 @@ export interface LineData {
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,
     isPointerDown: boolean,
+        isRendering: boolean;
 }
 
 export class LineEditMode extends EditMode<LineData> {
@@ -26,11 +27,23 @@ export class LineEditMode extends EditMode<LineData> {
     }
 
     onPointerDown(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         this.start = this.data.getHoveredCell(event);
         this.end = { ...this.start }
     }
 
     onPointerMove(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         if (this.data.isPointerDown && this.start !== undefined && this.end !== undefined) {
             const hoveredCell = this.data.getHoveredCell(event);
             if (!(this.end.row === hoveredCell.row && this.end.col === hoveredCell.col)) {
@@ -44,6 +57,12 @@ export class LineEditMode extends EditMode<LineData> {
     }
 
     onPointerUp(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         if (this.start !== undefined && this.end !== undefined) {
             const [, setBoard] = this.data.boardData;
             const [bounds] = this.data.boundsData;

@@ -9,6 +9,14 @@ export function inBox(inside: Vector2, outside: Box): boolean {
     return inside.row >= outside.row && inside.row <= outside.row + outside.height && inside.col >= outside.col && inside.col <= outside.col + outside.width;
 }
 
+export function areBoxesIntersecting(first: Box, second: Box): boolean {
+    return (first.row >= second.row && first.row <= second.row + second.height) ||
+        (first.col >= second.col && first.col <= second.col + second.width) ||
+        (second.row >= first.row && second.row <= first.row + first.height) ||
+        (second.col >= first.col && second.col <= first.col + first.width)
+}
+
+
 export function getEnclosingBox(cells: Vector2[]): Box {
     if (cells.length === 0) {
         return {

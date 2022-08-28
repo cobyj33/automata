@@ -11,6 +11,7 @@ export interface ElementaryLineData {
     ghostTilePositions: StatefulData<number[]>,
     getHoveredCell: (event: PointerEvent<Element>) => number,
     isPointerDown: boolean,
+    isRendering: boolean;
 }
 
 function range(first: number, second: number): number[] {
@@ -25,11 +26,23 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
     end: number | undefined;
 
     onPointerDown(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         this.start = this.data.getHoveredCell(event);
         this.end = this.start;
     }
 
     onPointerMove(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         if (this.data.isPointerDown && this.start !== undefined && this.start !== null && this.end !== undefined && this.end !== null) {
             let start = this.start
             let end = this.end;
@@ -47,6 +60,12 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
     }
 
     onPointerUp(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         if (this.start !== undefined && this.end !== undefined && this.start !== null && this.end !== null) {
             let start = this.start
             let end = this.end;
