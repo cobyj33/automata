@@ -2,7 +2,7 @@ import { RefObject, useEffect, useRef } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View';
 import { getViewArea, } from '../functions/drawing';
-import { useCanvasUpdater } from '../functions/hooks';
+import { useWebGL2CanvasUpdater } from '../functions/hooks';
 import { Box } from '../interfaces/Box';
 import { CellMatrix } from '../interfaces/CellMatrix';
 import { BoardDrawing } from './BoardDrawing'
@@ -10,25 +10,30 @@ import { LayeredCanvas } from './LayeredCanvas';
 
 export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board: Vector2[] | CellMatrix, view: View, bounds: Box, className?: string }) => {
     const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
-    function blockOutBounds(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
-        const viewArea: Box = getViewArea(canvas, view);
-        context.clearRect((bounds.col - viewArea.col) * view.cellSize, (bounds.row - viewArea.row) * view.cellSize, bounds.width * view.cellSize, bounds.height * view.cellSize);
+    function blockOutBounds(gl: WebGL2RenderingContext) {
+        const viewArea: Box = getViewArea(gl.canvas, view);
+        gl.enable(gl.SCISSOR_TEST);
+        gl.scissor((bounds.col - viewArea.col) * view.cellSize, gl.canvas.height - (bounds.row - viewArea.row) * view.cellSize - bounds.height * view.cellSize, bounds.width * view.cellSize, bounds.height * view.cellSize);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        // context.clearRect((bounds.col - viewArea.col) * view.cellSize, (bounds.row - viewArea.row) * view.cellSize, bounds.width * view.cellSize, bounds.height * view.cellSize);
+        gl.disable(gl.SCISSOR_TEST);
     }
 
     function render() {
       const canvas: HTMLCanvasElement | null = canvasRef.current;
       if (canvas !== null && canvas !== undefined) {
-        const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
-        if (context !== null && context !== undefined) {
-          context.fillStyle = 'black'
-          context.fillRect(0, 0, canvas.width, canvas.height);
-          blockOutBounds(canvas, context)
+        const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
+        if (gl !== null && gl !== undefined) {
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT)
+          blockOutBounds(gl)
         }
       }
     }
   
     useEffect(render);
-    useCanvasUpdater(canvasRef);
+    useWebGL2CanvasUpdater(canvasRef);
     
     return (
         <LayeredCanvas>

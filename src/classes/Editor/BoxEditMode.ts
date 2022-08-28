@@ -15,6 +15,7 @@ export interface BoxData {
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,
     isPointerDown: boolean,
+        isRendering: boolean;
 }
 
 export class BoxEditMode extends EditMode<BoxData> {
@@ -32,11 +33,23 @@ export class BoxEditMode extends EditMode<BoxData> {
     private get boxCells(): Vector2[] { return removeDuplicates(this.currentBox.flatMap(line => getLine(line.first, line.second))) ?? [] }
 
     onPointerDown(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         this.start = this.data.getHoveredCell(event);
         this.end = {...this.start };
     }
 
     onPointerMove(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         if (this.data.isPointerDown && this.start !== undefined && this.end !== undefined) {
             const hoveredCell = this.data.getHoveredCell(event);
             if (!( this.end.row === hoveredCell.row && this.end.col === hoveredCell.col  )) {
@@ -62,6 +75,12 @@ export class BoxEditMode extends EditMode<BoxData> {
     }
 
     onPointerUp(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         console.log(this.start, this.end);
         if (this.start !== undefined && this.end !== undefined) {
             const { 1: setBoard } = this.data.boardData;

@@ -7,7 +7,7 @@ import { ElementaryDrawEditMode, ElementaryDrawData } from "../classes/Editor/El
 import {ElementaryLineEditMode, ElementaryLineData } from "../classes/Editor/Elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
-import { useHistory, useIsPointerDown, useCanvasUpdater } from "../functions/hooks";
+import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "../functions/hooks";
 import { ElementaryBoardRender } from "./ElementaryBoardRender";
 import { StatefulData } from "../interfaces/StatefulData"
 import { pointerPositionInElement, getHoveredCell } from '../functions/editorFunctions';
@@ -24,6 +24,7 @@ interface ElementaryEditorData {
     getHoveredCell: (event: PointerEvent<Element>) => number;
     lastHoveredCell: number;
     isPointerDown: boolean;
+    isRendering: boolean;
 }
 
 const defaultWidth = 1000;
@@ -33,7 +34,7 @@ type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData |
 
 export const ElementaryBoard = () => {
     const [view, setView] = useState<View>({
-        row: 0,
+        row: -5,
         col: 0,
         cellSize: 50
     });
@@ -52,6 +53,8 @@ export const ElementaryBoard = () => {
     const [rule, setRule] = useState<number>(30);
   const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
+    const [rendering, setRendering] = useState<boolean>(false);  
+    const [inputRule, setInputRule] = useState<string>("");
 
   // useEffect( () => {
   //   const canvas: htmlcanvaselement | null = ghostcanvas.current;
@@ -76,7 +79,8 @@ export const ElementaryBoard = () => {
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell,
       getHoveredCell: getCurrentHoveredCell,
-      isPointerDown: isPointerDown.current
+      isPointerDown: isPointerDown.current,
+        isRendering: rendering
     }
   }
   
@@ -150,8 +154,6 @@ export const ElementaryBoard = () => {
 
   // useCanvasUpdater(ghostCanvas)
     
-    const [rendering, setRendering] = useState<boolean>(false);  
-    const [inputRule, setInputRule] = useState<string>("");
     return (
         <div  >
         <div className="elementary-board board-holder" ref={boardHolder} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       

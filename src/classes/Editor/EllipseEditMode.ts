@@ -10,6 +10,7 @@ export interface EllipseData {
     ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,
     isPointerDown: boolean,
+        isRendering: boolean;
 }
 
 export class EllipseEditMode extends EditMode<EllipseData> {
@@ -26,11 +27,23 @@ export class EllipseEditMode extends EditMode<EllipseData> {
     }
 
     onPointerDown(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         this.start = this.data.getHoveredCell(event);
         this.end = { ...this.start };
     }
 
     onPointerMove(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         if (this.data.isPointerDown && this.start !== undefined && this.start !== null && this.end !== undefined && this.end !== null) {
             const hoveredCell = this.data.getHoveredCell(event);
             if (!(this.end.row === hoveredCell.row && this.end.col === hoveredCell.col)) {
@@ -57,6 +70,12 @@ export class EllipseEditMode extends EditMode<EllipseData> {
     }
 
     onPointerUp(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            this.start = undefined;
+            this.end = undefined;
+            return;
+        }
+
         if (this.start !== undefined && this.end !== undefined) {
             const [, setBoard] = this.data.boardData;
             setBoard(board => removeDuplicates(board.concat(this.currentCells)));

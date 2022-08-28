@@ -10,14 +10,13 @@ import { LineEditMode, LineData } from '../classes/Editor/LineEditMode';
 import { MoveEditMode, MoveData } from '../classes/Editor/MoveEditMode';
 import { ZoomEditMode, ZoomData } from '../classes/Editor/ZoomEditMode';
 import { getHoveredCell, pointerPositionInElement } from '../functions/editorFunctions';
-import { useHistory, useIsPointerDown } from '../functions/hooks';
+import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from '../functions/hooks';
 import { StatefulData } from '../interfaces/StatefulData';
 import { BoundedBoardDrawing } from './BoundedBoardDrawing';
 import { BoundedGameRender } from './BoundedGameRender';
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
 import { LayeredCanvas } from './LayeredCanvas';
 import { renderBoard } from '../functions/drawing';
-import { useCanvasUpdater } from '../functions/hooks';
 import { isValidLifeString } from '../functions/generationFunctions';
 import {Box} from '../interfaces/Box';
 
@@ -30,6 +29,7 @@ interface EditorData {
     isPointerDown: boolean;
     getHoveredCell: (event: PointerEvent<Element>) => Vector2;
     ghostTilePositions: StatefulData<Vector2[]>
+    isRendering: boolean;
 }
 
 enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, BOX, LINE, ELLIPSE };
@@ -58,11 +58,11 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   useEffect( () => {
     const canvas: HTMLCanvasElement | null = ghostCanvas.current;
     if (canvas !== null) {
-      const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
-      if (context !== null) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.globalAlpha = 0.5;
-        renderBoard(canvas, context, view, ghostTilePositions.concat(lastHoveredCell))
+      const gl: WebGL2RenderingContext | null = canvas.getContext("webgl2");
+      if (gl !== null && gl !== undefined) {
+          gl.clearColor(0, 0, 0, 0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+        renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
       }
     }
   }, [ghostTilePositions, lastHoveredCell])
@@ -79,7 +79,8 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell,
       getHoveredCell: getCurrentHoveredCell,
-      isPointerDown: isPointerDown.current
+      isPointerDown: isPointerDown.current,
+        isRendering: rendering
     }
   }
   
@@ -152,7 +153,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
     editorModes.current[editMode].onWheel?.(event);
   }
 
-  useCanvasUpdater(ghostCanvas)
+  useWebGL2CanvasUpdater(ghostCanvas)
 
     const [automataInput, setAutomataInput] = useState<string>("");
   return (
