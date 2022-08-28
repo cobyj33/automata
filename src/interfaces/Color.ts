@@ -5,9 +5,9 @@ export interface Color {
     readonly alpha: number;
 }
 
-const fillerColor: Color = { red: 0, green: 0, blue: 0, alpha: 0 };
 
 export const getColorFromCSS = (function() {
+    const fillerColor: Color = { red: 0, green: 0, blue: 0, alpha: 0 };
     const canvas = document.createElement("canvas") as HTMLCanvasElement;
     canvas.width = 1;
     canvas.height = 1;

@@ -9,12 +9,56 @@ export function inBox(inside: Vector2, outside: Box): boolean {
     return inside.row >= outside.row && inside.row <= outside.row + outside.height && inside.col >= outside.col && inside.col <= outside.col + outside.width;
 }
 
-export function areBoxesIntersecting(first: Box, second: Box): boolean {
-    return (first.row >= second.row && first.row <= second.row + second.height) ||
-        (first.col >= second.col && first.col <= second.col + second.width) ||
-        (second.row >= first.row && second.row <= first.row + first.height) ||
-        (second.col >= first.col && second.col <= first.col + first.width)
+export function getBoxCorners(box: Box): Vector2[] {
+    return [{
+        row: box.row,
+        col: box.col
+    }, {
+        row: box.row + box.height,
+        col: box.col
+    }, {
+        row: box.row + box.height,
+        col: box.col + box.width
+    }, {
+        row: box.row,
+        col: box.col + box.width
+    }]
 }
+
+export function areBoxesIntersecting(first: Box, second: Box): boolean {
+    const firstCorners: Vector2[] = getBoxCorners(first);
+    if (firstCorners.some(corner => inBox(corner, second))) {
+        return true;
+    }
+    const secondCorners: Vector2[] = getBoxCorners(second);
+    if (secondCorners.some(corner => inBox(corner, second))) {
+        return true;
+    }
+    return false;
+}
+
+export const getIntersectingArea = (() =>  {
+    const emptyBox = { row: 0, col: 0, width: 0, height: 0 }
+
+    return (first: Box, second: Box) => {
+        if (!areBoxesIntersecting(first, second)) {
+            console.error("Boxes ", first, " and ", second, " do not intersect: cannot find intersecting area");
+            return {...emptyBox};
+        }  
+
+        const row = Math.max(first.row, second.row);
+        const col = Math.max(first.col, second.col);
+        const width = Math.abs( col - Math.min(first.col + first.width, second.col + second.width) );
+        const height = Math.abs( row - Math.min(first.row + first.height, second.row + second.height) );
+        return {
+            row: row,
+            col: col,
+            width: width,
+            height: height
+        }
+
+    }
+})();
 
 
 export function getEnclosingBox(cells: Vector2[]): Box {

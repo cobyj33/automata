@@ -1,7 +1,7 @@
-import { RefObject, useEffect, useRef } from 'react'
+import { MutableRefObject, RefObject, useEffect, useRef } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View'
-import { renderBoard, renderBoardFromMatrix, renderGrid } from '../functions/drawing';
+import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid } from '../functions/drawing';
 import { useWebGL2CanvasUpdater } from '../functions/hooks';
 import { CellMatrix } from '../interfaces/CellMatrix';
 import "./styles/boarddrawing.scss"
@@ -12,6 +12,9 @@ export const BoardDrawing = ({ board, view, className }: { board: Vector2[] | Ce
   // const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
     const boardCanvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
     const gridCanvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
+
+    const boardMatrixShaderProgram: MutableRefObject<WebGLShader | null> = useRef<WebGLShader | null>(null);
+    const gridShaderProgram: MutableRefObject<WebGLShader | null> = useRef<WebGLShader | null>(null);
 
 
 // function isCellMatrix(board: Vector2[] | CellMatrix) {
@@ -38,7 +41,7 @@ function renderBoardCanvas() {
         if (Array.isArray(board)) {
           renderBoard(gl, view, board as Vector2[]);
         } else {
-          renderBoardFromMatrix(gl, view, board as CellMatrix);
+          renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
         }
 
       }
@@ -52,7 +55,7 @@ function renderBoardCanvas() {
           if (gl !== null && gl !== undefined) {
             gl.clearColor(0, 0, 0, 0);
             gl.clear(gl.COLOR_BUFFER_BIT);
-            renderGrid(gl, view);
+            renderGrid(gl, view, gridShaderProgram.current);
           }
         }
     }
@@ -74,7 +77,23 @@ function renderBoardCanvas() {
     useWebGL2CanvasUpdater(boardCanvasRef);
     useWebGL2CanvasUpdater(gridCanvasRef);
 
-    useEffect(renderAll, [])
+    useEffect(() => {
+        if (boardCanvasRef.current !== null && boardCanvasRef.current !== undefined) {
+            const gl = boardCanvasRef.current.getContext("webgl2");
+            if (gl !== null && gl !== undefined) {
+                boardMatrixShaderProgram.current = getBoardMatrixShaderProgram(gl);
+            }
+        }
+
+        if (gridCanvasRef.current !== null && gridCanvasRef.current !== undefined) {
+            const gl = gridCanvasRef.current.getContext("webgl2");
+            if (gl !== null && gl !== undefined) {
+                gridShaderProgram.current = getGridShaderProgram(gl);
+            }
+        }
+
+        renderAll();
+    }, [])
   
   return <LayeredCanvas styles="board-background">
         <canvas className={className ?? "board-drawing"} ref={boardCanvasRef}></canvas>
