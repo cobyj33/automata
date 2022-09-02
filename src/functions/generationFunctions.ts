@@ -1,14 +1,20 @@
 import { CellMatrix } from '../interfaces/CellMatrix';
 
 type LifeRuleData = { birth: number[], survival: number[] }
-export function isValidLifeString(lifeString: string) {
+export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {
     const sides = lifeString.split("/");
     if (sides.length !== 2) {
+        errorOutput?.("Error: Not able to split string into birth and survival counts, format must include a forward slash B<NUMS>/S<NUMS> ");
         return false;
     } else if (sides[0].charAt(0) !== "B" || sides[1].charAt(0) !== "S") {
+       errorOutput?.("Error: B and S are backwards, please switch to B<NUMS>/S<NUMS> ");
        return false; 
     } else if (sides[0].substr(1).split('').some((char: string) => isNaN(Number.parseInt(char))) || sides[1].substr(1).split('').some((char: string) => isNaN(Number.parseInt(char)))) {
+       errorOutput?.("Error: Must include numbers after B and after /S B<NUMS>/S<NUMS> ");
         return false;
+    } else if (new Set<string>(sides[0].substr(1).split('')).size !== sides[0].length - 1 || new Set<string>(sides[1].substr(1).split('')).size !== sides[1].length - 1) {
+       errorOutput?.("Error: Replicate number on one side of B<NUMS>/S<NUMS> ");
+       return false;
     }
 
 
@@ -30,7 +36,7 @@ function canMakeLifeString(survivalNums: number[], birthNums: number[]): boolean
     return true;
 }
 
-export function createLifeString(survivalNums: number[], birthNums: number[]): string {
+export function createLifeString(birthNums: number[], survivalNums: number[]): string {
     if (!canMakeLifeString(survivalNums, birthNums)) {
         console.error("CANNOT MAKE LIFE STRING FROM ", survivalNums, " AND ", birthNums);
         return "B3/S23";

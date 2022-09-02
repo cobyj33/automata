@@ -33,6 +33,7 @@ enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, LINE };
 type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData | MoveData | ZoomData | ElementaryEditorData;
 
 export const ElementaryBoard = () => {
+
     const [view, setView] = useState<View>({
         row: -5,
         col: 0,

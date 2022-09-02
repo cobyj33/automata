@@ -1,4 +1,4 @@
-import { KeyboardEvent, MutableRefObject, PointerEvent, useEffect, useRef, useState, WheelEvent } from 'react'
+import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View';
 import { BoxEditMode, BoxData } from '../classes/Editor/BoxEditMode';
@@ -13,12 +13,13 @@ import { getHoveredCell, pointerPositionInElement } from '../functions/editorFun
 import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from '../functions/hooks';
 import { StatefulData } from '../interfaces/StatefulData';
 import { BoundedBoardDrawing } from './BoundedBoardDrawing';
-import { BoundedGameRender } from './BoundedGameRender';
+import { BoundedGameRender, RenderData } from './BoundedGameRender';
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
 import { LayeredCanvas } from './LayeredCanvas';
 import { renderBoard } from '../functions/drawing';
-import { isValidLifeString } from '../functions/generationFunctions';
-import {Box} from '../interfaces/Box';
+import { createLifeString, isValidLifeString, parseLifeLikeString } from '../functions/generationFunctions';
+import {Box, inBox} from '../interfaces/Box';
+import { BoardUI } from "./BoardUI"
 
 
 interface EditorData {
@@ -47,6 +48,8 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
         col: 0,
         cellSize: 10
     });
+    const [renderData, setRenderData] = useState<RenderData>({ generation: 0 });
+
   const [board, setBoard] = boardData;
   const [rendering, setRendering] = useState<boolean>(false);
   const [bounds, setBounds] = useState<Box>({ row: 0, col: 0, width: 200, height: 200 });
@@ -54,6 +57,12 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>({ row: 0, col: 0 });
   const [automata, setAutomata] = useState<string>("B3/S23");
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
+
+    useEffect( () => {
+        if (rendering === false) {
+            setRenderData({generation: 0});
+        }
+    }, [rendering] )
 
   useEffect( () => {
     const canvas: HTMLCanvasElement | null = ghostCanvas.current;
@@ -74,13 +83,13 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   function getEditorData(): EditorData {
     return {
       boardData: [board, setBoard],
-        boundsData: [bounds, setBounds],
+      boundsData: [bounds, setBounds],
       viewData: [view, setView],
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell,
       getHoveredCell: getCurrentHoveredCell,
       isPointerDown: isPointerDown.current,
-        isRendering: rendering
+      isRendering: rendering
     }
   }
   
@@ -155,47 +164,24 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
 
   useWebGL2CanvasUpdater(ghostCanvas)
 
-    const [automataInput, setAutomataInput] = useState<string>("");
   return (
     <div>
       <div style={{cursor: cursor}} ref={boardHolder} className="board-holder" onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
-          {rendering ? <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} />  : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
+          {rendering ? 
+              <div>
+                  <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
+                    <div className='render-info'>
+                        <p> Current Generation: { renderData.generation } </p>
+                    </div>
+              </div>
+           : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
           <canvas style={{}} className="board-drawing" ref={ghostCanvas} />
+            
         </LayeredCanvas>
       </div>
 
-
-      <div className="board-ui">
-
-        <div className="board-ui-bar top-bar">
-            
-        </div>
-      
-        <div className="middle-area">
-            
-            <div className="board-ui-bar left-bar">
-                <div className="rule-editor">
-                    <span> Current Rule: { automata } </span>
-                  <input className={`rule-string-input ${ isValidLifeString(automataInput) ? 'valid' : 'invalid'  }`}   onChange={e => {
-                      setAutomataInput(e.target.value);
-                      if (isValidLifeString(e.target.value)) {
-                          setAutomata(e.target.value)
-                      }
-                  }} value={automataInput} />
-
-                </div>
-
-            </div>
-            
-            <div className="middle-separator"> </div>
-            <div className="board-ui-bar right-bar">
-                
-            </div>
-
-        </div>
-
-        <div className="board-ui-bar bottom-bar">
+      <BoardUI left={<RuleEditor lifeRule={[automata, setAutomata]} currentBoard={board}/>} bottom={ 
           <div className="editing-buttons"> 
             <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
             <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
@@ -208,11 +194,155 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
             <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
             <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
           </div>
-
-        </div>
-
-      </div>
+      } />
 
     </div>
   )
+}
+
+type RuleEditMode = "assisted" | "raw";
+
+
+const loading = "Loading Preview";
+const LoadingText = () => {
+    const [text, setText] = useState<string>(loading);
+    useEffect( () => {
+        if (text.endsWith("...")) {
+            setTimeout( () => requestAnimationFrame( () => setText(loading)), 100);
+        } else {
+            setTimeout( () => requestAnimationFrame( () => setText(text.concat("."))), 100);
+        }
+    }, [text]);
+
+    return (
+        <p className="rule-editor-preview-loading"> Loading Preview </p>
+    )
+}
+
+const RuleEditor = ({ lifeRule, currentBoard }: { lifeRule: StatefulData<string>, currentBoard: Vector2[] }) => {
+    const [automataInput, setAutomataInput] = useState<string>(lifeRule[0]);
+    const [lastCorrect, setLastCorrect] = useState<string>(lifeRule[0]);
+
+    const [ruleErr, setRuleErr] = useState<string>("");
+    const [ruleEditMode, setRuleEditMode] = useState<RuleEditMode>("assisted");
+    const [previewing, setPreviewing] = useState<boolean>(false);
+
+    const [birth, setBirth] = useState<Set<number>>(new Set<number>());
+    const [survive, setSurvive] = useState<Set<number>>(new Set<number>());
+
+    const renderArea: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+
+    useEffect( () => {
+        if (isValidLifeString(automataInput)) {
+            setRuleErr("")
+        }
+    }, [automataInput])
+
+    const getRender = useCallback(() => {
+        const desiredPreviewSize = 20;
+        if (renderArea.current !== null && renderArea.current !== undefined) {
+            const renderDOMRect: DOMRect = renderArea.current.getBoundingClientRect();
+            const cellSize: number = Math.max(1, Math.trunc(Math.min(renderDOMRect.width / desiredPreviewSize, renderDOMRect.height / desiredPreviewSize)));
+
+            const view: View = {
+                row: 0,
+                col: 0,
+                cellSize: cellSize
+            }
+            
+            const bounds: Box = {
+                row: 0,
+                col: 0,
+                width: Math.max(1, Math.trunc(renderDOMRect.width / cellSize)),
+                height: Math.max(1, Math.trunc(renderDOMRect.height / cellSize))
+            }; 
+
+            console.log(bounds);
+            console.log(view);
+
+            return <BoundedGameRender bounds={bounds} view={view} start={currentBoard.filter(vector => inBox(vector, bounds))} automata={lastCorrect} />
+        }
+        
+        return <LoadingText />;
+    }, [currentBoard, lastCorrect]);
+
+    const validityErrorCallback = useCallback((error: string) => {
+        if (error !== ruleErr) {
+            setRuleErr(error)
+        }
+    }, [ruleErr])
+
+    function getEditModeArea() {
+        switch (ruleEditMode) {
+            case "assisted": return (
+                <div className="assisted-rule-editor">
+                    <span> Neighbors needed to be Born </span>
+                    <div>
+                        { new Array(10).fill(0).map(( num, index ) => (
+                <button className={` ${birth.has(index) ? "rule-editor-select-button-selected" : "rule-editor-select-button-unselected"} rule-editor-select-button`} onClick={() => birth.has(index) ? (() => { birth.delete(index); setBirth(new Set<number>(birth)); })() : (() => { birth.add(index); setBirth(new Set<number>(birth)); })() } key={`rule editor birth ${index}`}> {index} </button>
+                    )) }
+                    </div>
+
+                    <span> Neighbors needed to Survive </span>
+                    <div>
+                    { new Array(10).fill(0).map(( num, index ) => (
+                        <button onClick={() => survive.has(index) ? (() => { survive.delete(index); setSurvive(new Set<number>(survive)); })() : (() => { survive.add(index); setSurvive(new Set<number>(survive)); })() } className={` ${birth.has(index) ? "rule-editor-select-button-selected" : "rule-editor-select-button-unselected"} rule-editor-select-button`} key={`rule editor survive ${index}`}> {index} </button>
+                    )) }
+                    </div>
+
+                    <button onClick={() => { 
+                        const lifeString = createLifeString(Array.from(birth).sort((a, b) => a - b), Array.from(survive).sort((a, b) => a - b));
+                        lifeRule[1](lifeString);
+                        setLastCorrect(lifeString);
+                    }} className={`rule-editor-assisted-submit-button`} > Sumbit </button>
+                
+                </div>);
+            case "raw": return (
+                <div className="raw-life-rule-editor"> 
+                     { ruleErr !== "" ? <p className="life-rule-string-input-error"> { ruleErr } </p> : "" }
+                    <input type="text" className={`life-rule-string-input ${isValidLifeString(automataInput, validityErrorCallback) } ? "life-rule-string-valid" : "life-rule-string-invalid"} `} value={automataInput} onChange={(e) => {
+                            setAutomataInput(e.target.value); 
+                        }} />
+
+                        <button className="life-rule-apply" onClick={ () => {
+                            if (isValidLifeString(automataInput, validityErrorCallback)) {
+                                lifeRule[1](automataInput);
+                                setLastCorrect(automataInput);
+                            } }}> 
+                            Change
+                        </button>
+                </div>);
+        }
+    }
+
+    return (
+        <div className="rule-editor">
+            <div className="life-rule-data">
+                <h3> Life-Like Rule Data </h3> 
+                <br />
+                <br />
+                <span> Current Rule: {lifeRule[0]} </span>
+                <br />
+                <span> Neighbors to be Born: { Array.from(birth.keys()).sort((a, b) => a - b).join(", ") } </span>
+                <br />
+                <span> Neighbors to Survive: { Array.from(survive.keys()).sort((a, b) => a - b).join(", ") } </span>
+                <br />
+            </div>
+
+            <div className="rule-editor-mode-selection-area">
+                <button className="rule-editor-mode-selection-button" onClick={() => setRuleEditMode("assisted")} > Assisted </button>
+                <button className="rule-editor-mode-selection-button" onClick={() => setRuleEditMode("raw")} > Raw </button>
+            </div>
+
+            <div className="rule-editor-area">
+                { getEditModeArea() } 
+            </div>
+
+            <div ref={renderArea} className="life-rule-preview">
+                    { /* getRender() */ }
+            </div>
+
+        </div>
+    )
+
 }

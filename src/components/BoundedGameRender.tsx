@@ -3,12 +3,15 @@ import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View';
 import { Box } from '../interfaces/Box';
 import { BoundedBoardDrawing } from './BoundedBoardDrawing';
-import "./styles/gamerender.scss"
 import { CellMatrix } from '../interfaces/CellMatrix';
 import {cellsInBoxToCellMatrix} from '../functions/conversions';
 import {getNextLifeGeneration} from '../functions/generationFunctions';
 
-export const BoundedGameRender = ({ start, view, bounds, automata }: { start: Vector2[], view: View, bounds: Box, automata: string }) => {
+export interface RenderData {
+    generation: number
+}
+
+export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { start: Vector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
     const [currentRender, setCurrentRender] = useState<CellMatrix>(cellsInBoxToCellMatrix(start, bounds));
     const [currentGeneration, setCurrentGeneration] = useState<number>(0);
 
@@ -20,6 +23,7 @@ export const BoundedGameRender = ({ start, view, bounds, automata }: { start: Ve
                         matrix: getNextLifeGeneration(currentRender, automata)
                     }) );
                 setCurrentGeneration(currentGeneration => currentGeneration + 1);
+                getData?.({ generation: currentGeneration });
             })
         }
     }, [currentRender])
@@ -28,9 +32,6 @@ export const BoundedGameRender = ({ start, view, bounds, automata }: { start: Ve
     return (
         <div>
             <BoundedBoardDrawing bounds={bounds} board={currentRender} view={view} />
-            <div className='render-info'>
-                <p> Current Generation: { currentGeneration } </p>
-            </div>
         </div>
     )
 }
