@@ -1,9 +1,10 @@
 # [Automata](https://cobyj33.github.io/automata)
 
 An online simulation and editor for different Cellular Automata, Currently supports Life-like and Elementary cellular automata
-![Maze, 2x2, Conway without Death, Seeds](public/examples.gif)
 
-![Elementary](public/elementary.GIF)
+
+![Maze, 2x2, Conway without Death, Seeds](public/examples.gif)
+![Elementary](public/elementary.gif)
 
 [Visit the Page](https://cobyj33.github.io/automata)
 ## Help
