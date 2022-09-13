@@ -1,4 +1,4 @@
-import { KeyboardEvent, MutableRefObject, PointerEvent, useEffect, useRef, useState, WheelEvent } from 'react'
+import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View';
 import { BoxEditMode, BoxData } from '../classes/Editor/BoxEditMode';
@@ -13,12 +13,14 @@ import { getHoveredCell, pointerPositionInElement } from '../functions/editorFun
 import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from '../functions/hooks';
 import { StatefulData } from '../interfaces/StatefulData';
 import { BoundedBoardDrawing } from './BoundedBoardDrawing';
-import { BoundedGameRender } from './BoundedGameRender';
+import { BoundedGameRender, RenderData } from './BoundedGameRender';
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
 import { LayeredCanvas } from './LayeredCanvas';
 import { renderBoard } from '../functions/drawing';
-import { isValidLifeString } from '../functions/generationFunctions';
-import {Box} from '../interfaces/Box';
+import { createLifeString, isValidLifeString, parseLifeLikeString } from '../functions/generationFunctions';
+import {Box, inBox} from '../interfaces/Box';
+import { BoardUI } from "./BoardUI"
+import { RuleEditor } from "./RuleEditor"
 
 
 interface EditorData {
@@ -47,6 +49,8 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
         col: 0,
         cellSize: 10
     });
+    const [renderData, setRenderData] = useState<RenderData>({ generation: 0 });
+
   const [board, setBoard] = boardData;
   const [rendering, setRendering] = useState<boolean>(false);
   const [bounds, setBounds] = useState<Box>({ row: 0, col: 0, width: 200, height: 200 });
@@ -54,6 +58,12 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>({ row: 0, col: 0 });
   const [automata, setAutomata] = useState<string>("B3/S23");
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
+
+    useEffect( () => {
+        if (rendering === false) {
+            setRenderData({generation: 0});
+        }
+    }, [rendering] )
 
   useEffect( () => {
     const canvas: HTMLCanvasElement | null = ghostCanvas.current;
@@ -74,13 +84,13 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   function getEditorData(): EditorData {
     return {
       boardData: [board, setBoard],
-        boundsData: [bounds, setBounds],
+      boundsData: [bounds, setBounds],
       viewData: [view, setView],
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell,
       getHoveredCell: getCurrentHoveredCell,
       isPointerDown: isPointerDown.current,
-        isRendering: rendering
+      isRendering: rendering
     }
   }
   
@@ -155,47 +165,24 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
 
   useWebGL2CanvasUpdater(ghostCanvas)
 
-    const [automataInput, setAutomataInput] = useState<string>("");
   return (
     <div>
       <div style={{cursor: cursor}} ref={boardHolder} className="board-holder" onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
-          {rendering ? <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} />  : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
+          {rendering ? 
+              <div>
+                  <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
+                    <div className='render-info'>
+                        <p> Current Generation: { renderData.generation } </p>
+                    </div>
+              </div>
+           : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
           <canvas style={{}} className="board-drawing" ref={ghostCanvas} />
+            
         </LayeredCanvas>
       </div>
 
-
-      <div className="board-ui">
-
-        <div className="board-ui-bar top-bar">
-            
-        </div>
-      
-        <div className="middle-area">
-            
-            <div className="board-ui-bar left-bar">
-                <div className="rule-editor">
-                    <span> Current Rule: { automata } </span>
-                  <input className={`rule-string-input ${ isValidLifeString(automataInput) ? 'valid' : 'invalid'  }`}   onChange={e => {
-                      setAutomataInput(e.target.value);
-                      if (isValidLifeString(e.target.value)) {
-                          setAutomata(e.target.value)
-                      }
-                  }} value={automataInput} />
-
-                </div>
-
-            </div>
-            
-            <div className="middle-separator"> </div>
-            <div className="board-ui-bar right-bar">
-                
-            </div>
-
-        </div>
-
-        <div className="board-ui-bar bottom-bar">
+      <BoardUI left={<RuleEditor lifeRule={[automata, setAutomata]} currentBoard={board}/>} bottom={ 
           <div className="editing-buttons"> 
             <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
             <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
@@ -208,11 +195,9 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
             <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
             <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
           </div>
-
-        </div>
-
-      </div>
+      } />
 
     </div>
   )
 }
+

@@ -1,0 +1,83 @@
+.rule-editor {
+    background-color: white;
+}
+
+.rule-edit-area .rule-editor {
+    display: flex;
+    flex-direction: column;
+}
+
+.life-rule-editor-title {
+    text-align: center;
+}
+
+.rule-editor-mode-selection-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.rule-editor-selection-button-list {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.rule-editor-text {
+    text-align: center;
+}
+
+.rule-editor-mode-selection-button {
+    text-align: center;
+    border: none;
+    flex-grow: 1;
+    flex-basis: 20px;
+
+    &.selected {
+        transition: color 0.2s background-color 0.2s;
+        color: white;
+        background-color: black;
+        border-bottom: 1px solid green;
+    }
+}
+
+.life-rule-data * {
+    font-family: monospace;
+    font-size: 16px;
+}
+
+.current-life-rule {
+    color: green;
+}
+
+
+.life-rule-string-input {
+    text-align: center;
+
+
+    &.valid {
+        transition: background-color 0.1s;
+        background-color: green;
+    }
+
+    &.invalid {
+        transition: background-color 0.1s;
+        background-color: red;
+    }
+}
+
+
+
+
+.rule-editor-select-button {
+    color: black;
+    font-family: monospace;
+    border: none;
+
+    &.selected {
+        transition: color 0.2s background-color 0.2s;
+        color: white;
+        background-color: black;
+        border-bottom: 1px solid green;
+    }
+}

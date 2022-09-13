@@ -44,8 +44,8 @@ code {
   height: max(50px, 8%);
   display: flex;
   flex-direction: row;
-  justify-content: center;
   align-items: stretch;
+  justify-content: space-evenly;
 }
 
 @keyframes disappear {
@@ -83,15 +83,19 @@ code {
 }
 
 .menu-content-container {
+    flex-grow: 1;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: stretch;
 }
 
 .menu-button {
   color: white;
-  font-family: monospace;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: rgb(20, 20, 20);
+  font-size: 20px;
+  border: none;
 }
 
 .board-drawing {
