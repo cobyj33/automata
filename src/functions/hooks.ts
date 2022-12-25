@@ -4,6 +4,7 @@ import { StatefulData } from "../interfaces/StatefulData";
 
 type Action = () => void;
 type IComparer<T> = (first: T, second: T) => boolean;
+
 export function useIsPointerDown(target: RefObject<HTMLElement>) {
     const isPointerDown: MutableRefObject<boolean> = useRef<boolean>(false);
     const setPointerTrue: Action = useCallback(() => isPointerDown.current = true, [])

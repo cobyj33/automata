@@ -74,7 +74,7 @@ export class BoxEditMode extends EditMode<BoxData> {
         }
     }
 
-    onPointerUp(event: PointerEvent<Element>) {
+    onPointerUp() {
         if (this.data.isRendering) {
             this.start = undefined;
             this.end = undefined;
@@ -100,6 +100,7 @@ export class BoxEditMode extends EditMode<BoxData> {
 
         this.start = undefined;
         this.end = undefined;
+        this.boxLocked = false;
     }
 
     box(start: Vector2, end: Vector2): LineSegment[] {

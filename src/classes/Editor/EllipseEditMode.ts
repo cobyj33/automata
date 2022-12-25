@@ -69,7 +69,7 @@ export class EllipseEditMode extends EditMode<EllipseData> {
         }
     }
 
-    onPointerUp(event: PointerEvent<Element>) {
+    onPointerUp() {
         if (this.data.isRendering) {
             this.start = undefined;
             this.end = undefined;
@@ -85,6 +85,7 @@ export class EllipseEditMode extends EditMode<EllipseData> {
         }
         this.start = undefined;
         this.end = undefined;
+        this.circleLocked = false;
     }
 
     onKeyDown(event: KeyboardEvent<Element>) {
