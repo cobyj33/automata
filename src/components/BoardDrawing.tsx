@@ -1,6 +1,7 @@
 import { MutableRefObject, RefObject, useEffect, useRef } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View'
+import { Color } from '../interfaces/Color';
 import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid } from '../functions/drawing';
 import { useWebGL2CanvasUpdater } from '../functions/hooks';
 import { CellMatrix } from '../interfaces/CellMatrix';
@@ -8,7 +9,29 @@ import "./styles/boarddrawing.scss"
 import {LayeredCanvas} from './LayeredCanvas';
 import {getColorFromCSS} from '../interfaces/Color';
 
-export const BoardDrawing = ({ board, view, className }: { board: Vector2[] | CellMatrix, view: View, className?: string }) => {
+interface DrawingSettings {
+    showGrid: boolean;
+    backgroundColor: Color;
+    cellColor: Color;
+}
+
+const defaultBoardSettings = {
+    showGrid: true,
+    backgroundColor: {
+        red: 60,
+        blue: 60,
+        green: 60,
+        alpha: 255
+    },
+    cellColor: {
+        red: 255,
+        blue: 255,
+        green: 255,
+        alpha: 255
+    }
+} as const;
+
+export const BoardDrawing = ({ board, view, className  }: { board: Vector2[] | CellMatrix, view: View, className?: string }) => {
   // const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
     const boardCanvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
     const gridCanvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
@@ -34,7 +57,6 @@ function renderBoardCanvas() {
       const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
       if (gl !== null && gl !== undefined) {
         const color = getColorFromCSS("gray");
-        gl.clearColor(color.red / 255, color.green / 255, color.blue / 255, 1);
         gl.clearColor(0.15, 0.15, 0.15, 1);
           gl.clear(gl.COLOR_BUFFER_BIT);
 
