@@ -1,14 +1,8 @@
 import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
 import { Vector2 } from '../interfaces/Vector2';
 import { View } from '../interfaces/View';
-import { BoxEditMode, BoxData } from '../classes/Editor/BoxEditMode';
-import { DrawEditMode, DrawData } from '../classes/Editor/DrawEditMode';
-import { EditMode } from '../classes/Editor/EditMode';
-import { EllipseEditMode, EllipseData } from '../classes/Editor/EllipseEditMode';
-import { EraseEditMode, EraseData } from '../classes/Editor/EraseEditMode';
-import { LineEditMode, LineData } from '../classes/Editor/LineEditMode';
-import { MoveEditMode, MoveData } from '../classes/Editor/MoveEditMode';
-import { ZoomEditMode, ZoomData } from '../classes/Editor/ZoomEditMode';
+import { EditMode } from "automata/editor/main";
+import { BoxEditMode, BoxData, DrawEditMode, DrawData, EllipseEditMode, EllipseData, LineEditMode, LineData, MoveEditMode, MoveData, ZoomEditMode, ZoomData, EraseEditMode, EraseData } from 'automata/editor/bounded';
 import { getHoveredCell, pointerPositionInElement } from '../functions/editorFunctions';
 import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from '../functions/hooks';
 import { StatefulData } from '../interfaces/StatefulData';
@@ -21,6 +15,7 @@ import { createLifeString, isValidLifeString, parseLifeLikeString } from '../fun
 import {Box, inBox} from '../interfaces/Box';
 import { BoardUI } from "./BoardUI"
 import { RuleEditor } from "./RuleEditor"
+import { ToolTip } from "./ToolTip/ToolTip"
 
 
 interface EditorData {
