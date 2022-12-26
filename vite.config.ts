@@ -18,5 +18,6 @@ export default defineConfig({
         'src/setupTests.ts',
       ]
     }
-  }
+  },
+  base: "/automata/"
 });
