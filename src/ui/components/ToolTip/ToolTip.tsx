@@ -61,3 +61,5 @@ export const ToolTip = ({ children, expanded, target }: { children?: any, expand
     </div>
   )
 }
+
+export default ToolTip

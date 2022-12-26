@@ -3,6 +3,9 @@ import { getViewOffset, View } from "interfaces/View";
 import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "interfaces/Box";
 import { CellMatrix } from "interfaces/CellMatrix";
 
+import gridVertexShader from "shaders/grid.vert?raw"
+import gridFragmentShader from "shaders/grid.frag?raw"
+
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
     return {
         row: view.row,
@@ -225,41 +228,6 @@ export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, ce
 
     gl.drawArrays(gl.POINTS, 0, Math.trunc(cellVertices.length / 2));
 }
-
-const gridVertexShader = `
-    attribute vec2 aPos;
-
-    void main() {
-        gl_Position = vec4(aPos, 0.0, 1.0);
-    }
-`
-
-const gridFragmentShader = `
-    precision mediump float;
-    uniform vec2 offset;
-    uniform vec4 gridColor;
-    uniform vec2 cellSize;
-    uniform float gridLineWidth;
-
-    float modI(float a,float b) {
-        float m = a - floor( (a + 0.5) / b ) * b;
-        return floor( m + 0.5 );
-    }
-
-    bool closeTo(float num, float desired, float range) {
-        return num >= (desired - range) && num <= (desired + range);
-    }
-
-    void main() {
-        const float ACCURACY = 0.0001;
-        
-        if ( closeTo( modI((gl_FragCoord.x - offset.x), cellSize.x), 0.0, ACCURACY) || closeTo( modI((gl_FragCoord.y - offset.y), cellSize.y), 0.0, ACCURACY)  ) {
-            gl_FragColor = gridColor;
-        } else {
-            gl_FragColor = vec4(0, 0, 0, 0);
-        }
-    }
-`
 
 
 export function getGridShaderProgram(gl: WebGL2RenderingContext): WebGLProgram | null {

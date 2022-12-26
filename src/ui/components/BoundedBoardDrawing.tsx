@@ -5,8 +5,8 @@ import { getViewArea, } from 'functions/drawing';
 import { useWebGL2CanvasUpdater } from 'functions/hooks';
 import { Box } from 'interfaces/Box';
 import { CellMatrix } from 'interfaces/CellMatrix';
-import { BoardDrawing } from 'ui/components/BoardDrawing'
-import { LayeredCanvas } from 'ui/components/LayeredCanvas';
+import BoardDrawing from 'ui/components/BoardDrawing'
+import LayeredCanvas from 'ui/components/LayeredCanvas';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 
 
@@ -44,3 +44,5 @@ export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board:
         </LayeredCanvas>
     )
 }
+
+export default BoundedBoardDrawing

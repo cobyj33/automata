@@ -2,7 +2,7 @@ import { PointerEvent, KeyboardEvent } from "react";
 import { removeDuplicates } from "functions/utilityFunctions";
 import { Vector2 } from "interfaces/Vector2";
 import { getEllipse } from "functions/shapes";
-import { EditMode } from "classes/Editor/EditMode";
+import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData";
 
 export interface EllipseData {
@@ -100,3 +100,5 @@ export class EllipseEditMode extends EditMode<EllipseData> {
         }
     }
 }
+
+export default EllipseEditMode

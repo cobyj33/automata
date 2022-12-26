@@ -1,21 +1,21 @@
 import { PointerEvent } from "react";
-import { removeDuplicates } from "functions/utilityFunctions";
-import { EditMode } from "classes/Editor/EditMode";
+import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { getLine } from "functions/shapes";
 import { StatefulData } from "interfaces/StatefulData"
 import { Vector2 } from "interfaces/Vector2"
 
-export interface DrawData {
+export interface EraseData {
     boardData: StatefulData<Vector2[]>,
+    ghostTilePositions: StatefulData<Vector2[]>,
     getHoveredCell: (event: PointerEvent<Element>) => Vector2,
     lastHoveredCell: Vector2,
     isPointerDown: boolean,
         isRendering: boolean;
 }
 
-export class DrawEditMode extends EditMode<DrawData> {
-    cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
-
+export class EraseEditMode extends EditMode<EraseData> {
+    cursor() { return 'url("https://img.icons8.com/material-rounded/24/00000/eraser.png"), crosshair' }
+    
     onPointerDown(event: PointerEvent<Element>) {
         if (this.data.isRendering) {
             return;
@@ -23,17 +23,23 @@ export class DrawEditMode extends EditMode<DrawData> {
 
         const [, setBoard] = this.data.boardData;
         const hoveredCell = this.data.getHoveredCell(event);
-
-        setBoard(board => removeDuplicates(board.concat(hoveredCell)));
+        setBoard(board => board.filter(cell => !(cell.row === hoveredCell.row && cell.col === hoveredCell.col)  ));
     }
 
     onPointerMove(event: PointerEvent<Element>) {
+        if (this.data.isRendering) {
+            return;
+        }
+
         const [, setBoard] = this.data.boardData;
         const hoveredCell = this.data.getHoveredCell(event);
         const lastHoveredCell = this.data.lastHoveredCell;
-        if (this.data.isPointerDown && !this.data.isRendering) {
-            setBoard(board => removeDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )) )
+        if (this.data.isPointerDown) {
+            const newCells = getLine(lastHoveredCell, hoveredCell) 
+            setBoard(board => board.filter(cell => !newCells.some(newCell => (newCell.row === cell.row && newCell.col === cell.col)   )));
         }
     }
 
 }
+
+export default EraseEditMode

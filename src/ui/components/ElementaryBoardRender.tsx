@@ -42,3 +42,5 @@ export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], v
         </div>
     )
 }
+
+export default ElementaryBoardRender

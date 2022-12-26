@@ -3,7 +3,7 @@ import {getLine} from "functions/shapes";
 import { removeDuplicates } from "functions/utilityFunctions"
 import { Vector2 } from "interfaces/Vector2";
 import { StatefulData } from "interfaces/StatefulData";
-import { EditMode } from "classes/Editor/EditMode";
+import { EditMode } from "classes/Editor/EditModes/EditMode";
 
 type LineSegment = {
     first: Vector2,
@@ -122,3 +122,5 @@ export class BoxEditMode extends EditMode<BoxData> {
     }
 
 }
+
+export default BoxEditMode

@@ -3,18 +3,18 @@ import { View } from "interfaces/View"
 import { Vector2 } from "interfaces/Vector2"
 import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
-import { ElementaryDrawEditMode, ElementaryDrawData } from "classes/Editor/Elementary/ElementaryDrawEditMode";
-import {ElementaryLineEditMode, ElementaryLineData } from "classes/Editor/Elementary/ElementaryLineEditMode";
+import { ElementaryDrawEditMode, ElementaryDrawData } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
+import {ElementaryLineEditMode, ElementaryLineData } from "classes/Editor/EditModes/Elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
 import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "functions/hooks";
 import { ElementaryBoardRender } from "ui/components/ElementaryBoardRender";
 import { StatefulData } from "interfaces/StatefulData"
 import { pointerPositionInElement, getHoveredCell } from 'functions/editorFunctions';
-import { ZoomEditMode, ZoomData } from 'classes/Editor/ZoomEditMode';
-import { MoveEditMode, MoveData } from 'classes/Editor/MoveEditMode';
-import { EditMode } from 'classes/Editor/EditMode';
-import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/Elementary/ElementaryEraseEditMode';
+import { ZoomEditMode, ZoomData } from 'classes/Editor/EditModes/ZoomEditMode';
+import { MoveEditMode, MoveData } from 'classes/Editor/EditModes/MoveEditMode';
+import { EditMode } from 'classes/Editor/EditModes/EditMode';
+import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
 import { BoardUI } from "ui/components/BoardUI"
 
@@ -200,3 +200,5 @@ export const ElementaryBoard = () => {
       </div>
     )
 }
+
+export default ElementaryBoard

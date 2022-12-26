@@ -35,3 +35,5 @@ export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { 
         </div>
     )
 }
+
+export default BoundedGameRender

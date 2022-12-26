@@ -3,7 +3,11 @@ import React from 'react'
 
 export const LifeLikeEditor = ({ data }: { data: LifeLikeBoard }) => {
 
+
+
   return (
     <div>LifeLikeEditor</div>
   )
 }
+
+export default LifeLikeEditor

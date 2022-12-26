@@ -1,1 +1,1 @@
-export * from "classes/Editor/EditMode"
+export * from "classes/Editor/EditModes/EditMode"

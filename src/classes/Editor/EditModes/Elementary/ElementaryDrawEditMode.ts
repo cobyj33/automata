@@ -1,5 +1,5 @@
 import { PointerEvent } from "react";
-import { EditMode } from "classes/Editor/EditMode";
+import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
 
@@ -9,15 +9,15 @@ function range(first: number, second: number): number[] {
     return Array.from({length: distance}, (val, index) => index + min);
 }
 
-export interface ElementaryEraseData {
+export interface ElementaryDrawData {
     boardData: StatefulData<CellMatrix>,
     getHoveredCell: (event: PointerEvent<Element>) => number,
     lastHoveredCell: number,
     isPointerDown: boolean,
-    isRendering: boolean;
+        isRendering: boolean;
 }
 
-export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
+export class ElementaryDrawEditMode extends EditMode<ElementaryDrawData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {
@@ -32,7 +32,7 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
             
             if (hoveredCell >= cellMatrix.col && hoveredCell < cellMatrix.col + cellMatrix.width) {
                 const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
-                newMatrix[hoveredCell] = 0;
+                newMatrix[hoveredCell] = 1;
                 return {
                     ...cellMatrix,
                     matrix: newMatrix
@@ -58,7 +58,7 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
 
                 line.forEach(hoveredCell => {
                     if (hoveredCell >= cellMatrix.col && hoveredCell < cellMatrix.col + cellMatrix.width) {
-                        newMatrix[hoveredCell] = 0;
+                        newMatrix[hoveredCell] = 1;
                     }
                 })
 
@@ -71,3 +71,5 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
     }
 
 }
+
+export default ElementaryDrawEditMode

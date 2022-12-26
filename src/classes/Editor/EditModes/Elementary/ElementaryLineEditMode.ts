@@ -1,7 +1,7 @@
 import { PointerEvent } from "react";
 import { removeDuplicates } from "functions/utilityFunctions";
 import { Vector2 } from "interfaces/Vector2";
-import { EditMode } from "classes/Editor/EditMode";
+import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {getLine} from 'functions/shapes';
 import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
@@ -89,3 +89,6 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
     }
 
 }
+
+
+export default ElementaryLineEditMode

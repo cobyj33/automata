@@ -1,7 +1,7 @@
-import { ReactNode } from "react"
+import React from "react"
 import boardUIStyles from "ui/components/styles/BoardUI.module.css"
 
-export const BoardUI = ({top, left, center, right, bottom}: { top?: ReactNode, left?: ReactNode, center?: ReactNode, right?: ReactNode, bottom?: ReactNode }) => {
+export const BoardUI = ({top, left, center, right, bottom}: { top?: React.ReactNode, left?: React.ReactNode, center?: React.ReactNode, right?: React.ReactNode, bottom?: React.ReactNode }) => {
     return (
       <div className={boardUIStyles["board-ui"]}>
 
@@ -30,3 +30,5 @@ export const BoardUI = ({top, left, center, right, bottom}: { top?: ReactNode, l
       </div>
     )
 }
+
+export default BoardUI

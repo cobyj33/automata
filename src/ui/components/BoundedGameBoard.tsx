@@ -10,12 +10,12 @@ import { StatefulData } from 'interfaces/StatefulData';
 import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
 import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
-import { LayeredCanvas } from 'ui/components/LayeredCanvas';
+import LayeredCanvas from 'ui/components/LayeredCanvas';
 import { renderBoard } from 'functions/drawing';
 import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
 import {Box, inBox} from 'interfaces/Box';
-import { BoardUI } from "ui/components/BoardUI"
-import { LifeRuleEditor } from "ui/components/LifeRuleEditor"
+import BoardUI from "ui/components/BoardUI"
+import LifeRuleEditor from "ui/components/LifeRuleEditor"
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { BoardType } from "./GameBoard";
 
@@ -201,3 +201,5 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
     </div>
   )
 }
+
+export default BoundedGameBoard

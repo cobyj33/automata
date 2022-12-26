@@ -6,7 +6,7 @@ import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderB
 import { useWebGL2CanvasUpdater } from 'functions/hooks';
 import { CellMatrix } from 'interfaces/CellMatrix';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
-import {LayeredCanvas} from 'ui/components/LayeredCanvas';
+import LayeredCanvas from 'ui/components/LayeredCanvas';
 import {getColorFromCSS} from 'interfaces/Color';
 
 interface DrawingSettings {
@@ -23,6 +23,7 @@ const defaultBoardSettings = {
         green: 60,
         alpha: 255
     },
+
     cellColor: {
         red: 255,
         blue: 255,
@@ -113,3 +114,5 @@ export const BoardDrawing = ({ board, view, className  }: { board: Vector2[] | C
           <canvas className={className ?? boardDrawingStyles["board-drawing"]} ref={gridCanvasRef}></canvas> 
         </LayeredCanvas> 
 }
+
+export default BoardDrawing

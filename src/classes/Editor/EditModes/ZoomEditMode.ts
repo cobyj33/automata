@@ -2,7 +2,7 @@ import { PointerEvent, WheelEvent } from "react";
 import {StatefulData} from "interfaces/StatefulData";
 import { dotProductVector2, Vector2, vector2Normalized } from "interfaces/Vector2";
 import {View} from "interfaces/View";
-import { EditMode } from "classes/Editor/EditMode";
+import { EditMode } from "classes/Editor/EditModes/EditMode";
 
 const zoomDirection = { 
     row: -1,
@@ -36,3 +36,5 @@ export class ZoomEditMode extends EditMode<ZoomData> {
         setView(view => ({...view, cellSize: Math.max(2, view.cellSize +  movementY) }) )
     }
 }
+
+export default ZoomEditMode

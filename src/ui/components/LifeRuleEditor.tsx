@@ -158,3 +158,5 @@ function LoadingText({ className = "" }: { className?: string }) {
         <p className={className}> Loading Preview </p>
     )
 }
+
+export default LifeRuleEditor

@@ -26,3 +26,5 @@ export abstract class EditMode<Data> {
     // abstract onModeEnd(): void;
     abstract cursor(): string;
 }
+
+export default EditMode
