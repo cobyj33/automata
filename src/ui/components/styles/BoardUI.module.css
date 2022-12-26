@@ -9,7 +9,6 @@
 
     display: flex;
     flex-direction: column;
-
 }
 
 .board-ui div {
@@ -22,7 +21,7 @@
     touch-action: auto;
 }
 
-.board-ui-bar {
+.top-bar, .left-bar, .bottom-bar, .right-bar {
     display: flex;
     flex-basis: 50px;
 }

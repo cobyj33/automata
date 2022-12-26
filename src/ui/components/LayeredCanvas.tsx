@@ -1,2 +1,2 @@
-import "ui/components/styles/layeredcanvas.css"
-export const LayeredCanvas = ({ children, styles = "" }: { children: any, styles?: string }) => <div className={`layered-canvas ${styles}`}> { children } </div>
+import layeredCanvasStyles from "ui/components/styles/LayeredCanvas.module.css"
+export const LayeredCanvas = ({ children, className = "" }: { children: any, className?: string }) => <div className={`${layeredCanvasStyles["layered-canvas"]} ${className}`}> { children } </div>

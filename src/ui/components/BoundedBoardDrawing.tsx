@@ -7,6 +7,8 @@ import { Box } from 'interfaces/Box';
 import { CellMatrix } from 'interfaces/CellMatrix';
 import { BoardDrawing } from 'ui/components/BoardDrawing'
 import { LayeredCanvas } from 'ui/components/LayeredCanvas';
+import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
+
 
 export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board: Vector2[] | CellMatrix, view: View, bounds: Box, className?: string }) => {
     const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
@@ -38,7 +40,7 @@ export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board:
     return (
         <LayeredCanvas>
           <BoardDrawing board={board} view={view} className={className} />
-          <canvas className={className ?? "board-drawing"} ref={canvasRef}></canvas>
+          <canvas className={className ?? boardDrawingStyles["board-drawing"]} ref={canvasRef}></canvas>
         </LayeredCanvas>
     )
 }

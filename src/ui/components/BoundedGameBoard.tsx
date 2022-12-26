@@ -1,3 +1,4 @@
+import React from "react"
 import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
 import { Vector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
@@ -14,8 +15,9 @@ import { renderBoard } from 'functions/drawing';
 import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
 import {Box, inBox} from 'interfaces/Box';
 import { BoardUI } from "ui/components/BoardUI"
-import { RuleEditor } from "ui/components/RuleEditor"
-import { ToolTip } from "ui/components/ToolTip/ToolTip"
+import { LifeRuleEditor } from "ui/components/LifeRuleEditor"
+import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
+import { BoardType } from "./GameBoard";
 
 
 interface EditorData {
@@ -29,7 +31,7 @@ interface EditorData {
     isRendering: boolean;
 }
 
-enum EditorEditMode { MOVE, ZOOM, DRAW, ERASE, BOX, LINE, ELLIPSE };
+type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
 type UnionData = MoveData | ZoomData | DrawData | EraseData | BoxData | LineData | EllipseData | EditorData;
 
 
@@ -89,15 +91,15 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
     }
   }
   
-  const [editMode, setEditMode] = useState<EditorEditMode>(EditorEditMode.MOVE);
+  const [editMode, setEditMode] = useState<EditorEditMode>("MOVE");
   const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<UnionData>}> = useRef({ 
-    [EditorEditMode.DRAW]: new DrawEditMode(getEditorData()),
-    [EditorEditMode.ZOOM]: new ZoomEditMode(getEditorData()),
-    [EditorEditMode.MOVE]: new MoveEditMode(getEditorData()),
-    [EditorEditMode.ERASE]: new EraseEditMode(getEditorData()),
-    [EditorEditMode.LINE]: new LineEditMode(getEditorData()),
-    [EditorEditMode.BOX]: new BoxEditMode(getEditorData()),
-    [EditorEditMode.ELLIPSE]: new EllipseEditMode(getEditorData())
+    "DRAW": new DrawEditMode(getEditorData()),
+    "ZOOM": new ZoomEditMode(getEditorData()),
+    "MOVE": new MoveEditMode(getEditorData()),
+    "ERASE": new EraseEditMode(getEditorData()),
+    "LINE": new LineEditMode(getEditorData()),
+    "BOX": new BoxEditMode(getEditorData()),
+    "ELLIPSE": new EllipseEditMode(getEditorData())
   });
   
   useEffect( () => {
@@ -158,41 +160,44 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
     editorModes.current[editMode].onWheel?.(event);
   }
 
+  function selectedButtonStyle(type: EditorEditMode) {
+    return editMode === type ? gameBoardStyles["selected"] : ""
+  }
+
   useWebGL2CanvasUpdater(ghostCanvas)
 
   return (
     <div>
-      <div style={{cursor: cursor}} ref={boardHolder} className="board-holder" onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
+
+      <div style={{cursor: cursor}} ref={boardHolder} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
           {rendering ? 
               <div>
                   <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
-                    <div className='render-info'>
+                    <div className={gameBoardStyles['render-info']}>
                         <p> Current Generation: { renderData.generation } </p>
                     </div>
               </div>
            : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
-          <canvas style={{}} className="board-drawing" ref={ghostCanvas} />
-            
+          <canvas style={{}} className={gameBoardStyles["board-drawing"]} ref={ghostCanvas} />
         </LayeredCanvas>
       </div>
 
-      <BoardUI left={<RuleEditor lifeRule={[automata, setAutomata]} currentBoard={board}/>} bottom={ 
-          <div className="editing-buttons"> 
-            <button className={`edit-button ${ editMode === EditorEditMode.DRAW ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.DRAW)}> <FaBrush /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.MOVE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.MOVE)}> <FaArrowsAlt /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.ZOOM ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ZOOM)}> <FaSearch /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.ERASE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ERASE)}> <FaEraser /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.LINE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.LINE)}> <FaLine /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.BOX ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.BOX)}> <FaBox /> </button>
-            <button className={`edit-button ${ editMode === EditorEditMode.ELLIPSE ? 'selected' : '' }`} onClick={() => setEditMode(EditorEditMode.ELLIPSE)}> <FaEllipsisH /> </button>
-            <button className={`edit-button ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-            <button className={`edit-button`} onClick={undo}> <FaUndo /> </button>
-            <button className={`edit-button`} onClick={redo}> <FaRedo /> </button>
+      <BoardUI left={<LifeRuleEditor lifeRule={[automata, setAutomata]} currentBoard={board}/>} bottom={ 
+          <div className={gameBoardStyles["editing-buttons"]}> 
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("DRAW")}`} onClick={() => setEditMode("DRAW")}> <FaBrush /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("MOVE")}`} onClick={() => setEditMode("MOVE")}> <FaArrowsAlt /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ZOOM")}`} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ERASE")}`} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("LINE")}`} onClick={() => setEditMode("LINE")}> <FaLine /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("BOX")}`} onClick={() => setEditMode("BOX")}> <FaBox /> </button>
+            <button className={`${gameBoardStyles["edit-button"]}${selectedButtonStyle("ELLIPSE")}`} onClick={() => setEditMode("ELLIPSE")}> <FaEllipsisH /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${rendering ? gameBoardStyles['selected'] : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+            <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
+            <button className={gameBoardStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
           </div>
       } />
 
     </div>
   )
 }
-

@@ -1,16 +1,16 @@
 import { ReactNode } from "react"
-import "ui/components/styles/boardui.css"
+import boardUIStyles from "ui/components/styles/BoardUI.module.css"
 
 export const BoardUI = ({top, left, center, right, bottom}: { top?: ReactNode, left?: ReactNode, center?: ReactNode, right?: ReactNode, bottom?: ReactNode }) => {
     return (
-      <div className="board-ui">
+      <div className={boardUIStyles["board-ui"]}>
 
-        <div className="board-ui-bar top-bar">
+        <div className={boardUIStyles["top-bar"]}>
             {top ?? ""}
         </div>
       
         <div className="middle-area">
-            <div className="board-ui-bar left-bar">
+            <div className={boardUIStyles["left-bar"]}>
                 {left ?? ""}
             </div>
             
@@ -18,12 +18,12 @@ export const BoardUI = ({top, left, center, right, bottom}: { top?: ReactNode, l
                 {center ?? ""}
             </div>
 
-            <div className="board-ui-bar right-bar">
+            <div className={boardUIStyles["right-bar"]}>
                 {right ?? ""}
             </div>
         </div>
 
-        <div className="board-ui-bar bottom-bar">
+        <div className={boardUIStyles["bottom-bar"]}>
             {bottom ?? ""}
         </div>
 

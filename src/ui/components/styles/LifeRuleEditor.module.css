@@ -1,5 +1,6 @@
 .rule-editor {
     background-color: white;
+    padding: 10px;
 }
 
 .rule-edit-area .rule-editor {
@@ -7,27 +8,28 @@
     flex-direction: column;
 }
 
-.life-rule-editor-title {
+.title {
     text-align: center;
 }
 
-.rule-editor-mode-selection-area {
+.text {
+    text-align: center;
+}
+
+.mode-selection-area {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
 }
 
-.rule-editor-selection-button-list {
+.selection-button-list {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
 }
 
-.rule-editor-text {
-    text-align: center;
-}
 
-.rule-editor-mode-selection-button {
+.mode-selection-button {
     text-align: center;
     border: none;
     flex-grow: 1;
@@ -35,14 +37,14 @@
 
 }
 
-.rule-editor-mode-selection-button.selected {
+.mode-selection-button.selected {
     transition: color 0.2s background-color 0.2s;
     color: white;
     background-color: black;
     border-bottom: 1px solid green;
 }
 
-.life-rule-data * {
+.life-rule-data {
     font-family: monospace;
     font-size: 16px;
 }
@@ -70,14 +72,14 @@
 }
 
 
-.rule-editor-select-button {
+.select-button {
     color: black;
     font-family: monospace;
     border: none;
 
 }
 
-.rule-editor-select-button.selected {
+.select-button.selected {
     transition: color 0.2s background-color 0.2s;
     color: white;
     background-color: black;

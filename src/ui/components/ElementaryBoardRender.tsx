@@ -37,7 +37,7 @@ export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], v
     }, [cellMatrix, rule])
 
     return (
-        <div className="elementary-board-render">            
+        <div>            
             <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix} />
         </div>
     )

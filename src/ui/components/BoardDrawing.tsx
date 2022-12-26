@@ -5,7 +5,7 @@ import { Color } from 'interfaces/Color';
 import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid } from 'functions/drawing';
 import { useWebGL2CanvasUpdater } from 'functions/hooks';
 import { CellMatrix } from 'interfaces/CellMatrix';
-import "ui/components/styles/boarddrawing.css"
+import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 import {LayeredCanvas} from 'ui/components/LayeredCanvas';
 import {getColorFromCSS} from 'interfaces/Color';
 
@@ -108,8 +108,8 @@ export const BoardDrawing = ({ board, view, className  }: { board: Vector2[] | C
         renderAll();
     }, [])
   
-  return <LayeredCanvas styles="board-background">
-          <canvas className={className ?? "board-drawing"} ref={boardCanvasRef}></canvas>
-          <canvas className={className ?? "board-drawing"} ref={gridCanvasRef}></canvas> 
+  return <LayeredCanvas className={boardDrawingStyles["board-background"]}>
+          <canvas className={className ?? boardDrawingStyles["board-drawing"]} ref={boardCanvasRef}></canvas>
+          <canvas className={className ?? boardDrawingStyles["board-drawing"]} ref={gridCanvasRef}></canvas> 
         </LayeredCanvas> 
 }
