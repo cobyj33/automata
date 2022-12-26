@@ -1,27 +1,21 @@
 import { useState } from 'react';
 import { Vector2 } from './interfaces/Vector2';
-import './App.css';
+import appStyles from './App.module.css';
 import { BoardType, GameBoard } from './components/GameBoard';
-
-const randomPoints = (width: number, height: number, count: number) => {
-    return Array.from({length: count}, () => ({
-        row: Math.trunc(Math.random() * height),
-        col: Math.trunc(Math.random() * width)
-    }))
-}
 
 
 function App() {
   const [board, setBoard] = useState<Vector2[]>([]);
   const [currentBoardType, setCurrentBoardType] = useState<BoardType>(BoardType.BOUNDED);
+  console.log(appStyles)
 
   return (
-    <div className="App">
+    <div className={appStyles["App"]}>
 
-      <div className="menu-bar">
-        <div className="menu-content-container">
-          <button className="menu-button" onClick={() => setCurrentBoardType(BoardType.BOUNDED)}> LifeLike Board </button>
-          <button className="menu-button" onClick={() => setCurrentBoardType(BoardType.ELEMENTARY)}> Elementary Board </button>
+      <div className={appStyles["menu-bar"]}>
+        <div className={appStyles["menu-content-container"]}>
+          <button className={appStyles["menu-button"]} onClick={() => setCurrentBoardType(BoardType.BOUNDED)}> LifeLike Board </button>
+          <button className={appStyles["menu-button"]} onClick={() => setCurrentBoardType(BoardType.ELEMENTARY)}> Elementary Board </button>
         </div>
       </div>
  
