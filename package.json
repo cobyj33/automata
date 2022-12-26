@@ -22,7 +22,7 @@
     "serve": "vite preview",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage"
   },
   "eslintConfig": {
     "extends": [
