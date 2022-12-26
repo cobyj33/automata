@@ -12,6 +12,19 @@ export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: V
     } 
 }
 
+export function quadVertices() {
+    return [ 
+        -1, -1,
+        1, -1,
+        1, 1,
+        -1, 1
+    ]
+}
+
+export function quadIndices() {
+    return [ 0, 1, 3, 1, 3, 2 ]
+}
+
 function createShader(gl: WebGL2RenderingContext, shaderType: number, shaderSource: string): WebGLShader | null {
     let shader = gl.createShader(shaderType);
     if (shader !== null && shader !== undefined) {
@@ -148,6 +161,7 @@ export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, ce
       row: (cellMatrix.row - view.row) * view.cellSize,
       col: (cellMatrix.col - view.col) * view.cellSize
   }
+
   const viewArea: Box = getViewArea(gl.canvas, view);
     if (!areBoxesIntersecting(viewArea, cellMatrix)) {
         return;
@@ -210,61 +224,40 @@ export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, ce
     gl.uniform1f(cellSizeLocation, view.cellSize);
 
     gl.drawArrays(gl.POINTS, 0, Math.trunc(cellVertices.length / 2));
-    
-    // gl.enable(gl.SCISSOR_TEST);
-    // gl.clearColor(1, 1, 1, 1);
-    // for (let row = 0; row < cellMatrix.height; row++) {
-    //   for (let col = 0; col < cellMatrix.width; col++) {
-    //       if (inBox( { row: cellMatrix.row + row, col: cellMatrix.col + col }, viewArea ) && cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
-    //         gl.scissor(startCoordinates.col + (col * view.cellSize), gl.canvas.height - ( startCoordinates.row + ( (row + 1) * view.cellSize) ), view.cellSize, view.cellSize);
-    //           gl.clear(gl.COLOR_BUFFER_BIT);
-    //       }
-    //   }
-    // }
-    // gl.disable(gl.SCISSOR_TEST);
-    // gl.clearColor(lastClearColor[0], lastClearColor[1], lastClearColor[2], lastClearColor[3]);
 }
-
-
-// export function renderGrid(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View) {
-//       context.save();
-//       context.lineWidth = 1;
-//       context.strokeStyle = 'black';
-//       context.beginPath()
-//       for (let y = -getViewOffset(view).row; y <= canvas.height; y += view.cellSize) {
-//         context.moveTo(0, y);
-//         context.lineTo(canvas.width, y);
-//       }
-      
-//       for (let x = -getViewOffset(view).col; x <= canvas.width; x += view.cellSize) {
-//         context.moveTo(x, 0);
-//         context.lineTo(x, canvas.height);
-//       }
-  
-//       context.stroke();
-//       context.restore();
-//     }
 
 const gridVertexShader = `
     attribute vec2 aPos;
-    uniform vec2 resolution;
-    uniform vec2 offset;
 
     void main() {
-    vec2 shifted = aPos - offset;
-    vec2 normalized = shifted / resolution;
-    vec2 doubled = normalized * 2.0;
-    vec2 clip = doubled - 1.0;
-
-    gl_Position = vec4(clip.x, -clip.y, 0, 1);
+        gl_Position = vec4(aPos, 0.0, 1.0);
     }
 `
 
 const gridFragmentShader = `
     precision mediump float;
+    uniform vec2 offset;
+    uniform vec4 gridColor;
+    uniform vec2 cellSize;
+    uniform float gridLineWidth;
+
+    float modI(float a,float b) {
+        float m = a - floor( (a + 0.5) / b ) * b;
+        return floor( m + 0.5 );
+    }
+
+    bool closeTo(float num, float desired, float range) {
+        return num >= (desired - range) && num <= (desired + range);
+    }
 
     void main() {
-    gl_FragColor = vec4(0, 0, 0, 1);
+        const float ACCURACY = 0.0001;
+        
+        if ( closeTo( modI((gl_FragCoord.x - offset.x), cellSize.x), 0.0, ACCURACY) || closeTo( modI((gl_FragCoord.y - offset.y), cellSize.y), 0.0, ACCURACY)  ) {
+            gl_FragColor = gridColor;
+        } else {
+            gl_FragColor = vec4(0, 0, 0, 0);
+        }
     }
 `
 
@@ -280,67 +273,65 @@ export function getGridShaderProgram(gl: WebGL2RenderingContext): WebGLProgram |
     return null;
 }
 
-
-function getGridVertices(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Float32Array {
-    const vertices: Float32Array = new Float32Array( Math.trunc( canvas.height / view.cellSize * 4  )  + Math.trunc( canvas.width / view.cellSize * 4 )  )
-    let currentVertexIndex = 0;
-      for (let y = 0; y <= canvas.height; y += view.cellSize) {
-          vertices[currentVertexIndex] = 0;
-          vertices[currentVertexIndex + 1] = y;
-          vertices[currentVertexIndex + 2] = canvas.width;
-          vertices[currentVertexIndex + 3] = y;
-          currentVertexIndex += 4;
-      }
-      
-      for (let x = 0; x <= canvas.width; x += view.cellSize) {
-          vertices[currentVertexIndex] = x;
-          vertices[currentVertexIndex + 1] = 0;
-          vertices[currentVertexIndex + 2] = x;
-          vertices[currentVertexIndex + 3] = canvas.height;
-          currentVertexIndex += 4;
-      }
-
-    return vertices;
-}
-
 export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: WebGLProgram | null = null): void {
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-        const gridVertices: Float32Array = getGridVertices(gl.canvas, view);
-        let vertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, gridVertices, gl.STATIC_DRAW);
-        
-        let gridGraphicProgram: WebGLProgram | null = null;
-        if (gridProgram !== null && gridProgram !== undefined) {
-            gl.validateProgram(gridProgram);
-            const validationSuccess = gl.getProgramParameter(gridProgram, gl.VALIDATE_STATUS);
-            if (validationSuccess) {
-                gridGraphicProgram = gridProgram;
-            } else {
-                console.error(gl.getProgramInfoLog(gridProgram));
-                gridGraphicProgram = getGridShaderProgram(gl);
-            }
+    const quadVertices: Float32Array = new Float32Array([
+        -1, -1,
+        1, -1,
+        1, 1,
+        -1, 1
+    ])
 
+    const quadIndices: Uint16Array = new Uint16Array([
+        0, 1, 3, 1, 3, 2
+    ])
+
+
+    let vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, quadVertices, gl.STATIC_DRAW);
+
+    let elementBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, elementBuffer)
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, quadIndices, gl.STATIC_DRAW);
+    
+    let gridGraphicProgram: WebGLProgram | null = null;
+
+    if (gridProgram !== null && gridProgram !== undefined) {
+        gl.validateProgram(gridProgram);
+        const validationSuccess = gl.getProgramParameter(gridProgram, gl.VALIDATE_STATUS);
+        if (validationSuccess) {
+            gridGraphicProgram = gridProgram;
         } else {
+            console.error(gl.getProgramInfoLog(gridProgram));
             gridGraphicProgram = getGridShaderProgram(gl);
         }
 
-        if (gridGraphicProgram === null || gridGraphicProgram === undefined) {
-            return;
-        }
+    } else {
+        gridGraphicProgram = getGridShaderProgram(gl);
+    }
 
-        const aPosLocation = gl.getAttribLocation(gridGraphicProgram, "aPos");
-        const resolutionLocation = gl.getUniformLocation(gridGraphicProgram, "resolution");
-        const offsetLocation = gl.getUniformLocation(gridGraphicProgram, "offset");
-        gl.useProgram(gridGraphicProgram);
-        gl.enableVertexAttribArray(aPosLocation);
-        gl.vertexAttribPointer(aPosLocation, 2, gl.FLOAT, false, 0, 0);
-        gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-        gl.uniform2f(offsetLocation, getViewOffset(view).col, getViewOffset(view).row);
-        
+    if (gridGraphicProgram === null || gridGraphicProgram === undefined) {
+        return;
+    }
 
-        gl.drawArrays(gl.LINES, 0, Math.trunc(gridVertices.length / 2));
+    const aPosLocation = gl.getAttribLocation(gridGraphicProgram, "aPos");
+    const offsetLocation = gl.getUniformLocation(gridGraphicProgram, "offset");
+    const cellSizeLocation = gl.getUniformLocation(gridGraphicProgram, "cellSize")
+    const gridColorLocation = gl.getUniformLocation(gridGraphicProgram, "gridColor")
+    const gridLineWidthLocation = gl.getUniformLocation(gridGraphicProgram, "gridLineWidth")
+    gl.useProgram(gridGraphicProgram);
+    gl.enableVertexAttribArray(aPosLocation);
+    gl.vertexAttribPointer(aPosLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(offsetLocation, getViewOffset(view).col, getViewOffset(view).row);
+    gl.uniform2f(cellSizeLocation, view.cellSize, view.cellSize)
+    gl.uniform1f(gridLineWidthLocation, 1)
+    gl.uniform4f(gridColorLocation, 0.0, 0.0, 0.0, 1)
+
+    console.log(view, getViewOffset(view))
+
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 }
 
 
