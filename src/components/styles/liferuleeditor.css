@@ -33,12 +33,13 @@
     flex-grow: 1;
     flex-basis: 20px;
 
-    &.selected {
-        transition: color 0.2s background-color 0.2s;
-        color: white;
-        background-color: black;
-        border-bottom: 1px solid green;
-    }
+}
+
+.rule-editor-mode-selection-button.selected {
+    transition: color 0.2s background-color 0.2s;
+    color: white;
+    background-color: black;
+    border-bottom: 1px solid green;
 }
 
 .life-rule-data * {
@@ -55,18 +56,18 @@
     text-align: center;
 
 
-    &.valid {
-        transition: background-color 0.1s;
-        background-color: green;
-    }
-
-    &.invalid {
-        transition: background-color 0.1s;
-        background-color: red;
-    }
 }
 
 
+.life-rule-string-input.valid {
+    transition: background-color 0.1s;
+    background-color: green;
+}
+
+.life-rule-string-input.invalid {
+    transition: background-color 0.1s;
+    background-color: red;
+}
 
 
 .rule-editor-select-button {
@@ -74,10 +75,11 @@
     font-family: monospace;
     border: none;
 
-    &.selected {
-        transition: color 0.2s background-color 0.2s;
-        color: white;
-        background-color: black;
-        border-bottom: 1px solid green;
-    }
+}
+
+.rule-editor-select-button.selected {
+    transition: color 0.2s background-color 0.2s;
+    color: white;
+    background-color: black;
+    border-bottom: 1px solid green;
 }

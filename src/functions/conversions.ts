@@ -49,7 +49,7 @@ export function cellMatrixToVector2(cellMatrix: CellMatrix): Vector2[] {
     const cells: Vector2[] = [];
     for (let row = 0; row < cellMatrix.height; row++) {
         for (let col = 0; col < cellMatrix.width; col++) {
-            if (cellMatrix.matrix[row * cellMatrix.height + col] == 1) {
+            if (cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
                 cells.push({row: cellMatrix.row + row, col: cellMatrix.col + col });
             }
         }

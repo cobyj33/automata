@@ -41,31 +41,38 @@ test('cells To Matrix', () => {
 })
 
 test('matrix to cells', () => {
+    const WIDTH = 9
+    const HEIGHT = 5
     const matrix = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 0, 0, 1, 1, 1, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0],
-        [0, 0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 1, 1, 0, 0, 1, 1, 1, 0,
+        0, 0, 0, 0, 1, 0, 0, 0, 0,
+        0, 0, 1, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0
     ];
 
     const cells: Vector2[] = cellMatrixToVector2( {
         row: 0,
         col: 0,
-        matrix: new Uint8ClampedArray(matrix.flat()),
-        width: matrix[0].length,
-        height: matrix.length
+        matrix: new Uint8ClampedArray(matrix),
+        width: WIDTH,
+        height: HEIGHT
     })
 
     const expected = [
-        { row: 1, col: 1 } ,
+        { row: 1, col: 1 },
         { row: 1, col: 2 },
         { row: 3, col: 2 },
-        { row: 2, col: 4 } ,
-        { row: 1, col: 5 } ,
+        { row: 2, col: 4 },
+        { row: 1, col: 5 },
         { row: 1, col: 6 },
         { row: 1, col: 7 },
     ]
 
-    expect(expected.every(cell => cells.some(testCell => JSON.stringify(cell) === JSON.stringify(testCell)))).toBe(true);
+    const passed = expected.every(cell => {
+        return cells.some(otherCell => cell.col === otherCell.col && cell.row === otherCell.row)
+    }) && expected.length === cells.length;
+    console.log(expected, cells)
+
+    expect(passed).toBe(true);
 })

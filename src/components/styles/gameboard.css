@@ -67,10 +67,11 @@
     animation-duration: 0.5s;
 
 
-    * {
-        font-family: monospace;
-        font-weight: bold;
-        font-size: 16;
-        color: white;
-    } 
 }
+
+.render-info * {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 16;
+    color: white;
+} 

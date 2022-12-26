@@ -1,0 +1,20 @@
+.rule-input-area {
+    justify-self: center;
+    align-self: center;
+    width: 50%;
+
+}
+
+.rule-input {
+    text-align: center;
+}
+
+.rule-input.invalid {
+    background-color: red;
+}
+
+.rule-input.valid {
+    background-color: lightgreen;
+}
+
+

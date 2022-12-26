@@ -3,7 +3,7 @@ import { getViewOffset, View } from "../interfaces/View";
 import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "../interfaces/Box";
 import { CellMatrix } from "../interfaces/CellMatrix";
 
-export function getViewArea(canvas: HTMLCanvasElement, view: View): Box {
+export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
     return {
         row: view.row,
         col: view.col,
@@ -281,7 +281,7 @@ export function getGridShaderProgram(gl: WebGL2RenderingContext): WebGLProgram |
 }
 
 
-function getGridVertices(canvas: HTMLCanvasElement, view: View): Float32Array {
+function getGridVertices(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Float32Array {
     const vertices: Float32Array = new Float32Array( Math.trunc( canvas.height / view.cellSize * 4  )  + Math.trunc( canvas.width / view.cellSize * 4 )  )
     let currentVertexIndex = 0;
       for (let y = 0; y <= canvas.height; y += view.cellSize) {

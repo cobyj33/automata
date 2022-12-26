@@ -5,7 +5,7 @@ test("pushing array to history stack", () => {
     history.pushState([[1, 2, 3]]);
     history.pushState([[4, 5, 6]]);
 
-    expect(history.peekLatest()).toMatchObject([4, 5, 6]);
+    expect(history.peekLatest()).toEqual([[4, 5, 6]]);
 })
 
 test("pushing array to matrix", () => {

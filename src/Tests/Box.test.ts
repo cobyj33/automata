@@ -26,8 +26,8 @@ test('getEnclosingBox', () => {
     const expected = {
         row: 2,
         col: 0,
-        width: 2,
-        height: 7
+        width: 4,
+        height: 5
     }
 
     expect(box).toMatchObject(expected)

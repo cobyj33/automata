@@ -5,7 +5,7 @@ import { Color } from '../interfaces/Color';
 import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid } from '../functions/drawing';
 import { useWebGL2CanvasUpdater } from '../functions/hooks';
 import { CellMatrix } from '../interfaces/CellMatrix';
-import "./styles/boarddrawing.scss"
+import "./styles/boarddrawing.css"
 import {LayeredCanvas} from './LayeredCanvas';
 import {getColorFromCSS} from '../interfaces/Color';
 

@@ -2,7 +2,7 @@ import { Vector2 } from '../interfaces/Vector2'
 import { StatefulData } from '../interfaces/StatefulData'
 import { BoundedGameBoard } from './BoundedGameBoard'
 import { UnboundedGameBoard } from './UnboundedGameBoard'
-import "./styles/gameboard.scss"
+import "./styles/gameboard.css"
 import {ElementaryBoard} from './ElementaryBoard'
 
 export enum BoardType { BOUNDED, UNBOUNDED, ELEMENTARY }

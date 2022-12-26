@@ -15,7 +15,7 @@ import { ZoomEditMode, ZoomData } from '../classes/Editor/ZoomEditMode';
 import { MoveEditMode, MoveData } from '../classes/Editor/MoveEditMode';
 import { EditMode } from '../classes/Editor/EditMode';
 import { ElementaryEraseEditMode, ElementaryEraseData } from '../classes/Editor/Elementary/ElementaryEraseEditMode';
-import './styles/elementary.scss'
+import './styles/elementary.css'
 
 interface ElementaryEditorData {
     boardData: StatefulData<CellMatrix>;
