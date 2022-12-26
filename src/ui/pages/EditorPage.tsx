@@ -17,10 +17,10 @@ function EditorPage() {
       <nav className={editorPageStyles["menu-bar"]}>
         <Menu className={editorPageStyles["menu"]} transition menuClassName={editorPageStyles["menu-drop-down"]} menuButton={<MenuButton className={editorPageStyles["menu-button"]}> File </MenuButton>}>
             <MenuItem  className={editorPageStyles["menu-item"]}>New</MenuItem>
-            <MenuItem className={editorPageStyles["menu-item"]}>< input type="file" accept="image/*" onChange={e => {}}/> Open</MenuItem>
+            <MenuItem className={editorPageStyles["menu-item"]}>< input type="file" accept="image/*"/> Open</MenuItem>
             <MenuItem className={editorPageStyles["menu-item"]}>Save</MenuItem>
             <MenuItem className={editorPageStyles["menu-item"]}>Save As</MenuItem>
-            <MenuItem className={editorPageStyles["menu-item"]} onClick={e => {}}>Export</MenuItem>
+            <MenuItem className={editorPageStyles["menu-item"]}>Export</MenuItem>
             <MenuItem className={editorPageStyles["menu-item"]}>Import</MenuItem>
         </Menu>
 
