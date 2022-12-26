@@ -13,7 +13,6 @@ export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], v
         matrix: new Uint8ClampedArray(start)
     });
 
-    const [currentGeneration, setCurrentGeneration] = useState<number>(0);
 
     useEffect( () => {
         if (cellMatrix.matrix.length > 0) {
@@ -35,7 +34,7 @@ export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], v
                     } )
             })
         }
-    }, [cellMatrix])
+    }, [cellMatrix, rule])
 
     return (
         <div className="elementary-board-render">            

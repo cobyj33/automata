@@ -40,35 +40,26 @@ export const BoardDrawing = ({ board, view, className  }: { board: Vector2[] | C
     const gridShaderProgram: MutableRefObject<WebGLShader | null> = useRef<WebGLShader | null>(null);
 
 
-// function isCellMatrix(board: Vector2[] | CellMatrix) {
-//     return !Array.isArray(board);
-// }
+  const lastView = useRef<View>(view);
 
-// function isVector2Array(board: Vector2[] | CellMatrix) {
-//     return Array.isArray(board);
-// }
+  function renderBoardCanvas() {
+      const canvas: HTMLCanvasElement | null = boardCanvasRef.current;
+      if (canvas !== null && canvas !== undefined) {
+        const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
+        if (gl !== null && gl !== undefined) {
+          const color = getColorFromCSS("gray");
+          gl.clearColor(0.15, 0.15, 0.15, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT);
 
-// const lastBoard = useRef<Vector2[] | CellMatrix>(board);
-const lastView = useRef<View>(view);
+          if (Array.isArray(board)) {
+            renderBoard(gl, view, board as Vector2[]);
+          } else {
+            renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
+          }
 
-function renderBoardCanvas() {
-    const canvas: HTMLCanvasElement | null = boardCanvasRef.current;
-    if (canvas !== null && canvas !== undefined) {
-      const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
-      if (gl !== null && gl !== undefined) {
-        const color = getColorFromCSS("gray");
-        gl.clearColor(0.15, 0.15, 0.15, 1);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-
-        if (Array.isArray(board)) {
-          renderBoard(gl, view, board as Vector2[]);
-        } else {
-          renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
         }
-
       }
-    }
-}
+  }
 
     function renderGridCanvas() {
         const canvas: HTMLCanvasElement | null = gridCanvasRef.current;
@@ -118,8 +109,7 @@ function renderBoardCanvas() {
     }, [])
   
   return <LayeredCanvas styles="board-background">
-        <canvas className={className ?? "board-drawing"} ref={boardCanvasRef}></canvas>
-        <canvas className={className ?? "board-drawing"} ref={gridCanvasRef}></canvas> 
+          <canvas className={className ?? "board-drawing"} ref={boardCanvasRef}></canvas>
+          <canvas className={className ?? "board-drawing"} ref={gridCanvasRef}></canvas> 
         </LayeredCanvas> 
-
 }

@@ -12,12 +12,13 @@ const randomPoints = (width: number, height: number, count: number) => {
 
 
 function App() {
-  const [board, setBoard] = useState<Vector2[]>(randomPoints(200, 200, 200 * 200 / 2));
-    const [currentBoardType, setCurrentBoardType] = useState<BoardType>(BoardType.BOUNDED);
+  const [board, setBoard] = useState<Vector2[]>([]);
+  const [currentBoardType, setCurrentBoardType] = useState<BoardType>(BoardType.BOUNDED);
 
   return (
     <div className="App">
       {
+        
       <div className="menu-bar">
         <div className="menu-content-container">
           <button className="menu-button" onClick={() => setCurrentBoardType(BoardType.BOUNDED)}> LifeLike Board </button>

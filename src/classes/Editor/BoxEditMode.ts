@@ -85,11 +85,6 @@ export class BoxEditMode extends EditMode<BoxData> {
         if (this.start !== undefined && this.end !== undefined) {
             const { 1: setBoard } = this.data.boardData;
             console.log('box cell count:' + this.boxCells.length);
-            // this.boxCells.forEach(cell => {
-            //     if (board.inBounds(cell.row, cell.col)) {
-            //         setBoard((board) => map.placeTile(this.data.selectedTile.clone(), cell.row, cell.col))
-            //     } 
-            // })
 
             setBoard(board => removeDuplicates(board.concat(this.boxCells)))
 
