@@ -10,14 +10,16 @@
     display: flex;
     flex-direction: column;
 
-    & div {
-        pointer-events: none;
-        touch-action: none;
-    }
-    & *:not(div) {
-        pointer-events: auto;
-        touch-action: auto;
-    }
+}
+
+.board-ui div {
+    pointer-events: none;
+    touch-action: none;
+}
+
+.board-ui *:not(div) {
+    pointer-events: auto;
+    touch-action: auto;
 }
 
 .board-ui-bar {

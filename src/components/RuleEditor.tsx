@@ -1,4 +1,4 @@
-import "./styles/liferuleeditor.scss"
+import "./styles/liferuleeditor.css"
 import { useState, useRef, useCallback, useEffect, RefObject } from "react";
 import { StatefulData } from "../interfaces/StatefulData"
 import { BoundedGameRender } from "./BoundedGameRender"
