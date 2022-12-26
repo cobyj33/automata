@@ -1,5 +1,5 @@
-import { Box, inBox, getEnclosingBox } from "../interfaces/Box";
-import { Vector2 } from "../interfaces/Vector2"
+import { Box, inBox, getEnclosingBox } from "interfaces/Box";
+import { Vector2 } from "interfaces/Vector2"
 
 test("inBox", () => {
     const cell: Vector2 = { row: 1, col: 0 };

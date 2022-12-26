@@ -1,4 +1,4 @@
-import { CellMatrix } from '../interfaces/CellMatrix';
+import { CellMatrix } from 'interfaces/CellMatrix';
 
 type LifeRuleData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {

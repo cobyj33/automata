@@ -1,8 +1,8 @@
 import { PointerEvent } from "react";
-import { EditMode } from "./EditMode";
-import { getLine } from "../../functions/shapes";
-import { StatefulData } from "../../interfaces/StatefulData"
-import { Vector2 } from "../../interfaces/Vector2"
+import { EditMode } from "classes/Editor/EditMode";
+import { getLine } from "functions/shapes";
+import { StatefulData } from "interfaces/StatefulData"
+import { Vector2 } from "interfaces/Vector2"
 
 export interface EraseData {
     boardData: StatefulData<Vector2[]>,

@@ -1,7 +1,7 @@
-import { Vector2 } from "../interfaces/Vector2";
-import { Box, getEnclosingBox, inBox } from "../interfaces/Box";
-import { CellMatrix } from '../interfaces/CellMatrix';
-import { Set2D } from '../classes/Structures/Set2D';
+import { Vector2 } from "interfaces/Vector2";
+import { Box, getEnclosingBox, inBox } from "interfaces/Box";
+import { CellMatrix } from 'interfaces/CellMatrix';
+import { Set2D } from 'classes/Structures/Set2D';
 
 export function cellsToCellMatrix(cells: Vector2[]): CellMatrix {
     const boundingBox: Box = getEnclosingBox(cells);

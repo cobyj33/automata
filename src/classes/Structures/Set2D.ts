@@ -1,4 +1,4 @@
-import { Vector2 } from '../../interfaces/Vector2';
+import { Vector2 } from 'interfaces/Vector2';
 
 
 type Map2D = {[key: number]: Set<number>}

@@ -1,11 +1,11 @@
-import "./styles/liferuleeditor.css"
+import "ui/components/styles/liferuleeditor.css"
 import { useState, useRef, useCallback, useEffect, RefObject } from "react";
-import { StatefulData } from "../interfaces/StatefulData"
-import { BoundedGameRender } from "./BoundedGameRender"
-import { isValidLifeString, createLifeString, parseLifeLikeString } from "../functions/generationFunctions"
-import { View } from "../interfaces/View"
-import { Box, inBox } from "../interfaces/Box"
-import { Vector2 } from "../interfaces/Vector2"
+import { StatefulData } from "interfaces/StatefulData"
+import { BoundedGameRender } from "ui/components/BoundedGameRender"
+import { isValidLifeString, createLifeString, parseLifeLikeString } from "functions/generationFunctions"
+import { View } from "interfaces/View"
+import { Box, inBox } from "interfaces/Box"
+import { Vector2 } from "interfaces/Vector2"
 
 type RuleEditMode = "assisted" | "raw";
 

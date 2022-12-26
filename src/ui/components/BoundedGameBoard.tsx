@@ -1,21 +1,21 @@
 import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
-import { Vector2 } from '../interfaces/Vector2';
-import { View } from '../interfaces/View';
+import { Vector2 } from 'interfaces/Vector2';
+import { View } from 'interfaces/View';
 import { EditMode } from "automata/editor/main";
 import { BoxEditMode, BoxData, DrawEditMode, DrawData, EllipseEditMode, EllipseData, LineEditMode, LineData, MoveEditMode, MoveData, ZoomEditMode, ZoomData, EraseEditMode, EraseData } from 'automata/editor/bounded';
-import { getHoveredCell, pointerPositionInElement } from '../functions/editorFunctions';
-import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from '../functions/hooks';
-import { StatefulData } from '../interfaces/StatefulData';
-import { BoundedBoardDrawing } from './BoundedBoardDrawing';
-import { BoundedGameRender, RenderData } from './BoundedGameRender';
+import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
+import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
+import { StatefulData } from 'interfaces/StatefulData';
+import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
+import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
-import { LayeredCanvas } from './LayeredCanvas';
-import { renderBoard } from '../functions/drawing';
-import { createLifeString, isValidLifeString, parseLifeLikeString } from '../functions/generationFunctions';
-import {Box, inBox} from '../interfaces/Box';
-import { BoardUI } from "./BoardUI"
-import { RuleEditor } from "./RuleEditor"
-import { ToolTip } from "./ToolTip/ToolTip"
+import { LayeredCanvas } from 'ui/components/LayeredCanvas';
+import { renderBoard } from 'functions/drawing';
+import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
+import {Box, inBox} from 'interfaces/Box';
+import { BoardUI } from "ui/components/BoardUI"
+import { RuleEditor } from "ui/components/RuleEditor"
+import { ToolTip } from "ui/components/ToolTip/ToolTip"
 
 
 interface EditorData {

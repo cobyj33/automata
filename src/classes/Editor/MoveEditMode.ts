@@ -1,9 +1,9 @@
 import { PointerEvent } from "react";
-import { Vector2, vector2ToLength } from "../../interfaces/Vector2";
-import { EditMode } from "./EditMode";
-import {addVector2} from "../../interfaces/Vector2";
-import { StatefulData } from '../../interfaces/StatefulData';
-import { View } from '../../interfaces/View';
+import { Vector2, vector2ToLength } from "interfaces/Vector2";
+import { EditMode } from "classes/Editor/EditMode";
+import {addVector2} from "interfaces/Vector2";
+import { StatefulData } from 'interfaces/StatefulData';
+import { View } from 'interfaces/View';
 
 
 export interface MoveData {

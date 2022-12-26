@@ -1,6 +1,6 @@
 import {MutableRefObject, useEffect, RefObject, useRef} from "react";
-import { getNextLifeGeneration } from "../../functions/generationFunctions"
-import { CellMatrix } from "../../interfaces/CellMatrix";
+import { getNextLifeGeneration } from "functions/generationFunctions"
+import { CellMatrix } from "interfaces/CellMatrix";
 
 const LifeLikeText = ({ children }: { children: string }) => {
     const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);

@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App from 'App';
+import reportWebVitals from 'reportWebVitals';
 import "globals.css"
+
+import '@szhsin/react-menu/dist/index.css';
+import '@szhsin/react-menu/dist/theme-dark.css';
+import '@szhsin/react-menu/dist/transitions/slide.css';
+import "@szhsin/react-menu/dist/core.css"
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

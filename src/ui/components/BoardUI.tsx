@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import "./styles/boardui.css"
+import "ui/components/styles/boardui.css"
 
 export const BoardUI = ({top, left, center, right, bottom}: { top?: ReactNode, left?: ReactNode, center?: ReactNode, right?: ReactNode, bottom?: ReactNode }) => {
     return (

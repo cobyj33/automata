@@ -1,5 +1,5 @@
-import { Vector2 } from "../interfaces/Vector2"
-import { removeDuplicates } from "./utilityFunctions"
+import { Vector2 } from "interfaces/Vector2"
+import { removeDuplicates } from "functions/utilityFunctions"
 
 
 export function getLine(start: Vector2, end: Vector2): Vector2[] {

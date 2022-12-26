@@ -1,21 +1,21 @@
 import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState } from "react";
-import { View } from "../interfaces/View"
-import { Vector2 } from "../interfaces/Vector2"
-import {BoundedBoardDrawing} from "./BoundedBoardDrawing";
-import { CellMatrix } from "../interfaces/CellMatrix";
-import { ElementaryDrawEditMode, ElementaryDrawData } from "../classes/Editor/Elementary/ElementaryDrawEditMode";
-import {ElementaryLineEditMode, ElementaryLineData } from "../classes/Editor/Elementary/ElementaryLineEditMode";
+import { View } from "interfaces/View"
+import { Vector2 } from "interfaces/Vector2"
+import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
+import { CellMatrix } from "interfaces/CellMatrix";
+import { ElementaryDrawEditMode, ElementaryDrawData } from "classes/Editor/Elementary/ElementaryDrawEditMode";
+import {ElementaryLineEditMode, ElementaryLineData } from "classes/Editor/Elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
-import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "../functions/hooks";
-import { ElementaryBoardRender } from "./ElementaryBoardRender";
-import { StatefulData } from "../interfaces/StatefulData"
-import { pointerPositionInElement, getHoveredCell } from '../functions/editorFunctions';
-import { ZoomEditMode, ZoomData } from '../classes/Editor/ZoomEditMode';
-import { MoveEditMode, MoveData } from '../classes/Editor/MoveEditMode';
-import { EditMode } from '../classes/Editor/EditMode';
-import { ElementaryEraseEditMode, ElementaryEraseData } from '../classes/Editor/Elementary/ElementaryEraseEditMode';
-import './styles/elementary.css'
+import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "functions/hooks";
+import { ElementaryBoardRender } from "ui/components/ElementaryBoardRender";
+import { StatefulData } from "interfaces/StatefulData"
+import { pointerPositionInElement, getHoveredCell } from 'functions/editorFunctions';
+import { ZoomEditMode, ZoomData } from 'classes/Editor/ZoomEditMode';
+import { MoveEditMode, MoveData } from 'classes/Editor/MoveEditMode';
+import { EditMode } from 'classes/Editor/EditMode';
+import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/Elementary/ElementaryEraseEditMode';
+import 'ui/components/styles/elementary.css'
 
 interface ElementaryEditorData {
     boardData: StatefulData<CellMatrix>;

@@ -1,5 +1,5 @@
 import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react'
-import "./tooltip.css"
+import "ui/components/tooltip.css"
 
 type Position = { left: string, top: string }
 export const ToolTip = ({ children, expanded, target }: { children?: any, expanded?: any, target: RefObject<HTMLElement> }) => {

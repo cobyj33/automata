@@ -1,9 +1,9 @@
 import { PointerEvent, KeyboardEvent } from "react";
-import { removeDuplicates } from "../../functions/utilityFunctions";
-import { Vector2 } from "../../interfaces/Vector2";
-import { getEllipse } from "../../functions/shapes";
-import { EditMode } from "./EditMode";
-import { StatefulData } from "../../interfaces/StatefulData";
+import { removeDuplicates } from "functions/utilityFunctions";
+import { Vector2 } from "interfaces/Vector2";
+import { getEllipse } from "functions/shapes";
+import { EditMode } from "classes/Editor/EditMode";
+import { StatefulData } from "interfaces/StatefulData";
 
 export interface EllipseData {
     boardData: StatefulData<Vector2[]>,

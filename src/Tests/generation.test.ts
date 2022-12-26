@@ -1,7 +1,7 @@
-import { isEqualNumberMatrix } from "../functions/matrixFunctions";
-import { CellMatrix } from "../interfaces/CellMatrix";
-import { getNextLifeGeneration } from "../functions/generationFunctions"
-import { isEqualArrays } from "../functions/validation"
+import { isEqualNumberMatrix } from "functions/matrixFunctions";
+import { CellMatrix } from "interfaces/CellMatrix";
+import { getNextLifeGeneration } from "functions/generationFunctions"
+import { isEqualArrays } from "functions/validation"
 
 test('next generation 1st test', () => {
     const lifeString = "B3/S23";

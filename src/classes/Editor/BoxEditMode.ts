@@ -1,9 +1,9 @@
 import { KeyboardEvent, PointerEvent } from "react";
-import {getLine} from "../../functions/shapes";
-import { removeDuplicates } from "../../functions/utilityFunctions"
-import { Vector2 } from "../../interfaces/Vector2";
-import { StatefulData } from "../../interfaces/StatefulData";
-import { EditMode } from "./EditMode";
+import {getLine} from "functions/shapes";
+import { removeDuplicates } from "functions/utilityFunctions"
+import { Vector2 } from "interfaces/Vector2";
+import { StatefulData } from "interfaces/StatefulData";
+import { EditMode } from "classes/Editor/EditMode";
 
 type LineSegment = {
     first: Vector2,

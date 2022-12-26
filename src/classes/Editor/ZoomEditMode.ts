@@ -1,8 +1,8 @@
 import { PointerEvent, WheelEvent } from "react";
-import {StatefulData} from "../../interfaces/StatefulData";
-import { dotProductVector2, Vector2, vector2Normalized } from "../../interfaces/Vector2";
-import {View} from "../../interfaces/View";
-import { EditMode } from "./EditMode";
+import {StatefulData} from "interfaces/StatefulData";
+import { dotProductVector2, Vector2, vector2Normalized } from "interfaces/Vector2";
+import {View} from "interfaces/View";
+import { EditMode } from "classes/Editor/EditMode";
 
 const zoomDirection = { 
     row: -1,

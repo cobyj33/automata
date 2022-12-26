@@ -1,7 +1,7 @@
-import { Vector2 } from "../interfaces/Vector2";
-import { getViewOffset, View } from "../interfaces/View";
-import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "../interfaces/Box";
-import { CellMatrix } from "../interfaces/CellMatrix";
+import { Vector2 } from "interfaces/Vector2";
+import { getViewOffset, View } from "interfaces/View";
+import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "interfaces/Box";
+import { CellMatrix } from "interfaces/CellMatrix";
 
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
     return {

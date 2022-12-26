@@ -1,6 +1,6 @@
 import { MutableRefObject, RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { HistoryStack } from "../classes/Structures/HistoryStack";
-import { StatefulData } from "../interfaces/StatefulData";
+import { HistoryStack } from "classes/Structures/HistoryStack";
+import { StatefulData } from "interfaces/StatefulData";
 
 type Action = () => void;
 type IComparer<T> = (first: T, second: T) => boolean;

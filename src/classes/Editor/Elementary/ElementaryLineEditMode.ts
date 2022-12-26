@@ -1,10 +1,10 @@
 import { PointerEvent } from "react";
-import { removeDuplicates } from "../../../functions/utilityFunctions";
-import { Vector2 } from "../../../interfaces/Vector2";
-import { EditMode } from "../EditMode";
-import {getLine} from '../../../functions/shapes';
-import { StatefulData } from "../../../interfaces/StatefulData"
-import { CellMatrix } from "../../../interfaces/CellMatrix"
+import { removeDuplicates } from "functions/utilityFunctions";
+import { Vector2 } from "interfaces/Vector2";
+import { EditMode } from "classes/Editor/EditMode";
+import {getLine} from 'functions/shapes';
+import { StatefulData } from "interfaces/StatefulData"
+import { CellMatrix } from "interfaces/CellMatrix"
 
 export interface ElementaryLineData {
     boardData: StatefulData<CellMatrix>,

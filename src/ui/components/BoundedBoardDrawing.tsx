@@ -1,12 +1,12 @@
 import { RefObject, useEffect, useRef } from 'react'
-import { Vector2 } from '../interfaces/Vector2';
-import { View } from '../interfaces/View';
-import { getViewArea, } from '../functions/drawing';
-import { useWebGL2CanvasUpdater } from '../functions/hooks';
-import { Box } from '../interfaces/Box';
-import { CellMatrix } from '../interfaces/CellMatrix';
-import { BoardDrawing } from './BoardDrawing'
-import { LayeredCanvas } from './LayeredCanvas';
+import { Vector2 } from 'interfaces/Vector2';
+import { View } from 'interfaces/View';
+import { getViewArea, } from 'functions/drawing';
+import { useWebGL2CanvasUpdater } from 'functions/hooks';
+import { Box } from 'interfaces/Box';
+import { CellMatrix } from 'interfaces/CellMatrix';
+import { BoardDrawing } from 'ui/components/BoardDrawing'
+import { LayeredCanvas } from 'ui/components/LayeredCanvas';
 
 export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board: Vector2[] | CellMatrix, view: View, bounds: Box, className?: string }) => {
     const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);

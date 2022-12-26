@@ -1,6 +1,6 @@
-import { Vector2 } from "../interfaces/Vector2"
-import { cellMatrixToVector2, cellsToCellMatrix } from "../functions/conversions"
-import { isEqualArrays } from "../functions/validation"
+import { Vector2 } from "interfaces/Vector2"
+import { cellMatrixToVector2, cellsToCellMatrix } from "functions/conversions"
+import { isEqualArrays } from "functions/validation"
 
 
 test('isEqualArrays', () => {

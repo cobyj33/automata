@@ -1,7 +1,7 @@
 import { PointerEvent } from "react";
-import { EditMode } from "../EditMode";
-import { StatefulData } from "../../../interfaces/StatefulData"
-import { CellMatrix } from "../../../interfaces/CellMatrix"
+import { EditMode } from "classes/Editor/EditMode";
+import { StatefulData } from "interfaces/StatefulData"
+import { CellMatrix } from "interfaces/CellMatrix"
 
 function range(first: number, second: number): number[] {
     const min: number = Math.min(first, second);

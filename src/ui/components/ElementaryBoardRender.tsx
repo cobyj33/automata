@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import { View } from "../interfaces/View"
-import {BoundedBoardDrawing} from "./BoundedBoardDrawing";
-import { CellMatrix } from "../interfaces/CellMatrix";
-import {getNextElementaryGenerationAsync} from "../functions/generationFunctions";
+import { View } from "interfaces/View"
+import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
+import { CellMatrix } from "interfaces/CellMatrix";
+import {getNextElementaryGenerationAsync} from "functions/generationFunctions";
 
 export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], view: View, rule: number }) => {
     const [cellMatrix, setCellMatrix] = useState<CellMatrix>({

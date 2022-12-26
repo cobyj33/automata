@@ -1,4 +1,4 @@
-import { Set2D } from "../classes/Structures/Set2D"
+import { Set2D } from "classes/Structures/Set2D"
 
 test("2D Set duplicate test", () => {
     const set = new Set2D();

@@ -1,13 +1,13 @@
 import { MutableRefObject, RefObject, useEffect, useRef } from 'react'
-import { Vector2 } from '../interfaces/Vector2';
-import { View } from '../interfaces/View'
-import { Color } from '../interfaces/Color';
-import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid } from '../functions/drawing';
-import { useWebGL2CanvasUpdater } from '../functions/hooks';
-import { CellMatrix } from '../interfaces/CellMatrix';
-import "./styles/boarddrawing.css"
-import {LayeredCanvas} from './LayeredCanvas';
-import {getColorFromCSS} from '../interfaces/Color';
+import { Vector2 } from 'interfaces/Vector2';
+import { View } from 'interfaces/View'
+import { Color } from 'interfaces/Color';
+import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid } from 'functions/drawing';
+import { useWebGL2CanvasUpdater } from 'functions/hooks';
+import { CellMatrix } from 'interfaces/CellMatrix';
+import "ui/components/styles/boarddrawing.css"
+import {LayeredCanvas} from 'ui/components/LayeredCanvas';
+import {getColorFromCSS} from 'interfaces/Color';
 
 interface DrawingSettings {
     showGrid: boolean;

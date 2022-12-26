@@ -1,8 +1,8 @@
 import { MutableRefObject, useRef, useState } from 'react'
-import { Vector2 } from "../interfaces/Vector2"
-import { View } from "../interfaces/View"
-import { StatefulData } from '../interfaces/StatefulData';
-import { BoardDrawing } from './BoardDrawing'
+import { Vector2 } from "interfaces/Vector2"
+import { View } from "interfaces/View"
+import { StatefulData } from 'interfaces/StatefulData';
+import { BoardDrawing } from 'ui/components/BoardDrawing'
 
 export const UnboundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
     const [view, setView] = useState<View>({

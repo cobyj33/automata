@@ -1,4 +1,4 @@
-import { Vector2 } from "./Vector2";
+import { Vector2 } from "interfaces/Vector2";
 
 export interface View extends Vector2 {
     readonly cellSize: number;

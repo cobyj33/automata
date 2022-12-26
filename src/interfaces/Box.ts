@@ -1,4 +1,4 @@
-import { Vector2 } from "./Vector2";
+import { Vector2 } from "interfaces/Vector2";
 
 export interface Box extends Vector2 {
     width: number;

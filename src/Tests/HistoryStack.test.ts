@@ -1,4 +1,4 @@
-import { HistoryStack } from "../classes/Structures/HistoryStack"
+import { HistoryStack } from "classes/Structures/HistoryStack"
 
 test("pushing array to history stack", () => {
     const history: HistoryStack<number[][]> = new HistoryStack<number[][]>();
