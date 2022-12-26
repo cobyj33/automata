@@ -17,21 +17,13 @@ function App() {
 
   return (
     <div className="App">
-      {
-        
+
       <div className="menu-bar">
         <div className="menu-content-container">
           <button className="menu-button" onClick={() => setCurrentBoardType(BoardType.BOUNDED)}> LifeLike Board </button>
           <button className="menu-button" onClick={() => setCurrentBoardType(BoardType.ELEMENTARY)}> Elementary Board </button>
-        {/*
-              <button className='menu-button'> Create </button>
-              <button className='menu-button'> Explore </button>
-              <button className='menu-button'> Your Boards </button>
-              <button className='menu-button'> Profile </button> 
-           */}
         </div>
       </div>
-      }
  
       <GameBoard type={currentBoardType} boardData={[board, setBoard]} />
 
