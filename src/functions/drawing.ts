@@ -244,6 +244,7 @@ export function getGridShaderProgram(gl: WebGL2RenderingContext): WebGLProgram |
 export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: WebGLProgram | null = null): void {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
+
     const quadVertices: Float32Array = new Float32Array([
         -1, -1,
         1, -1,
