@@ -1,6 +1,17 @@
 .rule-editor {
-    background-color: white;
-    padding: 10px;
+    background-color: rgb(30, 30, 30);
+    border-radius: 5px;
+    text-align: center;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    margin: 10px;
+}
+
+.rule-editor:hover {
+    border-bottom: 2px solid white;
 }
 
 .rule-edit-area .rule-editor {
@@ -10,10 +21,14 @@
 
 .title {
     text-align: center;
+    padding: 10px;
+    color: white;
 }
 
 .text {
     text-align: center;
+    padding: 5px;
+    color: white;
 }
 
 .mode-selection-area {
@@ -34,18 +49,27 @@
     border: none;
     flex-grow: 1;
     flex-basis: 20px;
+    padding: 5px;
+    border-radius: 10px;
+    color: white;
+    background-color: rgb(30, 30, 30);
+}
 
+.mode-selection-button:hover {
+    border: 2px solid white;
 }
 
 .mode-selection-button.selected {
     transition: color 0.2s background-color 0.2s;
-    color: white;
     background-color: black;
-    border-bottom: 1px solid green;
+    border-bottom: 1px solid limegreen;
+}
+
+.mode-selection-button.selected:hover {
+    border: 2px solid limegreen;
 }
 
 .life-rule-data {
-    font-family: monospace;
     font-size: 16px;
 }
 
@@ -56,10 +80,14 @@
 
 .life-rule-string-input {
     text-align: center;
-
-
+    background-color: rgb(10, 10, 10);
+    color: white;
+    border: 2px solid black;
 }
 
+.life-rule-string-input:hover {
+    border-bottom: 1px solid white;
+}
 
 .life-rule-string-input.valid {
     transition: background-color 0.1s;
@@ -73,10 +101,16 @@
 
 
 .select-button {
-    color: black;
-    font-family: monospace;
+    color: white;
+    background-color: rgb(80, 80, 80);
+    padding: 5px;
+    border-radius: 5px;
     border: none;
+}
 
+.select-button:hover {
+    border-bottom: 1px solid white;
+    background-color: rgb(40, 40, 40);
 }
 
 .select-button.selected {
@@ -84,4 +118,33 @@
     color: white;
     background-color: black;
     border-bottom: 1px solid green;
+}
+
+.raw-change-button, .assisted-change-submit {
+    padding: 5px;
+    color: white;
+    background-color: rgb(10, 10, 10);
+    border-radius: 5px;
+    border: none;
+    margin: 10px;
+}
+
+.raw-change-button:hover, .assisted-change-submit:hover {
+    border-bottom: 1px solid white;
+    background-color: rgb(40, 40, 40);
+}
+
+.raw-change-button:active, .assisted-change-submit:active {
+    border-bottom: 1px solid blue;
+    background-color: rgb(80, 80, 80);
+}
+
+.raw-change-area, .assisted-change-area {
+    padding: 10px;
+    padding-top: 20px;
+    background-color: rgb(20, 20, 20);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 }

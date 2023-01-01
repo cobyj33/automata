@@ -1,4 +1,4 @@
-import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState } from "react";
+import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent } from "react";
 import { View } from "interfaces/View"
 import { Vector2 } from "interfaces/Vector2"
 import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
@@ -16,7 +16,7 @@ import { MoveEditMode, MoveData } from 'classes/Editor/EditModes/MoveEditMode';
 import { EditMode } from 'classes/Editor/EditModes/EditMode';
 import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
-import { BoardUI } from "ui/components/BoardUI"
+import { e } from "vitest/dist/index-40ebba2b";
 
 interface ElementaryEditorData {
     boardData: StatefulData<CellMatrix>;
@@ -154,47 +154,60 @@ export const ElementaryBoard = () => {
     editorModes.current[editMode].onWheel?.(event);
   }
 
+  function onRuleInputChanged(event: ChangeEvent<Element>) {
+    const inputElement = event.target as HTMLInputElement
+    const input = Number(inputElement.value)
+    setInputRule(inputElement.value);
+    if (!isNaN(input)) {
+
+        if (input >= 0 && input <= 255) {
+            setRule(input);
+        }
+
+    }
+  }
+
   // useCanvasUpdater(ghostCanvas)
     
     return (
-        <div  >
-      <div ref={boardHolder} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
+    <div className={elementaryStyles["editor"]}  >
+      <div className={elementaryStyles["board-holder"]} ref={boardHolder} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
           { rendering ? <ElementaryBoardRender view={view} start={[...cellMatrix.matrix]} rule={rule} /> : 
               <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix} />
           }
       </div>
 
-          <BoardUI bottom={
-            <>
-              <div className={elementaryStyles["editing-buttons"]}> 
-                    <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "DRAW" ? 'selected' : '' }`]} `} onClick={() => setEditMode("DRAW")}> <FaBrush /> </button>
-                    <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "MOVE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("MOVE")}> <FaArrowsAlt /> </button>
-                    <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "ZOOM" ? 'selected' : '' }`]} `} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
-                    <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "ERASE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
-                    <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "LINE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("LINE")}> <FaLine /> </button>
-                    <button className={`${elementaryStyles["edit-button"]} ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-                    <button className={elementaryStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
-                    <button className={elementaryStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
-              </div>
+      <aside className={elementaryStyles["left-side-bar"]}>
+        <div className={elementaryStyles["rule-input-area"]}>
+            <div className={elementaryStyles["current-rule-display"]}>
+              Current Rule: <span className={elementaryStyles["current-rule"]}>{rule}</span>          
+            </div>
+            <span> Rule must be between 0 and 255 </span>
 
-              <div className={elementaryStyles["rule-input-area"]}>
+            <input className={`${elementaryStyles["rule-input"]} ${elementaryStyles[`${Number(inputRule) === rule ? 'valid' : 'invalid'}`]} `} onChange={onRuleInputChanged} value={inputRule}  />
+          </div>    
+          
+        <div className={elementaryStyles["filler"]}> W.I.P... </div>
+      </aside>
 
-                <input className={`${elementaryStyles["rule-input"]} ${elementaryStyles[`${Number(inputRule) === rule ? 'valid' : 'invalid'}`]} `} onChange={e => {
-                    const input = Number(e.target.value)
-                    setInputRule(e.target.value);
-                    if (!isNaN(input)) {
+      <aside className={elementaryStyles["right-side-bar"]}>
+          <div className={elementaryStyles["filler"]}> W.I.P... </div>
+      </aside>
 
-                        if (input >= 0 && input <= 255) {
-                            setRule(input);
-                        }
 
-                    }
+      <div className={elementaryStyles["tool-bar"]}>
+        <div className={elementaryStyles["editing-buttons"]}> 
+              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "DRAW" ? 'selected' : '' }`]} `} onClick={() => setEditMode("DRAW")}> <FaBrush /> </button>
+              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "MOVE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("MOVE")}> <FaArrowsAlt /> </button>
+              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "ZOOM" ? 'selected' : '' }`]} `} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
+              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "ERASE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
+              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "LINE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("LINE")}> <FaLine /> </button>
+              <button className={`${elementaryStyles["edit-button"]} ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+              <button className={elementaryStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
+              <button className={elementaryStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
+        </div>
 
-                }} value={inputRule}  />
-
-              </div>
-            </>
-          } />
+      </div>
 
 
       </div>

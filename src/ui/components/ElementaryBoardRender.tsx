@@ -4,7 +4,7 @@ import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
 import {getNextElementaryGenerationAsync} from "functions/generationFunctions";
 
-export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], view: View, rule: number }) => {
+export const ElementaryBoardRender = ({ start, view,  rule }: { start: number[], view: View, rule: number }) => {
     const [cellMatrix, setCellMatrix] = useState<CellMatrix>({
         row: 0,
         col: 0,
@@ -36,11 +36,7 @@ export const ElementaryBoardRender = ({start, view,  rule}: { start: number[], v
         }
     }, [cellMatrix, rule])
 
-    return (
-        <div>            
-            <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix} />
-        </div>
-    )
+    return <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix} />
 }
 
 export default ElementaryBoardRender

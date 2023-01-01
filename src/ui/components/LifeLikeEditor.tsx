@@ -10,11 +10,12 @@ import { StatefulData } from 'interfaces/StatefulData';
 import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
 import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
+import { GiStraightPipe } from "react-icons/gi"
+import { BsCircle } from "react-icons/bs"
 import LayeredCanvas from 'ui/components/LayeredCanvas';
 import { renderBoard } from 'functions/drawing';
 import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
 import {Box, inBox} from 'interfaces/Box';
-import BoardUI from "ui/components/BoardUI"
 import LifeRuleEditor from "ui/components/LifeRuleEditor"
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { BoardType } from "./GameBoard";
@@ -36,7 +37,7 @@ type UnionData = MoveData | ZoomData | DrawData | EraseData | BoxData | LineData
 
 
 
-export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
+export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
   const boardHolder = useRef<HTMLDivElement>(null);
   const ghostCanvas = useRef<HTMLCanvasElement>(null);
   const [cursor, setCursor] = useState<string>('');
@@ -167,7 +168,7 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
   useWebGL2CanvasUpdater(ghostCanvas)
 
   return (
-    <div>
+    <div className={gameBoardStyles["editor"]}>
 
       <div style={{cursor: cursor}} ref={boardHolder} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
@@ -179,27 +180,35 @@ export const BoundedGameBoard = ({ boardData }: { boardData: StatefulData<Vector
                     </div>
               </div>
            : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
-          <canvas style={{}} className={gameBoardStyles["board-drawing"]} ref={ghostCanvas} />
+          <canvas className={gameBoardStyles["board-drawing"]} ref={ghostCanvas} />
         </LayeredCanvas>
       </div>
 
-      <BoardUI left={<LifeRuleEditor lifeRule={[automata, setAutomata]} currentBoard={board}/>} bottom={ 
+      <aside className={gameBoardStyles["left-side-bar"]}>
+        <LifeRuleEditor lifeRule={[automata, setAutomata]} />
+      </aside>
+
+      <aside className={gameBoardStyles["right-side-bar"]}>
+          <div className={gameBoardStyles["filler"]}> W.I.P... </div>
+      </aside>
+
+      <div className={gameBoardStyles["tool-bar"]}>
           <div className={gameBoardStyles["editing-buttons"]}> 
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("DRAW")}`} onClick={() => setEditMode("DRAW")}> <FaBrush /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("MOVE")}`} onClick={() => setEditMode("MOVE")}> <FaArrowsAlt /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ZOOM")}`} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ERASE")}`} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("LINE")}`} onClick={() => setEditMode("LINE")}> <FaLine /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("LINE")}`} onClick={() => setEditMode("LINE")}> <GiStraightPipe /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("BOX")}`} onClick={() => setEditMode("BOX")}> <FaBox /> </button>
-            <button className={`${gameBoardStyles["edit-button"]}${selectedButtonStyle("ELLIPSE")}`} onClick={() => setEditMode("ELLIPSE")}> <FaEllipsisH /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ELLIPSE")}`} onClick={() => setEditMode("ELLIPSE")}> <BsCircle /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${rendering ? gameBoardStyles['selected'] : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
           </div>
-      } />
+      </div>
 
     </div>
   )
 }
 
-export default BoundedGameBoard
+export default LifeLikeEditor

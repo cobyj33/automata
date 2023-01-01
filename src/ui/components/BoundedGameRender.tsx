@@ -29,11 +29,7 @@ export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { 
     }, [currentRender])
 
 
-    return (
-        <div>
-            <BoundedBoardDrawing bounds={bounds} board={currentRender} view={view} />
-        </div>
-    )
+    return <BoundedBoardDrawing bounds={bounds} board={currentRender} view={view} />
 }
 
 export default BoundedGameRender

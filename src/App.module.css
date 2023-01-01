@@ -1,5 +1,4 @@
 
-
 .App {
   display: flex;
   flex-direction: column;
@@ -24,7 +23,6 @@
 .menu, .menu-button, .menu-item {
   color: white;
   text-align: center;
-  font-family: serif;
   background-color: rgb(24, 24, 27);
   border: 2px solid black;
 }

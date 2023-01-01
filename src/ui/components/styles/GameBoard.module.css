@@ -1,16 +1,74 @@
 
-.editing-buttons {
-    flex-basis: 50px;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    pointer-events: none;
+
+
+.editor {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 5px;
+    padding: 10px;
+    background-color: rgb(40, 40, 40);
 }
+
+.board-holder {
+    grid-column: 4 / 10;
+    grid-row: 1 / 7;
+    padding: 5px;
+    margin: 10px;
+    border: 5px solid black;
+}
+
+.left-side-bar {
+    grid-column: 1 / 4;
+    grid-row: 1 / 8;
+    background-color: rgb(20, 20, 20);
+}
+
+.right-side-bar {
+    grid-column: 10 / 13;
+    grid-row: 1 / 8;
+    background-color: rgb(20, 20, 20);
+}
+
+.tool-bar {
+    grid-row: 7 / 8;
+    grid-column: 4 / 10;
+    background-color: rgb(20, 20, 20);
+
+}
+
+.filler {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin: 10px;
+    color: white;
+}
+
+.filler:hover {
+    border-bottom: 1px solid white;
+}
+
+/* .bottom-bar {
+    grid-column: 1 / 13;
+    grid-row: 8 / 10;
+    background-color: rgb(20, 20, 20);
+
+} */
 
 .board-drawing {
     width: 100%;
     height: 100%;
+}
+
+.editing-buttons {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    pointer-events: none;
 }
 
 .edit-button {
@@ -19,6 +77,8 @@
     border: none;
     pointer-events: auto;
     aspect-ratio: 1;
+    margin-left: 15px;
+    padding: 15px;
 }
 
 .edit-button:hover:not(.disabled) {
@@ -75,7 +135,6 @@
 }
 
 .render-info * {
-    font-family: monospace;
     font-weight: bold;
     font-size: 16;
     color: white;
