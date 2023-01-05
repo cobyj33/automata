@@ -1,25 +1,32 @@
 import React from "react"
 import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
+
+import { StatefulData } from 'interfaces/StatefulData';
 import { Vector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { EditMode } from "automata/editor/main";
+
+
 import { BoxEditMode, BoxData, DrawEditMode, DrawData, EllipseEditMode, EllipseData, LineEditMode, LineData, MoveEditMode, MoveData, ZoomEditMode, ZoomData, EraseEditMode, EraseData } from 'automata/editor/bounded';
+
 import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
 import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
-import { StatefulData } from 'interfaces/StatefulData';
+
+import LifeRuleEditor from "ui/components/LifeRuleEditor"
 import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
 import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
-import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
+import LayeredCanvas from 'ui/components/LayeredCanvas';
+
+import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaUndo, FaRedo } from "react-icons/fa"
 import { GiStraightPipe } from "react-icons/gi"
 import { BsCircle } from "react-icons/bs"
-import LayeredCanvas from 'ui/components/LayeredCanvas';
-import { renderBoard } from 'functions/drawing';
-import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
-import {Box, inBox} from 'interfaces/Box';
-import LifeRuleEditor from "ui/components/LifeRuleEditor"
-import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
-import { BoardType } from "./GameBoard";
+import { AiOutlineClear } from "react-icons/ai"
+import { BiRectangle } from "react-icons/bi"
 
+import { renderBoard } from 'functions/drawing';
+import { Box } from 'interfaces/Box';
+
+import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 
 interface EditorData {
     boardData: StatefulData<Vector2[]>;
@@ -134,6 +141,14 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onPointerLeave?.(event);
   }
+
+  function clear() {
+    setBoard([]);
+  }
+
+  function toggleRender() {
+    setRendering(!rendering)
+  }
   
   const [undo, redo] = useHistory(boardData, (first: Vector2[], second: Vector2[]) => first.length === second.length && first.every(cell => second.includes(cell)) )
   function onKeyDown(event: KeyboardEvent<Element>) {
@@ -145,10 +160,11 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
     } else if (event.code === "KeyZ" && event.ctrlKey === true) {
       undo();
     } else if (event.code === 'Enter') {
-      setRendering(!rendering)
+      toggleRender()
     } else if (event.code === 'KeyC') {
-      setBoard([]);
-    }
+      clear()
+    } 
+
   }
 
   function onKeyUp(event: KeyboardEvent<Element>) {
@@ -199,9 +215,10 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ZOOM")}`} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ERASE")}`} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("LINE")}`} onClick={() => setEditMode("LINE")}> <GiStraightPipe /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("BOX")}`} onClick={() => setEditMode("BOX")}> <FaBox /> </button>
+            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("BOX")}`} onClick={() => setEditMode("BOX")}> <BiRectangle /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ELLIPSE")}`} onClick={() => setEditMode("ELLIPSE")}> <BsCircle /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${rendering ? gameBoardStyles['selected'] : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+            <button className={gameBoardStyles["edit-button"]} onClick={clear}> <AiOutlineClear /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
           </div>
