@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef } from 'react'
 import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
-import { getViewArea, } from 'functions/drawing';
+import { getViewArea, withCanvasAndContextWebGL2, } from 'functions/drawing';
 import { useWebGL2CanvasUpdater } from 'functions/hooks';
 import { Box } from 'interfaces/Box';
 import { CellMatrix } from 'interfaces/CellMatrix';
@@ -23,15 +23,11 @@ export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board:
     }
 
     function render() {
-      const canvas: HTMLCanvasElement | null = canvasRef.current;
-      if (canvas !== null && canvas !== undefined) {
-        const gl: WebGL2RenderingContext | null = canvas.getContext('webgl2');
-        if (gl !== null && gl !== undefined) {
-            gl.clearColor(0, 0, 0, 1);
-            gl.clear(gl.COLOR_BUFFER_BIT)
-              blockOutBounds(gl)
-        }
-      }
+      withCanvasAndContextWebGL2(canvasRef, (canvas, gl) => {
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT)
+        blockOutBounds(gl)
+      })
     }
   
     useEffect(render);

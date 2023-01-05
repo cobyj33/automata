@@ -38,8 +38,18 @@ export function isEqualArrays<T>(first: T[], second: T[]) {
     return matching;
 }
 
+export function isRectangularMatrix<T>(matrix: T[][]) {
+    if (matrix.length === 0) return true;
+    const width = matrix[0].length;
+
+    for (let row = 0; row < matrix.length; row++) {
+        if (matrix[row].length !== width) return false;
+    }
+    return true;
+}
+
 export function isValidCellMatrix(matrix: number[][]) {
-    if (!isValidMatrix(matrix)) return false;
+    if (!isRectangularMatrix(matrix)) return false;
     if (matrix.length === 0) return true;
 
     for (let row = 0; row < matrix.length; row++) {
@@ -57,15 +67,6 @@ export function isValidCellMatrix(matrix: number[][]) {
     return true;
 }
 
-export function isValidMatrix(matrix: number[][]) {
-    if (matrix.length === 0) return true;
-    const width = matrix[0].length;
-
-    for (let row = 0; row < matrix.length; row++) {
-        if (matrix[row].length !== width) return false;
-    }
-    return true;
-}
 
 export function isInBounds(matrix: number[][], row: number, col: number) {
     if (matrix.length === 0) return false;

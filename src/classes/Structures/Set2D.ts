@@ -17,23 +17,23 @@ export class Set2D {
     
     get length(): number { return Object.values(this.map).reduce( (prev, curr) => prev + curr.size, 0); } 
 
-    add(row: number, col: number): Set2D {
-        if (row in this.map) {
-           this.map[row].add(col); 
+    add(first: number, second: number): Set2D {
+        if (first in this.map) {
+           this.map[first].add(second); 
         } else {
-            this.map[row] = new Set<number>();
-            this.map[row].add(col);
+            this.map[first] = new Set<number>();
+            this.map[first].add(second);
         }
 
         return this;
     }
 
-    remove(row: number, col: number): Set2D {
-        if (row in this.map) {
-            if (this.map[row].has(col)) {
-                this.map[row].delete(col);
-                if (this.map[row].size === 0) {
-                    delete this.map[row];
+    remove(first: number, second: number): Set2D {
+        if (first in this.map) {
+            if (this.map[first].has(second)) {
+                this.map[first].delete(second);
+                if (this.map[first].size === 0) {
+                    delete this.map[first];
                 }
             }
         }
@@ -41,9 +41,9 @@ export class Set2D {
         return this;
     }
 
-    has(row: number, col: number): boolean {
-        if (row in this.map) {
-            if (col in this.map[row]) {
+    has(first: number, second: number): boolean {
+        if (first in this.map) {
+            if (this.map[first].has(second)) {
                 return true;
             }
         }

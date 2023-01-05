@@ -16,7 +16,6 @@ import { MoveEditMode, MoveData } from 'classes/Editor/EditModes/MoveEditMode';
 import { EditMode } from 'classes/Editor/EditModes/EditMode';
 import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
-import { e } from "vitest/dist/index-40ebba2b";
 
 interface ElementaryEditorData {
     boardData: StatefulData<CellMatrix>;
@@ -33,7 +32,7 @@ const defaultWidth = 1000;
 type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
 type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData | MoveData | ZoomData | ElementaryEditorData;
 
-export const ElementaryBoard = () => {
+export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMatrix> }) => {
 
     const [view, setView] = useState<View>({
         row: -5,
@@ -41,34 +40,16 @@ export const ElementaryBoard = () => {
         cellSize: 50
     });
 
-    const [cellMatrix, setCellMatrix] = useState<CellMatrix>({
-        row: 0,
-        col: 0,
-        width: 1000,
-        height: 1,
-        matrix: new Uint8ClampedArray(1000)
-    });
+    const [cellMatrix, setCellMatrix] = boardData;
 
-    const boardHolder = useRef(null);
+  const boardHolder = useRef(null);
   const [cursor, setCursor] = useState<string>('');
   const [ghostTilePositions, setGhostTilePositions] = useState<number[]>([]);
-    const [rule, setRule] = useState<number>(30);
+  const [rule, setRule] = useState<number>(30);
   const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
-    const [rendering, setRendering] = useState<boolean>(false);  
-    const [inputRule, setInputRule] = useState<string>("");
-
-  // useEffect( () => {
-  //   const canvas: htmlcanvaselement | null = ghostcanvas.current;
-  //   if (canvas !== null) {
-  //     const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
-  //     if (context !== null) {
-  //       context.clearRect(0, 0, canvas.width, canvas.height);
-  //       context.globalAlpha = 0.5;
-  //       renderBoard(canvas, context, view, ghostTilePositions.concat(lastHoveredCell))
-  //     }
-  //   }
-  // }, [ghostTilePositions, lastHoveredCell])
+  const [rendering, setRendering] = useState<boolean>(false);  
+  const [inputRule, setInputRule] = useState<string>("");
 
   function getCurrentHoveredCell(event: PointerEvent<Element>): number {
     return boardHolder.current !== null ? getHoveredCell(pointerPositionInElement(event, boardHolder.current), view)?.col : lastHoveredCell;
@@ -82,7 +63,7 @@ export const ElementaryBoard = () => {
       lastHoveredCell: lastHoveredCell,
       getHoveredCell: getCurrentHoveredCell,
       isPointerDown: isPointerDown.current,
-        isRendering: rendering
+      isRendering: rendering
     }
   }
   

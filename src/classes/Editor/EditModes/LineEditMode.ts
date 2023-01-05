@@ -1,6 +1,5 @@
 import { PointerEvent } from "react";
-import { removeDuplicates } from "functions/utilityFunctions";
-import { IVector2 } from "interfaces/Vector2";
+import { IVector2, removeVector2ListDuplicates } from "interfaces/Vector2";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {getLine} from 'functions/shapes';
 import {StatefulData} from "interfaces/StatefulData";
@@ -68,7 +67,7 @@ export class LineEditMode extends EditMode<LineData> {
             const [bounds] = this.data.boundsData;
             const newCells: IVector2[] = getLine(this.start, this.end).filter(cell => cell.row >= bounds.row && cell.col >= bounds.col && cell.row < bounds.row + bounds.height && cell.col < bounds.col + bounds.width);
 
-            setBoard(board =>  removeDuplicates(board.concat(newCells)))
+            setBoard(board =>  removeVector2ListDuplicates(board.concat(newCells)))
             const [, setGhostTilePositions] = this.data.ghostTilePositions;
             const toRemove = new Set<string>(newCells.map(cell => JSON.stringify(cell)));
             setGhostTilePositions( positions => positions.filter( cell =>  !toRemove.has(JSON.stringify(cell)) ) )

@@ -246,3 +246,18 @@ export function vector2Equals(vector: IVector2, other: IVector2): boolean {
 export function lerp(t: number, first: IVector2, second: IVector2): IVector2 {
     return addVector2(first, scaleVector2( subtractVector2(second, first), t))
 }
+
+
+// Program Specific
+import { Set2D } from "classes/Structures/Set2D";
+
+export function removeVector2ListDuplicates(list: IVector2[]) {
+    const set2D = new Set2D()
+    return list.filter(vec => {
+        if (set2D.has(vec.row, vec.col)) {
+            return false
+        }
+        set2D.add(vec.row, vec.col)
+        return true
+    })
+}

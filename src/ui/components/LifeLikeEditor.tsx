@@ -13,12 +13,11 @@ import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaElli
 import { GiStraightPipe } from "react-icons/gi"
 import { BsCircle } from "react-icons/bs"
 import LayeredCanvas from 'ui/components/LayeredCanvas';
-import { renderBoard } from 'functions/drawing';
+import { renderBoard, withCanvasAndContextWebGL2 } from 'functions/drawing';
 import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
 import {Box, inBox} from 'interfaces/Box';
 import LifeRuleEditor from "ui/components/LifeRuleEditor"
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
-import { BoardType } from "./GameBoard";
 
 
 interface EditorData {
@@ -64,15 +63,11 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     }, [rendering] )
 
   useEffect( () => {
-    const canvas: HTMLCanvasElement | null = ghostCanvas.current;
-    if (canvas !== null) {
-      const gl: WebGL2RenderingContext | null = canvas.getContext("webgl2");
-      if (gl !== null && gl !== undefined) {
-          gl.clearColor(0, 0, 0, 0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-        renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
-      }
-    }
+    withCanvasAndContextWebGL2(ghostCanvas, (canvas, gl) => {
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
+    })
   }, [ghostTilePositions, lastHoveredCell])
 
   function getCurrentHoveredCell(event: PointerEvent<Element>) {

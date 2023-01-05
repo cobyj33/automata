@@ -1,5 +1,4 @@
-import { IVector2 } from "interfaces/Vector2"
-import { removeDuplicates } from "functions/utilityFunctions"
+import { IVector2, removeVector2ListDuplicates } from "interfaces/Vector2"
 
 
 export function getLine(start: IVector2, end: IVector2): IVector2[] {
@@ -30,7 +29,7 @@ export function getLine(start: IVector2, end: IVector2): IVector2[] {
             }
         }   
         
-        return removeDuplicates(intersections)
+        return removeVector2ListDuplicates(intersections)
     }
 
 export function getEllipse(start: IVector2, end: IVector2): IVector2[] {
@@ -59,5 +58,5 @@ export function getEllipse(start: IVector2, end: IVector2): IVector2[] {
             intersections.push({ row: Math.floor(row), col: Math.floor(centerCol - evaluation) } );
         } 
         
-        return removeDuplicates(intersections)
+        return removeVector2ListDuplicates(intersections)
     }
