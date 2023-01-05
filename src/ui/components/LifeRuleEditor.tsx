@@ -1,11 +1,7 @@
 import lifeRuleEditorStyles from "ui/components/styles/LifeRuleEditor.module.css"
 import { useState, useRef, useCallback, useEffect, RefObject } from "react";
 import { StatefulData } from "interfaces/StatefulData"
-import { BoundedGameRender } from "ui/components/BoundedGameRender"
 import { isValidLifeString, createLifeString, parseLifeLikeString } from "functions/generationFunctions"
-import { View } from "interfaces/View"
-import { Box, inBox } from "interfaces/Box"
-import { IVector2 } from "interfaces/Vector2"
 
 type RuleEditMode = "ASSISTED" | "RAW";
 

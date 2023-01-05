@@ -34,12 +34,7 @@ type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData |
 
 export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMatrix> }) => {
 
-    const [view, setView] = useState<View>({
-        row: -5,
-        col: 0,
-        cellSize: 50
-    });
-
+    const [view, setView] = useState<View>(View.from(-5, 0, 50));
     const [cellMatrix, setCellMatrix] = boardData;
 
   const boardHolder = useRef(null);

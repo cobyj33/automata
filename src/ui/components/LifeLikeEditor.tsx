@@ -41,11 +41,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   const ghostCanvas = useRef<HTMLCanvasElement>(null);
   const [cursor, setCursor] = useState<string>('');
   
-    const [view, setView] = useState<View>({
-        row: 0,
-        col: 0,
-        cellSize: 10
-    });
+    const [view, setView] = useState<View>(View.from(0, 0, 10));
     const [renderData, setRenderData] = useState<RenderData>({ generation: 0 });
 
   const [board, setBoard] = boardData;

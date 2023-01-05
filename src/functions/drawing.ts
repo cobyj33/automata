@@ -1,5 +1,5 @@
 import { IVector2 } from "interfaces/Vector2";
-import { getViewOffset, View } from "interfaces/View";
+import { View } from "interfaces/View";
 import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "interfaces/Box";
 import { CellMatrix } from "interfaces/CellMatrix";
 
@@ -303,7 +303,7 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
         gl.enableVertexAttribArray(aPosLocation);
         gl.vertexAttribPointer(aPosLocation, 2, gl.FLOAT, false, 0, 0);
         gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-        gl.uniform2f(offsetLocation, getViewOffset(view).col, getViewOffset(view).row);
+        gl.uniform2f(offsetLocation, view.offset().col, view.offset().row);
         
 
         gl.drawArrays(gl.LINES, 0, Math.trunc(gridVertices.length / 2));

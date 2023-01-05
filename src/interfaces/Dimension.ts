@@ -1,14 +1,14 @@
 import { factory } from "typescript"
 
 
-export interface IDimension {
+export interface IDimension2D {
     readonly width: number,
     readonly height: number
 }
 
-type DimensionTuple = [number, number]
+type Dimension2DTuple = [number, number]
 
-export class Dimension implements IDimension {
+export class Dimension2D implements IDimension2D {
     readonly width: number
     readonly height: number
 
@@ -21,28 +21,44 @@ export class Dimension implements IDimension {
         return this.width / this.height
     }
 
-    tuple(): DimensionTuple {
+    tuple(): Dimension2DTuple {
         return [this.width, this.height]
     }
 
-    static fromTuple(tuple: DimensionTuple) {
-        return new Dimension(tuple[0], tuple[1])
+    static fromTuple(tuple: Dimension2DTuple) {
+        return new Dimension2D(tuple[0], tuple[1])
     }
 
-    withWidth(width: number): Dimension {
-        return new Dimension(width, this.height)
+    withWidth(width: number): Dimension2D {
+        return new Dimension2D(width, this.height)
     }
 
-    withHeight(height: number): Dimension {
-        return new Dimension(this.width, height)
+    withHeight(height: number): Dimension2D {
+        return new Dimension2D(this.width, height)
     }
 
-    scale(factor: number): Dimension {
-        return new Dimension(this.width * factor, this.height * factor)
+    scale(factor: number): Dimension2D {
+        return new Dimension2D(this.width * factor, this.height * factor)
     }
 
-    expand(amount: number): Dimension {
-        return new Dimension(this.width * + amount, this.height + amount)
+    expand(amount: number): Dimension2D {
+        return new Dimension2D(this.width * + amount, this.height + amount)
+    }
+
+    trunc(): Dimension2D {
+        return new Dimension2D(Math.trunc(this.width), Math.trunc(this.height))
+    }
+
+    floor(): Dimension2D {
+        return new Dimension2D(Math.floor(this.width), Math.floor(this.height))
+    }
+
+    ceil(): Dimension2D {
+        return new Dimension2D(Math.ceil(this.width), Math.ceil(this.height))
+    }
+
+    round(): Dimension2D {
+        return new Dimension2D(Math.round(this.width), Math.round(this.height))
     }
 
 

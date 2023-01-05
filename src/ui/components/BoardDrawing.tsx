@@ -68,7 +68,7 @@ export const BoardDrawing = ({ board, view, className  }: { board: IVector2[] | 
 
     React.useEffect(() => {
         if (!(view.row === lastView.current.row && view.col === lastView.current.col && view.cellSize === lastView.current.cellSize)) {
-            lastView.current = {...view};
+            lastView.current = view;
             renderAll();
         }
     }, [view]);
