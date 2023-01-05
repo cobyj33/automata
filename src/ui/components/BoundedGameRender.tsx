@@ -11,7 +11,7 @@ export interface RenderData {
     generation: number
 }
 
-export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { start: Vector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
+export const BoundedGameRender = ({ start, view, bounds, automata }: { start: Vector2[], view: View, bounds: Box, automata: string }) => {
     const [currentRender, setCurrentRender] = useState<CellMatrix>(cellsInBoxToCellMatrix(start, bounds));
     const [currentGeneration, setCurrentGeneration] = useState<number>(0);
 
@@ -23,7 +23,6 @@ export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { 
                         matrix: getNextLifeGeneration(currentRender, automata)
                     }) );
                 setCurrentGeneration(currentGeneration => currentGeneration + 1);
-                getData?.({ generation: currentGeneration });
             })
         }
     }, [currentRender])

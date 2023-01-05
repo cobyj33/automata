@@ -189,12 +189,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
       <div style={{cursor: cursor}} ref={boardHolder} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
           {rendering ? 
-              <div>
-                  <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
-                    <div className={gameBoardStyles['render-info']}>
-                        <p> Current Generation: { renderData.generation } </p>
-                    </div>
-              </div>
+                  <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} /> 
            : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
           <canvas className={gameBoardStyles["board-drawing"]} ref={ghostCanvas} />
         </LayeredCanvas>

@@ -18,7 +18,6 @@ export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board:
         gl.scissor((bounds.col - viewArea.col) * view.cellSize, gl.canvas.height - (bounds.row - viewArea.row) * view.cellSize - bounds.height * view.cellSize, bounds.width * view.cellSize, bounds.height * view.cellSize);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
-        // context.clearRect((bounds.col - viewArea.col) * view.cellSize, (bounds.row - viewArea.row) * view.cellSize, bounds.width * view.cellSize, bounds.height * view.cellSize);
         gl.disable(gl.SCISSOR_TEST);
     }
 
