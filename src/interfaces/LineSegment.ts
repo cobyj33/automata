@@ -10,13 +10,26 @@ export class LineSegment implements ILineSegment {
         this.end = Vector2.fromIVector2(end)
     }
 
+    withEnd(end: IVector2): LineSegment {
+        return new LineSegment(this.start, end)
+    }
+
+    withStart(start: IVector2): LineSegment {
+        return new LineSegment(start, this.end)
+    }
+    
     static getCells(start: IVector2, end: IVector2): IVector2[] {
         return new LineSegment(start, end).cells()
+    }
+
+    static from(rowStart: number, colStart: number, rowEnd: number, colEnd: number) {
+        return new LineSegment(new Vector2(rowStart, colStart), new Vector2(rowEnd, colEnd))
     }
 
     cells(): IVector2[] {
         return getLine(this.start, this.end)
     }
+
 
     length(): number {
         return this.start.distance(this.end)

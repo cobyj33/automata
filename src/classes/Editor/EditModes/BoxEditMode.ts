@@ -1,6 +1,6 @@
 import { KeyboardEvent, PointerEvent } from "react";
 import {getLine} from "functions/shapes";
-import { IVector2, removeVector2ListDuplicates } from "interfaces/Vector2";
+import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2";
 import { StatefulData } from "interfaces/StatefulData";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 
@@ -29,7 +29,7 @@ export class BoxEditMode extends EditMode<BoxData> {
         return []
     };
 
-    private get boxCells(): IVector2[] { return removeVector2ListDuplicates(this.currentBox.flatMap(line => getLine(line.first, line.second))) ?? [] }
+    private get boxCells(): IVector2[] { return filterVector2ListDuplicates(this.currentBox.flatMap(line => getLine(line.first, line.second))) ?? [] }
 
     onPointerDown(event: PointerEvent<Element>) {
         if (this.data.isRendering) {
@@ -83,7 +83,7 @@ export class BoxEditMode extends EditMode<BoxData> {
         if (this.start !== undefined && this.end !== undefined) {
             const { 1: setBoard } = this.data.boardData;
 
-            setBoard(board => removeVector2ListDuplicates(board.concat(this.boxCells)))
+            setBoard(board => filterVector2ListDuplicates(board.concat(this.boxCells)))
 
             const { 1: setGhostTilePositions } = this.data.ghostTilePositions;
             const toRemove = new Set<string>(this.boxCells.map(cell => JSON.stringify(cell)));

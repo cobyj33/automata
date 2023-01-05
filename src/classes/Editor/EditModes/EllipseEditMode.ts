@@ -1,5 +1,5 @@
 import { PointerEvent, KeyboardEvent } from "react";
-import { IVector2, removeVector2ListDuplicates } from "interfaces/Vector2";
+import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2";
 import { getEllipse } from "functions/shapes";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData";
@@ -77,7 +77,7 @@ export class EllipseEditMode extends EditMode<EllipseData> {
 
         if (this.start !== undefined && this.end !== undefined) {
             const [, setBoard] = this.data.boardData;
-            setBoard(board => removeVector2ListDuplicates(board.concat(this.currentCells)));
+            setBoard(board => filterVector2ListDuplicates(board.concat(this.currentCells)));
             const [, setGhostTilePositions] = this.data.ghostTilePositions;
             const toRemove = new Set<string>(this.currentCells.map(cell => JSON.stringify(cell)));
             setGhostTilePositions( positions => positions.filter( cell =>  !toRemove.has(JSON.stringify(cell)) ) )

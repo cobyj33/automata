@@ -251,7 +251,7 @@ export function lerp(t: number, first: IVector2, second: IVector2): IVector2 {
 // Program Specific
 import { Set2D } from "classes/Structures/Set2D";
 
-export function removeVector2ListDuplicates(list: IVector2[]) {
+export function filterVector2ListDuplicates(list: IVector2[]) {
     const set2D = new Set2D()
     return list.filter(vec => {
         if (set2D.has(vec.row, vec.col)) {
@@ -260,4 +260,9 @@ export function removeVector2ListDuplicates(list: IVector2[]) {
         set2D.add(vec.row, vec.col)
         return true
     })
+}
+
+export function filterVector2ListMatches(list: IVector2[], matches: IVector2[]) {
+    const set2D = Set2D.fromVector2DArray(matches)
+    return list.filter(vec => set2D.has(vec.row, vec.col))
 }

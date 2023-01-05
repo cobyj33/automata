@@ -2,7 +2,7 @@ import { PointerEvent } from "react";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { getLine } from "functions/shapes";
 import { StatefulData } from "interfaces/StatefulData"
-import { IVector2, removeVector2ListDuplicates } from "interfaces/Vector2"
+import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2"
 
 export interface DrawData {
     boardData: StatefulData<IVector2[]>,
@@ -23,7 +23,7 @@ export class DrawEditMode extends EditMode<DrawData> {
         const [, setBoard] = this.data.boardData;
         const hoveredCell = this.data.getHoveredCell(event);
 
-        setBoard(board => removeVector2ListDuplicates(board.concat(hoveredCell)));
+        setBoard(board => filterVector2ListDuplicates(board.concat(hoveredCell)));
     }
 
     onPointerMove(event: PointerEvent<Element>) {
@@ -31,7 +31,7 @@ export class DrawEditMode extends EditMode<DrawData> {
         const hoveredCell = this.data.getHoveredCell(event);
         const lastHoveredCell = this.data.lastHoveredCell;
         if (this.data.isPointerDown && !this.data.isRendering) {
-            setBoard(board => removeVector2ListDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )) )
+            setBoard(board => filterVector2ListDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )) )
         }
     }
 
