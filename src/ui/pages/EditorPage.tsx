@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 import editorPageStyles from 'ui/pages/styles/EditorPage.module.css';
 import { BoardType, GameBoard } from 'ui/components/GameBoard';
 
@@ -7,9 +7,8 @@ import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu"
 
 
 function EditorPage() {
-  const [board, setBoard] = useState<Vector2[]>([]);
+  const [board, setBoard] = useState<IVector2[]>([]);
   const [currentBoardType, setCurrentBoardType] = useState<BoardType>("LIFELIKE");
-  console.log(editorPageStyles)
 
   return (
     <div className={editorPageStyles["editor-page"]}>

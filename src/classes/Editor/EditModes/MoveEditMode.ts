@@ -1,5 +1,5 @@
 import { PointerEvent } from "react";
-import { Vector2, vector2ToLength } from "interfaces/Vector2";
+import { IVector2, vector2ToLength } from "interfaces/Vector2";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {addVector2} from "interfaces/Vector2";
 import { StatefulData } from 'interfaces/StatefulData';
@@ -17,7 +17,7 @@ export class MoveEditMode extends EditMode<MoveData>{
     onPointerMove(event: PointerEvent<Element>) {
         const [, setView] = this.data.viewData;
         if (this.data.isPointerDown === true) {
-            const movementDirection: Vector2 = {
+            const movementDirection: IVector2 = {
                 row: event.movementY,
                 col: event.movementX
             } 

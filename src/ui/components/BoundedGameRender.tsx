@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { Box } from 'interfaces/Box';
 import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
@@ -11,7 +11,7 @@ export interface RenderData {
     generation: number
 }
 
-export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { start: Vector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
+export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { start: IVector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
     const [currentRender, setCurrentRender] = useState<CellMatrix>(cellsInBoxToCellMatrix(start, bounds));
     const [currentGeneration, setCurrentGeneration] = useState<number>(0);
 

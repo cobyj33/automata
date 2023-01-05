@@ -1,27 +1,27 @@
 import { KeyboardEvent, PointerEvent } from "react";
 import {getLine} from "functions/shapes";
 import { removeDuplicates } from "functions/utilityFunctions"
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { StatefulData } from "interfaces/StatefulData";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 
 type LineSegment = {
-    first: Vector2,
-    second: Vector2
+    first: IVector2,
+    second: IVector2
 }
 
 export interface BoxData {
-    boardData: StatefulData<Vector2[]>,
-    ghostTilePositions: StatefulData<Vector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
+    boardData: StatefulData<IVector2[]>,
+    ghostTilePositions: StatefulData<IVector2[]>,
+    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
     isPointerDown: boolean,
         isRendering: boolean;
 }
 
 export class BoxEditMode extends EditMode<BoxData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
-    start: Vector2 | undefined;
-    end: Vector2 | undefined;
+    start: IVector2 | undefined;
+    end: IVector2 | undefined;
     boxLocked: boolean = false;
     private get currentBox(): LineSegment[] {
         if (this.start !== undefined && this.end !== undefined) {
@@ -30,7 +30,7 @@ export class BoxEditMode extends EditMode<BoxData> {
         return []
     };
 
-    private get boxCells(): Vector2[] { return removeDuplicates(this.currentBox.flatMap(line => getLine(line.first, line.second))) ?? [] }
+    private get boxCells(): IVector2[] { return removeDuplicates(this.currentBox.flatMap(line => getLine(line.first, line.second))) ?? [] }
 
     onPointerDown(event: PointerEvent<Element>) {
         if (this.data.isRendering) {
@@ -64,7 +64,7 @@ export class BoxEditMode extends EditMode<BoxData> {
                         row: this.start.row + ( hoveredCell.row < this.start.row ? -sideLength : sideLength ),
                         col: this.start.col + ( hoveredCell.col < this.start.col ? -sideLength : sideLength )       
                     }
-                    // this.end = this.start.add( new Vector2( hoveredCell.row < this.start.row ? -sideLength : sideLength, hoveredCell.col < this.start.col ? -sideLength : sideLength ) )
+                    // this.end = this.start.add( new IVector2( hoveredCell.row < this.start.row ? -sideLength : sideLength, hoveredCell.col < this.start.col ? -sideLength : sideLength ) )
                 } else {
                     this.end = hoveredCell;
                 }
@@ -81,10 +81,8 @@ export class BoxEditMode extends EditMode<BoxData> {
             return;
         }
 
-        console.log(this.start, this.end);
         if (this.start !== undefined && this.end !== undefined) {
             const { 1: setBoard } = this.data.boardData;
-            console.log('box cell count:' + this.boxCells.length);
 
             setBoard(board => removeDuplicates(board.concat(this.boxCells)))
 
@@ -98,7 +96,7 @@ export class BoxEditMode extends EditMode<BoxData> {
         this.boxLocked = false;
     }
 
-    box(start: Vector2, end: Vector2): LineSegment[] {
+    box(start: IVector2, end: IVector2): LineSegment[] {
         const firstCorner = { row: start.row, col: end.col }
         const secondCorner = {row: end.row, col: start.col }
         return [

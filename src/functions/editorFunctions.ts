@@ -1,8 +1,8 @@
 import { PointerEvent } from "react";
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { View } from "interfaces/View";
 
-export function pointerPositionInElement(event: PointerEvent<Element>, element: Element): Vector2 {
+export function pointerPositionInElement(event: PointerEvent<Element>, element: Element): IVector2 {
     const canvasBounds: DOMRect = element.getBoundingClientRect();
     return {
         row: Math.trunc(event.clientY - canvasBounds.y),
@@ -10,7 +10,7 @@ export function pointerPositionInElement(event: PointerEvent<Element>, element: 
     }
 }
 
-export const getHoveredCell = (pointerPosition: Vector2, view: View) => {
+export const getHoveredCell = (pointerPosition: IVector2, view: View) => {
     return {
         row:  Math.trunc((pointerPosition.row / view.cellSize) + view.row),
         col: Math.trunc((pointerPosition.col / view.cellSize) + view.col) 

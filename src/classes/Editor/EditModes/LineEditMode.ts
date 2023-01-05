@@ -1,25 +1,25 @@
 import { PointerEvent } from "react";
 import { removeDuplicates } from "functions/utilityFunctions";
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {getLine} from 'functions/shapes';
 import {StatefulData} from "interfaces/StatefulData";
 import { Box } from "interfaces/Box";
 
 export interface LineData {
-    boardData: StatefulData<Vector2[]>,
+    boardData: StatefulData<IVector2[]>,
     boundsData: StatefulData<Box>,
-    ghostTilePositions: StatefulData<Vector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
+    ghostTilePositions: StatefulData<IVector2[]>,
+    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
     isPointerDown: boolean,
         isRendering: boolean;
 }
 
 export class LineEditMode extends EditMode<LineData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
-    start: Vector2 | undefined;
-    end: Vector2 | undefined;
-    get cells(): Vector2[] {
+    start: IVector2 | undefined;
+    end: IVector2 | undefined;
+    get cells(): IVector2[] {
         if (this.start !== undefined && this.end !== undefined) {
             return getLine(this.start, this.end); 
         }
@@ -66,7 +66,7 @@ export class LineEditMode extends EditMode<LineData> {
         if (this.start !== undefined && this.end !== undefined) {
             const [, setBoard] = this.data.boardData;
             const [bounds] = this.data.boundsData;
-            const newCells: Vector2[] = getLine(this.start, this.end).filter(cell => cell.row >= bounds.row && cell.col >= bounds.col && cell.row < bounds.row + bounds.height && cell.col < bounds.col + bounds.width);
+            const newCells: IVector2[] = getLine(this.start, this.end).filter(cell => cell.row >= bounds.row && cell.col >= bounds.col && cell.row < bounds.row + bounds.height && cell.col < bounds.col + bounds.width);
 
             setBoard(board =>  removeDuplicates(board.concat(newCells)))
             const [, setGhostTilePositions] = this.data.ghostTilePositions;

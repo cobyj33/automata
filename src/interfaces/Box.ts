@@ -1,15 +1,15 @@
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 
-export interface Box extends Vector2 {
+export interface Box extends IVector2 {
     width: number;
     height: number;
 }
 
-export function inBox(inside: Vector2, outside: Box): boolean {
+export function inBox(inside: IVector2, outside: Box): boolean {
     return inside.row >= outside.row && inside.row <= outside.row + outside.height && inside.col >= outside.col && inside.col <= outside.col + outside.width;
 }
 
-export function getBoxCorners(box: Box): Vector2[] {
+export function getBoxCorners(box: Box): IVector2[] {
     return [{
         row: box.row,
         col: box.col
@@ -26,11 +26,11 @@ export function getBoxCorners(box: Box): Vector2[] {
 }
 
 export function areBoxesIntersecting(first: Box, second: Box): boolean {
-    const firstCorners: Vector2[] = getBoxCorners(first);
+    const firstCorners: IVector2[] = getBoxCorners(first);
     if (firstCorners.some(corner => inBox(corner, second))) {
         return true;
     }
-    const secondCorners: Vector2[] = getBoxCorners(second);
+    const secondCorners: IVector2[] = getBoxCorners(second);
     if (secondCorners.some(corner => inBox(corner, second))) {
         return true;
     }
@@ -61,7 +61,7 @@ export const getIntersectingArea = (() =>  {
 })();
 
 
-export function getEnclosingBox(cells: Vector2[]): Box {
+export function getEnclosingBox(cells: IVector2[]): Box {
     if (cells.length === 0) {
         return {
             row: 0,

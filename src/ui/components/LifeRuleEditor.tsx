@@ -5,7 +5,7 @@ import { BoundedGameRender } from "ui/components/BoundedGameRender"
 import { isValidLifeString, createLifeString, parseLifeLikeString } from "functions/generationFunctions"
 import { View } from "interfaces/View"
 import { Box, inBox } from "interfaces/Box"
-import { Vector2 } from "interfaces/Vector2"
+import { IVector2 } from "interfaces/Vector2"
 
 type RuleEditMode = "ASSISTED" | "RAW";
 

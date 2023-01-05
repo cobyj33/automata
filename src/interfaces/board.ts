@@ -1,12 +1,12 @@
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { Box } from "./Box";
 
 
 export class LifeLikeBoard {
-    cells: Vector2[] = []
+    cells: IVector2[] = []
     bounds: Box | null = null
 
-    constructor(cells: Vector2[]) {
+    constructor(cells: IVector2[]) {
         this.cells = cells
     }
 

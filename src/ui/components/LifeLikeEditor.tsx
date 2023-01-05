@@ -1,6 +1,6 @@
 import React from "react"
 import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { EditMode } from "automata/editor/main";
 import { BoxEditMode, BoxData, DrawEditMode, DrawData, EllipseEditMode, EllipseData, LineEditMode, LineData, MoveEditMode, MoveData, ZoomEditMode, ZoomData, EraseEditMode, EraseData } from 'automata/editor/bounded';
@@ -22,13 +22,13 @@ import { BoardType } from "./GameBoard";
 
 
 interface EditorData {
-    boardData: StatefulData<Vector2[]>;
+    boardData: StatefulData<IVector2[]>;
     boundsData: StatefulData<Box>;
     viewData: StatefulData<View>;
-    lastHoveredCell: Vector2;
+    lastHoveredCell: IVector2;
     isPointerDown: boolean;
-    getHoveredCell: (event: PointerEvent<Element>) => Vector2;
-    ghostTilePositions: StatefulData<Vector2[]>
+    getHoveredCell: (event: PointerEvent<Element>) => IVector2;
+    ghostTilePositions: StatefulData<IVector2[]>
     isRendering: boolean;
 }
 
@@ -37,7 +37,7 @@ type UnionData = MoveData | ZoomData | DrawData | EraseData | BoxData | LineData
 
 
 
-export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
+export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
   const boardHolder = useRef<HTMLDivElement>(null);
   const ghostCanvas = useRef<HTMLCanvasElement>(null);
   const [cursor, setCursor] = useState<string>('');
@@ -52,8 +52,8 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
   const [board, setBoard] = boardData;
   const [rendering, setRendering] = useState<boolean>(false);
   const [bounds, setBounds] = useState<Box>({ row: 0, col: 0, width: 200, height: 200 });
-  const [ghostTilePositions, setGhostTilePositions] = useState<Vector2[]>([]);
-  const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>({ row: 0, col: 0 });
+  const [ghostTilePositions, setGhostTilePositions] = useState<IVector2[]>([]);
+  const [lastHoveredCell, setLastHoveredCell] = useState<IVector2>({ row: 0, col: 0 });
   const [automata, setAutomata] = useState<string>("B3/S23");
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
 
@@ -135,7 +135,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
     editorModes.current[editMode].onPointerLeave?.(event);
   }
   
-  const [undo, redo] = useHistory(boardData, (first: Vector2[], second: Vector2[]) => first.length === second.length && first.every(cell => second.includes(cell)) )
+  const [undo, redo] = useHistory(boardData, (first: IVector2[], second: IVector2[]) => first.length === second.length && first.every(cell => second.includes(cell)) )
   function onKeyDown(event: KeyboardEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onKeyDown?.(event);

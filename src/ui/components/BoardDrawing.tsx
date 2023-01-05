@@ -1,5 +1,5 @@
 import React from 'react'
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View'
 import { Color } from 'interfaces/Color';
 import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid } from 'functions/drawing';
@@ -32,7 +32,7 @@ const defaultBoardSettings = {
     }
 } as const;
 
-export const BoardDrawing = ({ board, view, className  }: { board: Vector2[] | CellMatrix, view: View, className?: string }) => {
+export const BoardDrawing = ({ board, view, className  }: { board: IVector2[] | CellMatrix, view: View, className?: string }) => {
     const boardCanvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
     const gridCanvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
     const boardMatrixShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);
@@ -59,7 +59,7 @@ export const BoardDrawing = ({ board, view, className  }: { board: Vector2[] | C
         gl.clearColor(0.15, 0.15, 0.15, 1);
         gl.clear(gl.COLOR_BUFFER_BIT);
         if (Array.isArray(board)) {
-          renderBoard(gl, view, board as Vector2[]);
+          renderBoard(gl, view, board as IVector2[]);
         } else {
           renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
         }

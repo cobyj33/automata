@@ -1,6 +1,6 @@
 import { PointerEvent, WheelEvent } from "react";
 import {StatefulData} from "interfaces/StatefulData";
-import { dotProductVector2, Vector2, vector2Normalized } from "interfaces/Vector2";
+import { dotProductVector2, IVector2, vector2Normalized } from "interfaces/Vector2";
 import {View} from "interfaces/View";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 
@@ -20,7 +20,7 @@ export class ZoomEditMode extends EditMode<ZoomData> {
     onPointerMove(event: PointerEvent<Element>) {
         const [, setView] = this.data.viewData;
         if (this.data.isPointerDown === true) {
-            const movementVector: Vector2 = {
+            const movementVector: IVector2 = {
                 row: event.movementY,
                 col: event.movementX
             } 

@@ -1,8 +1,8 @@
 import { Box, inBox, getEnclosingBox } from "interfaces/Box";
-import { Vector2 } from "interfaces/Vector2"
+import { IVector2 } from "interfaces/Vector2"
 
 test("inBox", () => {
-    const cell: Vector2 = { row: 1, col: 0 };
+    const cell: IVector2 = { row: 1, col: 0 };
     const box: Box = {
         row: -1,
         col: -1,
@@ -21,7 +21,6 @@ test('getEnclosingBox', () => {
         { row: 3, col: 3 },
     ])
 
-    console.log(box)
 
     const expected = {
         row: 2,

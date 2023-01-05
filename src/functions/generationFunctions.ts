@@ -217,8 +217,8 @@ export async function getNextElementaryGenerationAsync(currentGeneration: Uint8C
 
 
 
-// async function getNextGeneration(board: Vector2[], lifeString: string): Promise<Vector2[]> {
-//     let newBoard: Vector2[] = []
+// async function getNextGeneration(board: IVector2[], lifeString: string): Promise<IVector2[]> {
+//     let newBoard: IVector2[] = []
 //     const renderingKernel = getLifeKernel(lifeString).setDynamicOutput(true).setDynamicArguments(true).setOutput([10]);
 
 //     const matrices: CellMatrix[] = partition(board);

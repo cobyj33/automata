@@ -1,6 +1,6 @@
 import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent } from "react";
 import { View } from "interfaces/View"
-import { Vector2 } from "interfaces/Vector2"
+import { IVector2 } from "interfaces/Vector2"
 import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
 import { ElementaryDrawEditMode, ElementaryDrawData } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";

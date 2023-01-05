@@ -1,4 +1,4 @@
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { getViewOffset, View } from "interfaces/View";
 import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "interfaces/Box";
 import { CellMatrix } from "interfaces/CellMatrix";
@@ -70,7 +70,7 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
     return null;
 }
 
-// export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, board: Vector2[]) {
+// export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, board: IVector2[]) {
 //     context.save();
 //     context.fillStyle = 'white';
 //     const viewArea: Box = getViewArea(canvas, view);
@@ -84,7 +84,7 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
 //     context.restore();
 //   }
 
-export function renderBoard(gl: WebGL2RenderingContext, view: View, board: Vector2[], opacity: number = 1) {
+export function renderBoard(gl: WebGL2RenderingContext, view: View, board: IVector2[], opacity: number = 1) {
     const viewArea: Box = getViewArea(gl.canvas, view);
     const shownCells = board.filter(cell => inBox(cell, viewArea));
     const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
@@ -102,7 +102,7 @@ export function renderBoard(gl: WebGL2RenderingContext, view: View, board: Vecto
   // export function renderBoardFromMatrix(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, cellMatrix: CellMatrix) {
   //   context.save();
   //   context.fillStyle = 'white';
-  //     const startCoordinates: Vector2 = {
+  //     const startCoordinates: IVector2 = {
   //         row: (cellMatrix.row - view.row) * view.cellSize,
   //         col: (cellMatrix.col - view.col) * view.cellSize
   //     }
@@ -161,7 +161,7 @@ export function getBoardMatrixShaderProgram(gl: WebGL2RenderingContext): WebGLPr
 export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, cellMatrix: CellMatrix, inputtedMatrixRenderProgram: WebGLProgram | null = null) {
     const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
 
-  const startCoordinates: Vector2 = {
+  const startCoordinates: IVector2 = {
       row: (cellMatrix.row - view.row) * view.cellSize,
       col: (cellMatrix.col - view.col) * view.cellSize
   }

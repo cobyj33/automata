@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useRef } from 'react'
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { getViewArea, } from 'functions/drawing';
 import { useWebGL2CanvasUpdater } from 'functions/hooks';
@@ -10,7 +10,7 @@ import LayeredCanvas from 'ui/components/LayeredCanvas';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 
 
-export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board: Vector2[] | CellMatrix, view: View, bounds: Box, className?: string }) => {
+export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board: IVector2[] | CellMatrix, view: View, bounds: Box, className?: string }) => {
     const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
     function blockOutBounds(gl: WebGL2RenderingContext) {
         const viewArea: Box = getViewArea(gl.canvas, view);

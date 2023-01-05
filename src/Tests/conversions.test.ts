@@ -1,4 +1,4 @@
-import { Vector2 } from "interfaces/Vector2"
+import { IVector2 } from "interfaces/Vector2"
 import { cellMatrixToVector2, cellsToCellMatrix } from "functions/conversions"
 import { isEqualArrays } from "functions/validation"
 
@@ -51,7 +51,7 @@ test('matrix to cells', () => {
         0, 0, 0, 0, 0, 0, 0, 0, 0
     ];
 
-    const cells: Vector2[] = cellMatrixToVector2( {
+    const cells: IVector2[] = cellMatrixToVector2( {
         row: 0,
         col: 0,
         matrix: new Uint8ClampedArray(matrix),

@@ -1,4 +1,4 @@
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 
 
 type Map2D = {[key: number]: Set<number>}
@@ -9,7 +9,7 @@ export class Set2D {
        values.forEach(value => this.add(value[0], value[1])); 
     }
 
-    static fromVector2DArray(values: Vector2[]): Set2D {
+    static fromVector2DArray(values: IVector2[]): Set2D {
         const set2D: Set2D = new Set2D();
         values.forEach(value => set2D.add(value.row, value.col));
         return set2D

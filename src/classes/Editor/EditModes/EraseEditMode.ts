@@ -2,13 +2,13 @@ import { PointerEvent } from "react";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { getLine } from "functions/shapes";
 import { StatefulData } from "interfaces/StatefulData"
-import { Vector2 } from "interfaces/Vector2"
+import { IVector2 } from "interfaces/Vector2"
 
 export interface EraseData {
-    boardData: StatefulData<Vector2[]>,
-    ghostTilePositions: StatefulData<Vector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
-    lastHoveredCell: Vector2,
+    boardData: StatefulData<IVector2[]>,
+    ghostTilePositions: StatefulData<IVector2[]>,
+    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
+    lastHoveredCell: IVector2,
     isPointerDown: boolean,
         isRendering: boolean;
 }

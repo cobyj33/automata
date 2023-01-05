@@ -1,25 +1,25 @@
 import { PointerEvent, KeyboardEvent } from "react";
 import { removeDuplicates } from "functions/utilityFunctions";
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { getEllipse } from "functions/shapes";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData";
 
 export interface EllipseData {
-    boardData: StatefulData<Vector2[]>,
-    ghostTilePositions: StatefulData<Vector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
+    boardData: StatefulData<IVector2[]>,
+    ghostTilePositions: StatefulData<IVector2[]>,
+    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
     isPointerDown: boolean,
         isRendering: boolean;
 }
 
 export class EllipseEditMode extends EditMode<EllipseData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
-    start: Vector2 | undefined;
-    end: Vector2 | undefined;
+    start: IVector2 | undefined;
+    end: IVector2 | undefined;
     circleLocked: boolean = false;
 
-    get currentCells(): Vector2[] {
+    get currentCells(): IVector2[] {
         if (this.start !== undefined && this.start !== null && this.end !== undefined && this.end !== null) {
             return getEllipse(this.start, this.end);
         }
@@ -59,7 +59,7 @@ export class EllipseEditMode extends EditMode<EllipseData> {
                         col: this.start.col + ( hoveredCell.col < this.start.col ? -sideLength : sideLength )       
                     }
 
-                    // this.end = this.start.add( new Vector2( hoveredCell.row < this.start.row ? -sideLength : sideLength, hoveredCell.col < this.start.col ? -sideLength : sideLength ) )
+                    // this.end = this.start.add( new IVector2( hoveredCell.row < this.start.row ? -sideLength : sideLength, hoveredCell.col < this.start.col ? -sideLength : sideLength ) )
                 } else {
                     this.end = hoveredCell;
                 }

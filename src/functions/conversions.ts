@@ -1,9 +1,9 @@
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { Box, getEnclosingBox, inBox } from "interfaces/Box";
 import { CellMatrix } from 'interfaces/CellMatrix';
 import { Set2D } from 'classes/Structures/Set2D';
 
-export function cellsToCellMatrix(cells: Vector2[]): CellMatrix {
+export function cellsToCellMatrix(cells: IVector2[]): CellMatrix {
     const boundingBox: Box = getEnclosingBox(cells);
     boundingBox.width += 1;
     boundingBox.height += 1;
@@ -20,7 +20,7 @@ export function cellsToCellMatrix(cells: Vector2[]): CellMatrix {
     }
 }
 
-// export function cellsToMatrix(cells: Vector2[]): number[][] {
+// export function cellsToMatrix(cells: IVector2[]): number[][] {
 //     const matrix : number[][] = Array.from({length: boundingBox.height}, () => new Array<number>(boundingBox.width).fill(0));
 //     // console.log(matrix);
 //     // console.log(matrix.length);
@@ -32,7 +32,7 @@ export function cellsToCellMatrix(cells: Vector2[]): CellMatrix {
 //     return matrix;
 // }
 
-export function cellsInBoxToCellMatrix(cells: Vector2[], boundingBox: Box): CellMatrix {
+export function cellsInBoxToCellMatrix(cells: IVector2[], boundingBox: Box): CellMatrix {
     const matrix: Uint8ClampedArray = new Uint8ClampedArray(boundingBox.width * boundingBox.height);
 
     cells.forEach(cell => matrix[(cell.row - boundingBox.row) * boundingBox.width + (cell.col - boundingBox.col)] = 1);
@@ -45,8 +45,8 @@ export function cellsInBoxToCellMatrix(cells: Vector2[], boundingBox: Box): Cell
     }
 }
 
-export function cellMatrixToVector2(cellMatrix: CellMatrix): Vector2[] {
-    const cells: Vector2[] = [];
+export function cellMatrixToVector2(cellMatrix: CellMatrix): IVector2[] {
+    const cells: IVector2[] = [];
     for (let row = 0; row < cellMatrix.height; row++) {
         for (let col = 0; col < cellMatrix.width; col++) {
             if (cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
@@ -58,12 +58,12 @@ export function cellMatrixToVector2(cellMatrix: CellMatrix): Vector2[] {
     return cells;
 }
 
-export function partition(board: Vector2[]): CellMatrix[] {
+export function partition(board: IVector2[]): CellMatrix[] {
     const matrices: CellMatrix[] = [];
     const set: Set2D = new Set2D(); 
     
     const boxes: Box[] = []
-    const groups: Vector2[][] = []
+    const groups: IVector2[][] = []
 
     board.forEach(pos => set.add(pos.row, pos.col));
     
