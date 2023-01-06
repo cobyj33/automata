@@ -1,6 +1,6 @@
 import React from "react"
 import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
-import { IVector2 } from 'interfaces/Vector2';
+import { IVector2, Vector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { EditMode } from "automata/editor/main";
 import { BoxEditMode, BoxData, DrawEditMode, DrawData, EllipseEditMode, EllipseData, LineEditMode, LineData, MoveEditMode, MoveData, ZoomEditMode, ZoomData, EraseEditMode, EraseData } from 'automata/editor/bounded';
@@ -59,15 +59,15 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     }, [rendering] )
 
   useEffect( () => {
-    withCanvasAndContextWebGL2(ghostCanvas, (canvas, gl) => {
+    withCanvasAndContextWebGL2(ghostCanvas, ({ gl }) => {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
     })
   }, [ghostTilePositions, lastHoveredCell])
 
-  function getCurrentHoveredCell(event: PointerEvent<Element>) {
-    return boardHolder.current !== null ? getHoveredCell(pointerPositionInElement(event, boardHolder.current), view) : lastHoveredCell;
+  function getCurrentHoveredCell(event: PointerEvent<Element>): Vector2 {
+    return getHoveredCell(pointerPositionInElement(event), view).trunc()
   }
 
   function getEditorData(): EditorData {

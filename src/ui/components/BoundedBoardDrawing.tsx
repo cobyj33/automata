@@ -23,7 +23,7 @@ export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board:
     }
 
     function render() {
-      withCanvasAndContextWebGL2(canvasRef, (canvas, gl) => {
+      withCanvasAndContextWebGL2(canvasRef, ({ gl }) => {
         gl.clearColor(0, 0, 0, 1);
         gl.clear(gl.COLOR_BUFFER_BIT)
         blockOutBounds(gl)

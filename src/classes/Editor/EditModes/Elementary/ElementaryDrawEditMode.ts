@@ -14,7 +14,7 @@ export interface ElementaryDrawData {
     getHoveredCell: (event: PointerEvent<Element>) => number,
     lastHoveredCell: number,
     isPointerDown: boolean,
-        isRendering: boolean;
+    isRendering: boolean;
 }
 
 export class ElementaryDrawEditMode extends EditMode<ElementaryDrawData> {
@@ -29,6 +29,7 @@ export class ElementaryDrawEditMode extends EditMode<ElementaryDrawData> {
         const hoveredCell = this.data.getHoveredCell(event);
         
         setCellMatrix(cellMatrix => {
+
             
             if (hoveredCell >= cellMatrix.col && hoveredCell < cellMatrix.col + cellMatrix.width) {
                 const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
@@ -39,7 +40,9 @@ export class ElementaryDrawEditMode extends EditMode<ElementaryDrawData> {
                 }
             }
 
+
             return cellMatrix;
+
         })
     }
 

@@ -436,12 +436,12 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
  * @returns The HTML Canvas and the Canvas Rendering Context taken from the ref object
  * @throws Error when either the context cannot be gotten ("HTMLCanvasElement.getContext('2d') returns null or undefined"), or the value inside the ref to the canvas is null or undefined
  */
-export function getCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasElement>): [HTMLCanvasElement, CanvasRenderingContext2D] {
+export function getCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasElement>): { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D } {
     const canvas: HTMLCanvasElement | null = canvasRef.current 
     if (canvas !== null && canvas !== undefined) {
         const context = canvas.getContext("2d");
         if (context !== null && context !== undefined) {
-            return [canvas, context];
+            return { canvas: canvas, context: context };
         }
         throw new Error(`Could not get Canvas context, context declared ${context}`)
     }
@@ -458,12 +458,12 @@ export function getCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasEleme
  * @param callbackfn A callback that takes in a canvas and context2D as parameters, and only runs if the canvas and context are non-null
  * @returns void
  */
-export function withCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasElement>, callbackfn: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void, onerror?: () => void) {
+export function withCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasElement>, callbackfn: ({ canvas, context }: { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D }) => void, onerror?: () => void) {
     const canvas: HTMLCanvasElement | null = canvasRef.current 
     if (canvas !== null && canvas !== undefined) {
         const context = canvas.getContext("2d");
         if (context !== null && context !== undefined) {
-            callbackfn(canvas, context)
+            callbackfn({ canvas: canvas, context: context })
             return
         }
     }
@@ -478,12 +478,12 @@ export function withCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasElem
  * @returns The HTML Canvas and the WebGL2 Context taken from the ref object
  * @throws Error when either the context cannot be gotten ("HTMLCanvasElement.getContext('webgl2') returns null or undefined"), or the value inside the ref to the canvas is null or undefined
  */
-export function getCanvasAndContextWebGL2(canvasRef: React.RefObject<HTMLCanvasElement>): [HTMLCanvasElement, WebGL2RenderingContext] {
+export function getCanvasAndContextWebGL2(canvasRef: React.RefObject<HTMLCanvasElement>): { canvas: HTMLCanvasElement, gl: WebGL2RenderingContext } {
     const canvas: HTMLCanvasElement | null = canvasRef.current 
     if (canvas !== null && canvas !== undefined) {
         const gl = canvas.getContext("webgl2");
         if (gl !== null && gl !== undefined) {
-            return [canvas, gl];
+            return { canvas: canvas, gl: gl };
         }
         throw new Error(`Could not get WebGL2 context, context declared ${gl}`)
     }
@@ -498,14 +498,14 @@ export function getCanvasAndContextWebGL2(canvasRef: React.RefObject<HTMLCanvasE
  * 
  * This is meant to replace getCanvasAndContext2D, as it throws errors which have to be handled, while in most cases when these "errors" are throne nothing is supposed to happen anyway
  * @param callbackfn A callback that takes in a canvas and context2D as parameters, and only runs if the canvas and context are non-null
- * @returns void
+ * @returns 
  */
-export function withCanvasAndContextWebGL2(canvasRef: React.RefObject<HTMLCanvasElement>, callbackfn: (canvas: HTMLCanvasElement, context: WebGL2RenderingContext) => void, onerror?: () => void) {
+export function withCanvasAndContextWebGL2(canvasRef: React.RefObject<HTMLCanvasElement>, callbackfn: ( { canvas, gl }: { canvas: HTMLCanvasElement, gl: WebGL2RenderingContext }) => void, onerror?: () => void) {
     const canvas: HTMLCanvasElement | null = canvasRef.current 
     if (canvas !== null && canvas !== undefined) {
         const gl = canvas.getContext("webgl2");
         if (gl !== null && gl !== undefined) {
-            callbackfn(canvas, gl)
+            callbackfn({ canvas: canvas, gl: gl })
             return
         }
     }

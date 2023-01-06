@@ -47,7 +47,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMat
   const [inputRule, setInputRule] = useState<string>("");
 
   function getCurrentHoveredCell(event: PointerEvent<Element>): number {
-    return boardHolder.current !== null ? getHoveredCell(pointerPositionInElement(event, boardHolder.current), view)?.col : lastHoveredCell;
+    return Math.trunc(getHoveredCell(pointerPositionInElement(event), view).col)
   }
 
   function getElementaryEditorData(): ElementaryEditorData {

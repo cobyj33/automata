@@ -4,7 +4,7 @@ import { Vector2 } from "interfaces/Vector2";
 import {View} from "interfaces/View";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 
-const zoomDirection: Vector2 = new Vector2(-1, -1).normalize()
+const zoomDirection: Vector2 = new Vector2(-1, -1)
 
 export interface ZoomData {
     viewData: StatefulData<View>;
@@ -20,7 +20,7 @@ export class ZoomEditMode extends EditMode<ZoomData> {
         if (this.data.isPointerDown === true) {
             const movementVector: Vector2 = new Vector2(event.movementY, event.movementX)
             if (!movementVector.isZero()) {
-                setView(view =>  view.withCellSize(curr => Math.max(MIN_CELL_SIZE, curr + Math.trunc(zoomDirection.dot(movementVector.normalize())))) )
+                setView(view =>  view.withCellSize(curr => Math.max(MIN_CELL_SIZE, curr + Math.trunc(zoomDirection.dot(movementVector.normalize())) )) )
             }
         }
     }

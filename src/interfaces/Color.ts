@@ -90,6 +90,10 @@ export class Color implements RGBA {
             alpha: this.alpha
         }
     }
+
+    tuple(): [number, number, number, number] {
+        return [this.red, this.green, this.blue, this.alpha]
+    }
 }
 
 
