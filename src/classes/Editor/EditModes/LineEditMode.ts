@@ -3,7 +3,7 @@ import { IVector2, filterVector2ListDuplicates, filterVector2ListMatches } from 
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {getLine} from 'functions/shapes';
 import {StatefulData} from "interfaces/StatefulData";
-import { Box, inBox } from "interfaces/Box";
+import { Box } from "interfaces/Box";
 import { LineSegment } from "interfaces/LineSegment";
 import { hover } from "@testing-library/user-event/dist/hover";
 
@@ -42,7 +42,7 @@ export class LineEditMode extends EditMode<LineData> {
         if (!this.data.isRendering) {
             const [, setBoard] = this.data.boardData;
             const [bounds] = this.data.boundsData;
-            const newCells: IVector2[] = this.line.cells().filter(cell => inBox(cell, bounds));
+            const newCells: IVector2[] = this.line.cells().filter(cell => bounds.pointInside(cell));
             
             setBoard(board =>  filterVector2ListDuplicates(board.concat(newCells)))
             const [, setGhostTilePositions] = this.data.ghostTilePositions;

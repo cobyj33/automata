@@ -4,7 +4,7 @@ import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
 
 export interface ElementaryLineData {
-    boardData: StatefulData<CellMatrix>,
+    boardData: StatefulData<number[]>,
     ghostTilePositions: StatefulData<number[]>,
     getHoveredCell: (event: PointerEvent<Element>) => number,
     isPointerDown: boolean,
@@ -68,13 +68,10 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
             let end = this.end;
             const [, setBoard] = this.data.boardData;
             const line: number[] = range(start, end); 
-            setBoard(cellMatrix => {
-                const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
-                line.forEach(num => newMatrix[num] = 1);
-                return {
-                    ...cellMatrix,
-                    matrix: newMatrix
-                }
+            setBoard(board => {
+                const newBoard: number[] = [...board];
+                line.forEach(num => newBoard[num] = 1);
+                return newBoard
             })
             const toRemove = new Set<number>(line);
             const [, setGhostTilePositions] = this.data.ghostTilePositions;

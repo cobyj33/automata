@@ -1,6 +1,6 @@
 import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent } from "react";
 import { View } from "interfaces/View"
-import { IVector2 } from "interfaces/Vector2"
+import { IVector2, Vector2 } from "interfaces/Vector2"
 import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
 import { ElementaryDrawEditMode, ElementaryDrawData } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
@@ -16,9 +16,11 @@ import { MoveEditMode, MoveData } from 'classes/Editor/EditModes/MoveEditMode';
 import { EditMode } from 'classes/Editor/EditModes/EditMode';
 import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
+import { Box } from "interfaces/Box";
+import { isSameNumberArray } from "functions/util";
 
 interface ElementaryEditorData {
-    boardData: StatefulData<CellMatrix>;
+    boardData: StatefulData<number[]>;
     viewData: StatefulData<View>;
     ghostTilePositions: StatefulData<number[]>;
     getHoveredCell: (event: PointerEvent<Element>) => number;
@@ -32,10 +34,10 @@ const defaultWidth = 1000;
 type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
 type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData | MoveData | ZoomData | ElementaryEditorData;
 
-export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMatrix> }) => {
+export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[]> }) => {
 
-    const [view, setView] = useState<View>(View.from(-5, 0, 50));
-    const [cellMatrix, setCellMatrix] = boardData;
+  const [view, setView] = useState<View>(View.from(-5, 0, 50));
+  const [board, setBoard] = boardData;
 
   const boardHolder = useRef(null);
   const [cursor, setCursor] = useState<string>('');
@@ -52,7 +54,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMat
 
   function getElementaryEditorData(): ElementaryEditorData {
     return {
-      boardData: [cellMatrix, setCellMatrix],
+      boardData: [board, setBoard],
       viewData: [view, setView],
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell,
@@ -103,8 +105,16 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMat
     editorModes.current[editMode].setEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerLeave?.(event);
   }
+
+  function toggleRendering() {
+    setRendering(!rendering)
+  }
+
+  function clear() {
+    setBoard(new Array<number>(board.length).fill(0));
+  }
   
-  const [undo, redo] = useHistory([cellMatrix, setCellMatrix], (first: CellMatrix, second: CellMatrix) => first.row === second.row && first.col === second.col && first.width === second.width && first.height === second.height && first.matrix.every((value, index) => second.matrix[index] = value));
+  const [undo, redo] = useHistory([board, setBoard], isSameNumberArray);
   function onKeyDown(event: KeyboardEvent<Element>) {
     editorModes.current[editMode].setEditorData(getElementaryEditorData())
     editorModes.current[editMode].onKeyDown?.(event);
@@ -114,9 +124,9 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMat
     } else if (event.code === "KeyZ" && event.ctrlKey === true) {
       undo();
     } else if (event.code === 'Enter') {
-      setRendering(!rendering)
+      toggleRendering()
     } else if (event.code === 'KeyC') {
-      setCellMatrix(cellMatrix => ({ ...cellMatrix, matrix: cellMatrix.matrix.map(num => 0) }));
+      clear()
     }
   }
 
@@ -148,8 +158,8 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<CellMat
     return (
     <div className={elementaryStyles["editor"]}  >
       <div className={elementaryStyles["board-holder"]} ref={boardHolder} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
-          { rendering ? <ElementaryBoardRender view={view} start={[...cellMatrix.matrix]} rule={rule} /> : 
-              <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix} />
+          { rendering ? <ElementaryBoardRender view={view} start={board} rule={rule} /> : 
+              <BoundedBoardDrawing board={CellMatrix.fromNumberMatrix([board], new Vector2(0, 0))} view={view} bounds={Box.from(0, 0, board.length, 1)} />
           }
       </div>
 

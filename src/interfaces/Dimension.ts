@@ -17,6 +17,10 @@ export class Dimension2D implements IDimension2D {
         this.height = height
     }
 
+    get area() {
+        return this.width * this.height
+    }
+
     aspectRatio() {
         return this.width / this.height
     }
@@ -27,6 +31,10 @@ export class Dimension2D implements IDimension2D {
 
     static fromTuple(tuple: Dimension2DTuple) {
         return new Dimension2D(tuple[0], tuple[1])
+    }
+
+    static fromIDimension2D(data: IDimension2D) {
+        return new Dimension2D(data.width, data.height)
     }
 
     withWidth(width: number): Dimension2D {
@@ -41,8 +49,8 @@ export class Dimension2D implements IDimension2D {
         return new Dimension2D(this.width * factor, this.height * factor)
     }
 
-    expand(amount: number): Dimension2D {
-        return new Dimension2D(this.width * + amount, this.height + amount)
+    expand(width: number, height: number): Dimension2D {
+        return new Dimension2D(this.width + width, this.height + height)
     }
 
     trunc(): Dimension2D {
@@ -61,5 +69,7 @@ export class Dimension2D implements IDimension2D {
         return new Dimension2D(Math.round(this.width), Math.round(this.height))
     }
 
-
+    equals(other: Dimension2D) {
+        return this.width === other.width && this.height === other.height
+    }
 }

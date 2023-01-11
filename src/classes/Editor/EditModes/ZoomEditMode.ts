@@ -11,7 +11,7 @@ export interface ZoomData {
     isPointerDown: boolean
 }
 
-const MIN_CELL_SIZE = 2;
+const MIN_CELL_SIZE = 1;
 export class ZoomEditMode extends EditMode<ZoomData> {
     cursor() { return 'url("https://img.icons8.com/external-royyan-wijaya-detailed-outline-royyan-wijaya/24/000000/external-magnifying-glass-interface-royyan-wijaya-detailed-outline-royyan-wijaya.png"), nwse-resize' }
 

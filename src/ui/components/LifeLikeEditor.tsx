@@ -1,22 +1,28 @@
 import React from "react"
-import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
+
+import {Box } from 'interfaces/Box';
 import { IVector2, Vector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
+import { StatefulData } from 'interfaces/StatefulData';
+
 import { EditMode } from "automata/editor/main";
 import { BoxEditMode, BoxData, DrawEditMode, DrawData, EllipseEditMode, EllipseData, LineEditMode, LineData, MoveEditMode, MoveData, ZoomEditMode, ZoomData, EraseEditMode, EraseData } from 'automata/editor/bounded';
-import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
-import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
-import { StatefulData } from 'interfaces/StatefulData';
-import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
-import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
-import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaBox, FaEllipsisH, FaUndo, FaRedo } from "react-icons/fa"
-import { GiStraightPipe } from "react-icons/gi"
-import { BsCircle } from "react-icons/bs"
-import LayeredCanvas from 'ui/components/LayeredCanvas';
+
 import { renderBoard, withCanvasAndContextWebGL2 } from 'functions/drawing';
 import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
-import {Box, inBox} from 'interfaces/Box';
+import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
+import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
+
+import LayeredCanvas from 'ui/components/LayeredCanvas';
+import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
+import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
 import LifeRuleEditor from "ui/components/LifeRuleEditor"
+
+import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaBox, FaUndo, FaRedo } from "react-icons/fa"
+import { GiStraightPipe } from "react-icons/gi"
+import { AiOutlineClear } from "react-icons/ai"
+import { BsCircle } from "react-icons/bs"
+
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 
 
@@ -26,7 +32,7 @@ interface EditorData {
     viewData: StatefulData<View>;
     lastHoveredCell: IVector2;
     isPointerDown: boolean;
-    getHoveredCell: (event: PointerEvent<Element>) => IVector2;
+    getHoveredCell: (event: React.PointerEvent<Element>) => IVector2;
     ghostTilePositions: StatefulData<IVector2[]>
     isRendering: boolean;
 }
@@ -37,28 +43,28 @@ type UnionData = MoveData | ZoomData | DrawData | EraseData | BoxData | LineData
 
 
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
-  const boardHolder = useRef<HTMLDivElement>(null);
-  const ghostCanvas = useRef<HTMLCanvasElement>(null);
-  const [cursor, setCursor] = useState<string>('');
+  const boardHolder = React.useRef<HTMLDivElement>(null);
+  const ghostCanvas = React.useRef<HTMLCanvasElement>(null);
+  const [cursor, setCursor] = React.useState<string>('');
   
-    const [view, setView] = useState<View>(View.from(0, 0, 10));
-    const [renderData, setRenderData] = useState<RenderData>({ generation: 0 });
+    const [view, setView] = React.useState<View>(View.from(0, 0, 10));
+    const [renderData, setRenderData] = React.useState<RenderData>({ generation: 0 });
 
   const [board, setBoard] = boardData;
-  const [rendering, setRendering] = useState<boolean>(false);
-  const [bounds, setBounds] = useState<Box>({ row: 0, col: 0, width: 200, height: 200 });
-  const [ghostTilePositions, setGhostTilePositions] = useState<IVector2[]>([]);
-  const [lastHoveredCell, setLastHoveredCell] = useState<IVector2>({ row: 0, col: 0 });
-  const [automata, setAutomata] = useState<string>("B3/S23");
-  const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
+  const [rendering, setRendering] = React.useState<boolean>(false);
+  const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, 100, 100));
+  const [ghostTilePositions, setGhostTilePositions] = React.useState<IVector2[]>([]);
+  const [lastHoveredCell, setLastHoveredCell] = React.useState<IVector2>({ row: 0, col: 0 });
+  const [automata, setAutomata] = React.useState<string>("B3/S23");
+  const isPointerDown: React.MutableRefObject<boolean> = useIsPointerDown(boardHolder);
 
-    useEffect( () => {
+    React.useEffect( () => {
         if (rendering === false) {
             setRenderData({generation: 0});
         }
     }, [rendering] )
 
-  useEffect( () => {
+  React.useEffect( () => {
     withCanvasAndContextWebGL2(ghostCanvas, ({ gl }) => {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
@@ -66,7 +72,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     })
   }, [ghostTilePositions, lastHoveredCell])
 
-  function getCurrentHoveredCell(event: PointerEvent<Element>): Vector2 {
+  function getCurrentHoveredCell(event: React.PointerEvent<Element>): Vector2 {
     return getHoveredCell(pointerPositionInElement(event), view).trunc()
   }
 
@@ -83,8 +89,8 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     }
   }
   
-  const [editMode, setEditMode] = useState<EditorEditMode>("MOVE");
-  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<UnionData>}> = useRef({ 
+  const [editMode, setEditMode] = React.useState<EditorEditMode>("MOVE");
+  const editorModes: React.MutableRefObject<{[key in EditorEditMode]: EditMode<UnionData>}> = React.useRef({ 
     "DRAW": new DrawEditMode(getEditorData()),
     "ZOOM": new ZoomEditMode(getEditorData()),
     "MOVE": new MoveEditMode(getEditorData()),
@@ -94,11 +100,11 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     "ELLIPSE": new EllipseEditMode(getEditorData())
   });
   
-  useEffect( () => {
+  React.useEffect( () => {
     setCursor(editorModes.current[editMode].cursor());
   }, [editMode])
 
-  function onPointerMove(event: PointerEvent<Element>) {
+  function onPointerMove(event: React.PointerEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onPointerMove?.(event);
     const currentHoveredCell = getCurrentHoveredCell(event)
@@ -107,7 +113,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     }
   }
   
-  function onPointerDown(event: PointerEvent<Element>) {
+  function onPointerDown(event: React.PointerEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onPointerDown?.(event);
     const currentHoveredCell = getCurrentHoveredCell(event)
@@ -116,18 +122,26 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     }
   }
   
-  function onPointerUp(event: PointerEvent<Element>) {
+  function onPointerUp(event: React.PointerEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onPointerUp?.(event);
   }
 
-  function onPointerLeave(event: PointerEvent<Element>) {
+  function onPointerLeave(event: React.PointerEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onPointerLeave?.(event);
   }
+
+  function toggleRendering() {
+    setRendering(!rendering)
+  }
+
+  function clear() {
+    setBoard([]);
+  }
   
   const [undo, redo] = useHistory(boardData, (first: IVector2[], second: IVector2[]) => first.length === second.length && first.every(cell => second.includes(cell)) )
-  function onKeyDown(event: KeyboardEvent<Element>) {
+  function onKeyDown(event: React.KeyboardEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onKeyDown?.(event);
 
@@ -136,18 +150,18 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     } else if (event.code === "KeyZ" && event.ctrlKey === true) {
       undo();
     } else if (event.code === 'Enter') {
-      setRendering(!rendering)
+      toggleRendering()
     } else if (event.code === 'KeyC') {
-      setBoard([]);
+      clear()
     }
   }
 
-  function onKeyUp(event: KeyboardEvent<Element>) {
+  function onKeyUp(event: React.KeyboardEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onKeyUp?.(event);
   }
 
-  function onWheel(event: WheelEvent<Element>) {
+  function onWheel(event: React.WheelEvent<Element>) {
     editorModes.current[editMode].setEditorData(getEditorData())
     editorModes.current[editMode].onWheel?.(event);
   }
@@ -193,6 +207,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("BOX")}`} onClick={() => setEditMode("BOX")}> <FaBox /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ELLIPSE")}`} onClick={() => setEditMode("ELLIPSE")}> <BsCircle /> </button>
             <button className={`${gameBoardStyles["edit-button"]} ${rendering ? gameBoardStyles['selected'] : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+            <button className={`${gameBoardStyles["edit-button"]}`} onClick={clear}> <AiOutlineClear /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
           </div>

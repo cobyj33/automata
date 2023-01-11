@@ -93,32 +93,30 @@ export function getNextLifeLikeGenerationFunction(matrix: Uint8ClampedArray, ind
 }
 
 export function getNextLifeGeneration(cellMatrix: CellMatrix, ruleString: string): Uint8ClampedArray  {
-    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix.length);
+    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.cellData.length);
     if (!isValidLifeString(ruleString)) {
-        console.error("Cannot parse invalid life string: ", ruleString);
-        output.set(cellMatrix.matrix, 0);
-        return output;
+        throw new Error("Cannot parse invalid life string: " + ruleString);
     }
 
     const ruleData = parseLifeLikeString(ruleString);
     for (let i = 0; i < output.length; i++) {
-        output[i] = getNextLifeLikeGenerationFunction(cellMatrix.matrix, i, cellMatrix.width, ruleData);
+        output[i] = getNextLifeLikeGenerationFunction(cellMatrix.cellData, i, cellMatrix.width, ruleData);
     }
 
     return output;
 }
 
 export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleString: string): Promise<Uint8ClampedArray>  {
-    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix.length);
+    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.cellData.length);
     if (!isValidLifeString(ruleString)) {
         console.error("Cannot parse invalid life string: ", ruleString);
-        output.set(cellMatrix.matrix, 0);
+        output.set(cellMatrix.cellData, 0);
         return output;
     }
 
     const ruleData = parseLifeLikeString(ruleString);
     for (let i = 0; i < output.length; i++) {
-        await ( async () => output[i] = getNextLifeLikeGenerationFunction(cellMatrix.matrix, i, cellMatrix.width, ruleData) )();
+        await ( async () => output[i] = getNextLifeLikeGenerationFunction(cellMatrix.cellData, i, cellMatrix.width, ruleData) )();
     }
 
     return output;
@@ -192,23 +190,23 @@ export function getNextElementaryGeneration(currentGeneration: Uint8ClampedArray
     return output;
 }
 
-export async function getNextElementaryGenerationAsync(currentGeneration: Uint8ClampedArray, numberRule: number): Promise<Uint8ClampedArray> {
-    const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
-    if (!isValidElementaryRule(numberRule)) {
-        console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
-        for (let i = 0; i < output.length; i++) {
-            output[i] = currentGeneration[i];
-        }
-        return output;
-    }
+// export async function getNextElementaryGenerationAsync(currentGeneration: Uint8ClampedArray, numberRule: number): Promise<Uint8ClampedArray> {
+//     const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
+//     if (!isValidElementaryRule(numberRule)) {
+//         console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
+//         for (let i = 0; i < output.length; i++) {
+//             output[i] = currentGeneration[i];
+//         }
+//         return output;
+//     }
 
-    const rules: Uint8ClampedArray = getElementaryRules(numberRule);
-    for (let i = 0; i < currentGeneration.length; i++) {
-        await ( async () => output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules))();
-    }
+//     const rules: Uint8ClampedArray = getElementaryRules(numberRule);
+//     for (let i = 0; i < currentGeneration.length; i++) {
+//         await ( async () => output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules))();
+//     }
 
-    return output;
-}
+//     return output;
+// }
 
 // export function getElementaryKernel(rule: number) {
 

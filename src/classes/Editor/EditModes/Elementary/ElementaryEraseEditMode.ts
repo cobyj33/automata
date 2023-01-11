@@ -10,7 +10,7 @@ function range(first: number, second: number): number[] {
 }
 
 export interface ElementaryEraseData {
-    boardData: StatefulData<CellMatrix>,
+    boardData: StatefulData<number[]>,
     getHoveredCell: (event: PointerEvent<Element>) => number,
     lastHoveredCell: number,
     isPointerDown: boolean,
@@ -25,21 +25,16 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
             return;
         }
 
-        const [, setCellMatrix] = this.data.boardData;
-        const hoveredCell = this.data.getHoveredCell(event);
+        const [, setBoard] = this.data.boardData;
+        const hoveredCell: number = this.data.getHoveredCell(event);
         
-        setCellMatrix(cellMatrix => {
-            
-            if (hoveredCell >= cellMatrix.col && hoveredCell < cellMatrix.col + cellMatrix.width) {
-                const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
-                newMatrix[hoveredCell] = 0;
-                return {
-                    ...cellMatrix,
-                    matrix: newMatrix
-                }
+        setBoard(board => {
+            if (hoveredCell >= 0 && hoveredCell < board.length) {
+                const newBoard: number[] = [...board];
+                newBoard[hoveredCell] = 0;
+                return newBoard
             }
-
-            return cellMatrix;
+            return board;
         })
     }
 
@@ -48,24 +43,22 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
             return;
         }
 
-        const [, setCellMatrix] = this.data.boardData;
+        const [, setBoard] = this.data.boardData;
         const hoveredCell: number = this.data.getHoveredCell(event);
         const lastHoveredCell: number = this.data.lastHoveredCell;
+        
         if (this.data.isPointerDown) {
-            setCellMatrix(cellMatrix => {
+            setBoard(board => {
                 const line: number[] = range(lastHoveredCell, hoveredCell);
-                const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
+                const newBoard: number[] = [...board]
 
-                line.forEach(hoveredCell => {
-                    if (hoveredCell >= cellMatrix.col && hoveredCell < cellMatrix.col + cellMatrix.width) {
-                        newMatrix[hoveredCell] = 0;
+                line.forEach(lineCell => {
+                    if (lineCell >= 0 && lineCell < newBoard.length) {
+                        newBoard[hoveredCell] = 0;
                     }
                 })
 
-                return {
-                    ...cellMatrix,
-                    matrix: newMatrix
-                };
+                return newBoard
             })
         }
     }

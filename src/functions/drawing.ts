@@ -1,19 +1,15 @@
 import { IVector2 } from "interfaces/Vector2";
 import { View } from "interfaces/View";
-import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "interfaces/Box";
+import { Box } from "interfaces/Box";
 import { CellMatrix } from "interfaces/CellMatrix";
 
 import gridVertexShader from "shaders/grid.vert?raw"
 import gridFragmentShader from "shaders/grid.frag?raw"
 import { compileProgramFromFiles, fetchTextFile } from "./webgl";
+import { Dimension2D } from "interfaces/Dimension";
 
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
-    return {
-        row: view.row,
-        col: view.col,
-        width: Math.ceil(canvas.width / view.cellSize),
-        height: Math.ceil(canvas.height / view.cellSize)
-    } 
+    return new Box(view.position, Dimension2D.fromIDimension2D(canvas).scale(1/view.cellSize).ceil())
 }
 
 export function quadVertices() {
@@ -86,7 +82,7 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
 
 export function renderBoard(gl: WebGL2RenderingContext, view: View, board: IVector2[], opacity: number = 1) {
     const viewArea: Box = getViewArea(gl.canvas, view);
-    const shownCells = board.filter(cell => inBox(cell, viewArea));
+    const shownCells = board.filter(cell => viewArea.pointInside(cell));
     const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
     
     gl.enable(gl.SCISSOR_TEST);
@@ -167,25 +163,17 @@ export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, ce
   }
 
   const viewArea: Box = getViewArea(gl.canvas, view);
-    if (!areBoxesIntersecting(viewArea, cellMatrix)) {
+    if (!viewArea.boxIntersect(cellMatrix.box)) {
         return;
     }
 
-    let visibleCells: Box = getIntersectingArea(viewArea, cellMatrix);
-    visibleCells = {
-        row: Math.trunc(visibleCells.row),
-        col: Math.trunc(visibleCells.col),
-        width: Math.trunc(visibleCells.width),
-        height: Math.trunc(visibleCells.height)
-    }
-
-
+    const visibleCells: Box = viewArea.intersectingArea(cellMatrix.box).trunc();
     const searchedCellVertices = new Float32Array(cellMatrix.width * cellMatrix.height * 2);
     let numberOfVertices = 0;
 
     for (let row = visibleCells.row; row < visibleCells.row + visibleCells.height; row++) {
       for (let col = visibleCells.col; col < visibleCells.col + visibleCells.width; col++) {
-          if (inBox( { row: cellMatrix.row + row, col: cellMatrix.col + col }, viewArea ) && cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
+          if (viewArea.pointInside({ row: cellMatrix.row + row, col: cellMatrix.col + col }) && cellMatrix.at(row, col) === 1) {
               searchedCellVertices[numberOfVertices] = startCoordinates.col + col * view.cellSize + view.cellSize / 2;
               searchedCellVertices[numberOfVertices + 1] = startCoordinates.row + row * view.cellSize + view.cellSize / 2;
               numberOfVertices += 2;

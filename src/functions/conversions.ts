@@ -1,23 +1,11 @@
 import { IVector2 } from "interfaces/Vector2";
-import { Box, getEnclosingBox, inBox } from "interfaces/Box";
+import { Box} from "interfaces/Box";
 import { CellMatrix } from 'interfaces/CellMatrix';
 import { Set2D } from 'classes/Structures/Set2D';
 
 export function cellsToCellMatrix(cells: IVector2[]): CellMatrix {
-    const boundingBox: Box = getEnclosingBox(cells);
-    boundingBox.width += 1;
-    boundingBox.height += 1;
-    const matrix: Uint8ClampedArray = new Uint8ClampedArray(boundingBox.width * boundingBox.height);
-
-
-    cells.forEach(cell => matrix[(cell.row - boundingBox.row) * boundingBox.width + (cell.col - boundingBox.col)] = 1);
-    return {
-        row: boundingBox.row,
-        col: boundingBox.col,
-        matrix: matrix,
-        width: boundingBox.width,
-        height: boundingBox.height
-    }
+    const boundingBox: Box = Box.enclosed(cells).expand(1, 1);
+    return cellsInBoxToCellMatrix(cells, boundingBox)
 }
 
 // export function cellsToMatrix(cells: IVector2[]): number[][] {
@@ -34,26 +22,17 @@ export function cellsToCellMatrix(cells: IVector2[]): CellMatrix {
 
 export function cellsInBoxToCellMatrix(cells: IVector2[], boundingBox: Box): CellMatrix {
     const matrix: Uint8ClampedArray = new Uint8ClampedArray(boundingBox.width * boundingBox.height);
-
     cells.forEach(cell => matrix[(cell.row - boundingBox.row) * boundingBox.width + (cell.col - boundingBox.col)] = 1);
-    return {
-        row: boundingBox.row,
-        col: boundingBox.col,
-        matrix: matrix,
-        width: boundingBox.width,
-        height: boundingBox.height
-    }
+    return new CellMatrix(matrix, boundingBox)
 }
 
 export function cellMatrixToVector2(cellMatrix: CellMatrix): IVector2[] {
     const cells: IVector2[] = [];
-    for (let row = 0; row < cellMatrix.height; row++) {
-        for (let col = 0; col < cellMatrix.width; col++) {
-            if (cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
-                cells.push({row: cellMatrix.row + row, col: cellMatrix.col + col });
-            }
+    cellMatrix.forEach((row, col) => {
+        if (cellMatrix.at(row, col) === 1) {
+            cells.push({row: cellMatrix.row + row, col: cellMatrix.col + col });
         }
-    }
+    })
 
     return cells;
 }
@@ -68,7 +47,7 @@ export function partition(board: IVector2[]): CellMatrix[] {
     board.forEach(pos => set.add(pos.row, pos.col));
     
     board.forEach(pos => {
-        const selectedBoxIndex = boxes.findIndex(box => inBox(pos, box));
+        const selectedBoxIndex = boxes.findIndex(box => box.pointInside(pos));
         if (selectedBoxIndex !== null && selectedBoxIndex !== undefined) {
             
         } else {

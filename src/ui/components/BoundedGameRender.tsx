@@ -16,12 +16,9 @@ export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { 
     const [currentGeneration, setCurrentGeneration] = useState<number>(0);
 
     useEffect( () => {
-        if (currentRender.matrix.length > 0) {
+        if (currentRender.area > 0) {
             requestAnimationFrame(() => {
-                setCurrentRender(currentRender =>  ({
-                        ...currentRender,
-                        matrix: getNextLifeGeneration(currentRender, automata)
-                    }) );
+                setCurrentRender(currentRender =>  currentRender.withCellData(getNextLifeGeneration(currentRender, automata)));
                 setCurrentGeneration(currentGeneration => currentGeneration + 1);
                 getData?.({ generation: currentGeneration });
             })

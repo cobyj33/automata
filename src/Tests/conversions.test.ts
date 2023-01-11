@@ -1,6 +1,6 @@
 import { IVector2 } from "interfaces/Vector2"
 import { cellMatrixToVector2, cellsToCellMatrix } from "functions/conversions"
-import { isEqualArrays } from "functions/validation"
+import { isEqualArrays } from "functions/util"
 
 
 test('isEqualArrays', () => {

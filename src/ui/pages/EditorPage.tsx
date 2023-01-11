@@ -6,18 +6,13 @@ import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu"
 import { CellMatrix } from 'interfaces/CellMatrix';
 import LifeLikeEditor from 'ui/components/LifeLikeEditor';
 import ElementaryBoard from 'ui/components/ElementaryBoard';
+import { Box } from 'interfaces/Box';
 
 export type BoardType = "LIFELIKE" | "ELEMENTARY"
 
 function EditorPage() {
   const [lifeLikeBoard, setLifeLikeBoard] = useState<IVector2[]>([])
-  const [elementaryBoard, setElementaryBoard] = useState<CellMatrix>({
-    row: 0,
-    col: 0,
-    width: 1000,
-    height: 1,
-    matrix: new Uint8ClampedArray(1000)
-  })
+  const [elementaryBoard, setElementaryBoard] = useState<number[]>(new Array<number>(1000).fill(0))
 
   function typeToBoard(boardType: BoardType): JSX.Element {
     switch (boardType) {

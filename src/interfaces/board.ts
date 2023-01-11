@@ -9,4 +9,12 @@ export class CellBoard {
     constructor(cells: CellMatrix[]) {
         this.cells = cells
     }
+
+    private reconstruct() {
+        
+    }
+}
+
+export class BoundedCellBoard {
+
 }
