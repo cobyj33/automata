@@ -3,16 +3,10 @@ import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2";
 import { getEllipse } from "functions/shapes";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData";
+import { LifeLikeEditorData } from "interfaces/EditorData";
 
-export interface EllipseData {
-    boardData: StatefulData<IVector2[]>,
-    ghostTilePositions: StatefulData<IVector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
-    isPointerDown: boolean,
-        isRendering: boolean;
-}
 
-export class EllipseEditMode extends EditMode<EllipseData> {
+export class EllipseEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     start: IVector2 | undefined;
     end: IVector2 | undefined;

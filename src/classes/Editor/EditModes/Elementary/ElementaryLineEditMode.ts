@@ -2,14 +2,7 @@ import { PointerEvent } from "react";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
-
-export interface ElementaryLineData {
-    boardData: StatefulData<number[]>,
-    ghostTilePositions: StatefulData<number[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => number,
-    isPointerDown: boolean,
-    isRendering: boolean;
-}
+import { ElementaryEditorData } from "interfaces/EditorData";
 
 function range(first: number, second: number): number[] {
     const min: number = Math.min(first, second);
@@ -17,7 +10,7 @@ function range(first: number, second: number): number[] {
     return Array.from({length: distance}, (val, index) => index + min);
 }
 
-export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
+export class ElementaryLineEditMode extends EditMode<ElementaryEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     start: number | undefined;
     end: number | undefined;

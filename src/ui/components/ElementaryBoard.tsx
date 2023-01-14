@@ -4,7 +4,7 @@ import { IVector2, Vector2 } from "interfaces/Vector2"
 import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
 import { ElementaryDrawEditMode } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
-import {ElementaryLineEditMode, ElementaryLineData } from "classes/Editor/EditModes/Elementary/ElementaryLineEditMode";
+import { ElementaryLineEditMode  } from "classes/Editor/EditModes/Elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
 import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "functions/hooks";
@@ -19,9 +19,9 @@ import elementaryStyles from 'ui/components/styles/Elementary.module.css'
 import { Box } from "interfaces/Box";
 import { isSameNumberArray } from "functions/util";
 import { EditorData, ElementaryEditorData } from "interfaces/EditorData";
+import { GiStraightPipe } from "react-icons/gi";
 
 
-const DEFAULT_WIDTH = 1000;
 type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
 
 export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[]> }) => {
@@ -146,6 +146,14 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     }
   }
 
+  function getSelectedEditButtonStyles(condition: boolean): string {
+    return `${elementaryStyles["edit-button"]} ${condition ? elementaryStyles["selected"] : ""}`
+  }
+
+  function EditModeButton({ children = "", mode }: { mode: EditorEditMode, children?: React.ReactNode }) {
+    return <button className={getSelectedEditButtonStyles(editMode === mode)} onClick={() => setEditMode(mode)}>{children}</button>
+  }
+
   // useCanvasUpdater(ghostCanvas)
     
     return (
@@ -176,14 +184,14 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
       <div className={elementaryStyles["tool-bar"]}>
         <div className={elementaryStyles["editing-buttons"]}> 
-              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "DRAW" ? 'selected' : '' }`]} `} onClick={() => setEditMode("DRAW")}> <FaBrush /> </button>
-              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "MOVE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("MOVE")}> <FaArrowsAlt /> </button>
-              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "ZOOM" ? 'selected' : '' }`]} `} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
-              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "ERASE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
-              <button className={`${elementaryStyles["edit-button"]} ${elementaryStyles[`${ editMode === "LINE" ? 'selected' : '' }`]} `} onClick={() => setEditMode("LINE")}> <FaLine /> </button>
-              <button className={`${elementaryStyles["edit-button"]} ${ rendering ? 'selected' : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-              <button className={elementaryStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
-              <button className={elementaryStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
+            <EditModeButton mode="DRAW"> <FaBrush /> </EditModeButton>
+            <EditModeButton mode="MOVE"> <FaArrowsAlt /> </EditModeButton>
+            <EditModeButton mode="ZOOM"> <FaSearch /> </EditModeButton>
+            <EditModeButton mode="ERASE"> <FaEraser /> </EditModeButton>
+            <EditModeButton mode="LINE"> <GiStraightPipe /> </EditModeButton>
+            <button className={getSelectedEditButtonStyles(rendering)} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+            <button className={elementaryStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
+            <button className={elementaryStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
         </div>
 
       </div>

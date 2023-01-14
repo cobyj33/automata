@@ -3,17 +3,9 @@ import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { getLine } from "functions/shapes";
 import { StatefulData } from "interfaces/StatefulData"
 import { IVector2 } from "interfaces/Vector2"
+import { LifeLikeEditorData } from "interfaces/EditorData";
 
-export interface EraseData {
-    boardData: StatefulData<IVector2[]>,
-    ghostTilePositions: StatefulData<IVector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
-    lastHoveredCell: IVector2,
-    isPointerDown: boolean,
-        isRendering: boolean;
-}
-
-export class EraseEditMode extends EditMode<EraseData> {
+export class EraseEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/material-rounded/24/00000/eraser.png"), crosshair' }
     
     onPointerDown(event: PointerEvent<Element>) {

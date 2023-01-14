@@ -2,19 +2,12 @@ import { PointerEvent } from "react";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
+import { ElementaryEditorData } from "interfaces/EditorData";
 
 function range(first: number, second: number): number[] {
     const min: number = Math.min(first, second);
     const distance: number = Math.abs(first - second);
     return Array.from({length: distance}, (val, index) => index + min);
-}
-
-export interface ElementaryEraseData {
-    boardData: StatefulData<number[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => number,
-    lastHoveredCell: number,
-    isPointerDown: boolean,
-    isRendering: boolean;
 }
 
 export class ElementaryEraseEditMode extends EditMode<ElementaryEditorData> {

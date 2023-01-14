@@ -6,17 +6,9 @@ import {StatefulData} from "interfaces/StatefulData";
 import { Box } from "interfaces/Box";
 import { LineSegment } from "interfaces/LineSegment";
 import { hover } from "@testing-library/user-event/dist/hover";
+import { LifeLikeEditorData } from "interfaces/EditorData";
 
-export interface LineData {
-    boardData: StatefulData<IVector2[]>,
-    boundsData: StatefulData<Box>,
-    ghostTilePositions: StatefulData<IVector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
-    isPointerDown: boolean,
-    isRendering: boolean;
-}
-
-export class LineEditMode extends EditMode<LineData> {
+export class LineEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     line: LineSegment = LineSegment.from(0, 0, 0, 0)
 
