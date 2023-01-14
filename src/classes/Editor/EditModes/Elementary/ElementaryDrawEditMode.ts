@@ -39,7 +39,6 @@ export class ElementaryDrawEditMode extends EditMode<ElementaryEditorData> {
         const [, setBoard] = this.data.boardData;
         const hoveredCell: number = this.data.currentHoveredCell;
         const lastHoveredCell: number = this.data.lastHoveredCell;
-        
         if (this.data.isPointerDown) {
             setBoard(board => {
                 const line: number[] = range(lastHoveredCell, hoveredCell);
@@ -47,7 +46,7 @@ export class ElementaryDrawEditMode extends EditMode<ElementaryEditorData> {
 
                 line.forEach(lineCell => {
                     if (lineCell >= 0 && lineCell < newBoard.length) {
-                        newBoard[hoveredCell] = 1;
+                        newBoard[lineCell] = 1;
                     }
                 })
 

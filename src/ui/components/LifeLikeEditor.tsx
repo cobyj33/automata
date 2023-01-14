@@ -106,18 +106,21 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   
   function onPointerDown(event: React.PointerEvent<Element>) {
     updateHoveredCellData(event)
+    isPointerDown.current = true
     editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onPointerDown?.(event);
   }
   
   function onPointerUp(event: React.PointerEvent<Element>) {
     updateHoveredCellData(event)
+    isPointerDown.current = false
     editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onPointerUp?.(event);
   }
 
   function onPointerLeave(event: React.PointerEvent<Element>) {
     updateHoveredCellData(event)
+    isPointerDown.current = false
     editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onPointerLeave?.(event);
   }

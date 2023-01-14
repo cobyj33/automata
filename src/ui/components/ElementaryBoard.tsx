@@ -83,18 +83,21 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   
   function onPointerDown(event: PointerEvent<Element>) {
     updateHoveredCellData(event)
+    isPointerDown.current = true
     editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerDown?.(event);
   }
   
   function onPointerUp(event: PointerEvent<Element>) {
     updateHoveredCellData(event)
+    isPointerDown.current = false
     editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerUp?.(event);
   }
 
   function onPointerLeave(event: PointerEvent<Element>) {
     updateHoveredCellData(event)
+    isPointerDown.current = false
     editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerLeave?.(event);
   }

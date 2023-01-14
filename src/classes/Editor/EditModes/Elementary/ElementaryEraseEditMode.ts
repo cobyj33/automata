@@ -47,7 +47,7 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEditorData> {
 
                 line.forEach(lineCell => {
                     if (lineCell >= 0 && lineCell < newBoard.length) {
-                        newBoard[hoveredCell] = 0;
+                        newBoard[lineCell] = 0;
                     }
                 })
 
