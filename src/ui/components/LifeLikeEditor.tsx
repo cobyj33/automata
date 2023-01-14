@@ -156,8 +156,12 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     editorModes.current[editMode].onWheel?.(event);
   }
 
-  function selectedButtonStyle(type: EditorEditMode) {
-    return editMode === type ? gameBoardStyles["selected"] : ""
+  function getSelectedEditButtonStyles(condition: boolean): string {
+    return `${gameBoardStyles["edit-button"]} ${condition ? gameBoardStyles["selected"] : ""}`
+  }
+
+  function EditModeButton({ children = "", mode }: { mode: EditorEditMode, children?: React.ReactNode }) {
+    return <button className={getSelectedEditButtonStyles(editMode === mode)} onClick={() => setEditMode(mode)}>{children}</button>
   }
 
   useWebGL2CanvasUpdater(ghostCanvas)
@@ -189,14 +193,14 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
       <div className={gameBoardStyles["tool-bar"]}>
           <div className={gameBoardStyles["editing-buttons"]}> 
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("DRAW")}`} onClick={() => setEditMode("DRAW")}> <FaBrush /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("MOVE")}`} onClick={() => setEditMode("MOVE")}> <FaArrowsAlt /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ZOOM")}`} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ERASE")}`} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("LINE")}`} onClick={() => setEditMode("LINE")}> <GiStraightPipe /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("BOX")}`} onClick={() => setEditMode("BOX")}> <FaBox /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ELLIPSE")}`} onClick={() => setEditMode("ELLIPSE")}> <BsCircle /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${rendering ? gameBoardStyles['selected'] : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
+            <EditModeButton mode="DRAW"> <FaBrush /> </EditModeButton>
+            <EditModeButton mode="MOVE"> <FaArrowsAlt /> </EditModeButton>
+            <EditModeButton mode="ZOOM"> <FaSearch /> </EditModeButton>
+            <EditModeButton mode="ERASE"> <FaEraser /> </EditModeButton>
+            <EditModeButton mode="LINE"> <GiStraightPipe /> </EditModeButton>
+            <EditModeButton mode="BOX"> <FaBox /> </EditModeButton>
+            <EditModeButton mode="ELLIPSE"> <BsCircle /> </EditModeButton>
+            <button className={getSelectedEditButtonStyles(rendering)} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
             <button className={`${gameBoardStyles["edit-button"]}`} onClick={clear}> <AiOutlineClear /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
