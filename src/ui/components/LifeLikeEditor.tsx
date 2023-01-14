@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 import {Box } from 'interfaces/Box';
 import { IVector2, Vector2 } from 'interfaces/Vector2';
@@ -27,7 +27,7 @@ import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
 
 
-type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
+type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
 
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
   const boardHolder = React.useRef<HTMLDivElement>(null);
@@ -44,6 +44,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   const [lastHoveredCell, setLastHoveredCell] = React.useState<IVector2>({ row: 0, col: 0 });
   const currentHoveredCell = React.useRef<Vector2>(new Vector2(0, 0))
   const [automata, setAutomata] = React.useState<string>("B3/S23");
+  const [editMode, setEditMode] = React.useState<LifeLikeEditorEditMode>("MOVE");
   const isPointerDown: React.MutableRefObject<boolean> = useIsPointerDown(boardHolder);
 
     React.useEffect( () => {
@@ -77,8 +78,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     }
   }
   
-  const [editMode, setEditMode] = React.useState<EditorEditMode>("MOVE");
-  const editorModes: React.MutableRefObject<{[key in EditorEditMode]: EditMode<LifeLikeEditorData> | EditMode<EditorData>}> = React.useRef({ 
+  const editorModes: React.MutableRefObject<{[key in LifeLikeEditorEditMode]: EditMode<LifeLikeEditorData> | EditMode<EditorData>}> = React.useRef({ 
     "DRAW": new DrawEditMode(getEditorData()),
     "ZOOM": new ZoomEditMode(getEditorData()),
     "MOVE": new MoveEditMode(getEditorData()),
@@ -156,14 +156,6 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     editorModes.current[editMode].onWheel?.(event);
   }
 
-  function getSelectedEditButtonStyles(condition: boolean): string {
-    return `${gameBoardStyles["edit-button"]} ${condition ? gameBoardStyles["selected"] : ""}`
-  }
-
-  function EditModeButton({ children = "", mode }: { mode: EditorEditMode, children?: React.ReactNode }) {
-    return <button className={getSelectedEditButtonStyles(editMode === mode)} onClick={() => setEditMode(mode)}>{children}</button>
-  }
-
   useWebGL2CanvasUpdater(ghostCanvas)
 
   return (
@@ -193,13 +185,13 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
       <div className={gameBoardStyles["tool-bar"]}>
           <div className={gameBoardStyles["editing-buttons"]}> 
-            <EditModeButton mode="DRAW"> <FaBrush /> </EditModeButton>
-            <EditModeButton mode="MOVE"> <FaArrowsAlt /> </EditModeButton>
-            <EditModeButton mode="ZOOM"> <FaSearch /> </EditModeButton>
-            <EditModeButton mode="ERASE"> <FaEraser /> </EditModeButton>
-            <EditModeButton mode="LINE"> <GiStraightPipe /> </EditModeButton>
-            <EditModeButton mode="BOX"> <FaBox /> </EditModeButton>
-            <EditModeButton mode="ELLIPSE"> <BsCircle /> </EditModeButton>
+            <EditModeButton target="DRAW" current={editMode} setter={setEditMode}> <FaBrush /> </EditModeButton>
+            <EditModeButton target="MOVE" current={editMode} setter={setEditMode}> <FaArrowsAlt /> </EditModeButton>
+            <EditModeButton target="ZOOM" current={editMode} setter={setEditMode}> <FaSearch /> </EditModeButton>
+            <EditModeButton target="ERASE" current={editMode} setter={setEditMode}> <FaEraser /> </EditModeButton>
+            <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
+            <EditModeButton target="BOX" current={editMode} setter={setEditMode}> <FaBox /> </EditModeButton>
+            <EditModeButton target="ELLIPSE" current={editMode} setter={setEditMode}> <BsCircle /> </EditModeButton>
             <button className={getSelectedEditButtonStyles(rendering)} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
             <button className={`${gameBoardStyles["edit-button"]}`} onClick={clear}> <AiOutlineClear /> </button>
             <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
@@ -209,6 +201,14 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
     </div>
   )
+}
+
+function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: LifeLikeEditorEditMode, current: LifeLikeEditorEditMode, setter: React.Dispatch<LifeLikeEditorEditMode> }) {
+  return <button className={getSelectedEditButtonStyles(current === target)} onClick={() => setter(target)}>{children}</button>
+}
+
+function getSelectedEditButtonStyles(condition: boolean): string {
+  return `${gameBoardStyles["edit-button"]} ${condition ? gameBoardStyles["selected"] : ""}`
 }
 
 export default LifeLikeEditor

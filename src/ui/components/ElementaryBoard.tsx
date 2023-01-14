@@ -22,7 +22,7 @@ import { EditorData, ElementaryEditorData } from "interfaces/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
 
 
-type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
+type ElementaryEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
 
 export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[]> }) => {
 
@@ -56,9 +56,9 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     }
   }
   
-  const [editMode, setEditMode] = useState<EditorEditMode>("MOVE");
+  const [editMode, setEditMode] = useState<ElementaryEditorEditMode>("MOVE");
 
-  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<ElementaryEditorData> | EditMode<EditorData>}> = useRef({ 
+  const editorModes: MutableRefObject<{[key in ElementaryEditorEditMode]: EditMode<ElementaryEditorData> | EditMode<EditorData>}> = useRef({ 
     "DRAW": new ElementaryDrawEditMode(getElementaryEditorData()),
     "ZOOM": new ZoomEditMode(getElementaryEditorData()),
     "MOVE": new MoveEditMode(getElementaryEditorData()),
@@ -146,14 +146,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     }
   }
 
-  function getSelectedEditButtonStyles(condition: boolean): string {
-    return `${elementaryStyles["edit-button"]} ${condition ? elementaryStyles["selected"] : ""}`
-  }
-
-  function EditModeButton({ children = "", mode }: { mode: EditorEditMode, children?: React.ReactNode }) {
-    return <button className={getSelectedEditButtonStyles(editMode === mode)} onClick={() => setEditMode(mode)}>{children}</button>
-  }
-
+  
   // useCanvasUpdater(ghostCanvas)
     
     return (
@@ -184,11 +177,11 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
       <div className={elementaryStyles["tool-bar"]}>
         <div className={elementaryStyles["editing-buttons"]}> 
-            <EditModeButton mode="DRAW"> <FaBrush /> </EditModeButton>
-            <EditModeButton mode="MOVE"> <FaArrowsAlt /> </EditModeButton>
-            <EditModeButton mode="ZOOM"> <FaSearch /> </EditModeButton>
-            <EditModeButton mode="ERASE"> <FaEraser /> </EditModeButton>
-            <EditModeButton mode="LINE"> <GiStraightPipe /> </EditModeButton>
+            <EditModeButton target="DRAW" current={editMode} setter={setEditMode}> <FaBrush /> </EditModeButton>
+            <EditModeButton target="MOVE" current={editMode} setter={setEditMode}> <FaArrowsAlt /> </EditModeButton>
+            <EditModeButton target="ZOOM" current={editMode} setter={setEditMode}> <FaSearch /> </EditModeButton>
+            <EditModeButton target="ERASE" current={editMode} setter={setEditMode}> <FaEraser /> </EditModeButton>
+            <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
             <button className={getSelectedEditButtonStyles(rendering)} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
             <button className={elementaryStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
             <button className={elementaryStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
@@ -200,5 +193,16 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       </div>
     )
 }
+
+function getSelectedEditButtonStyles(condition: boolean): string {
+  return `${elementaryStyles["edit-button"]} ${condition ? elementaryStyles["selected"] : ""}`
+}
+
+
+function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: ElementaryEditorEditMode, current: ElementaryEditorEditMode, setter: React.Dispatch<ElementaryEditorEditMode> }) {
+  return <button className={getSelectedEditButtonStyles(current === target)} onClick={() => setter(target)}>{children}</button>
+}
+
+
 
 export default ElementaryBoard
