@@ -27,7 +27,6 @@ export class DrawEditMode extends EditMode<LifeLikeEditorData> {
             setBoard(board => filterVector2ListDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )) )
         }
     }
-
 }
 
 export default DrawEditMode

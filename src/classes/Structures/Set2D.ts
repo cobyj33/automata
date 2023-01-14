@@ -1,9 +1,8 @@
 import { IVector2 } from 'interfaces/Vector2';
 
 
-type Map2D = {[key: number]: Set<number>}
 export class Set2D {
-    private map: Map2D = {};
+    private map: {[key: number]: Set<number>} = {};
 
     constructor(values: Array<[number, number]> = []) {
        values.forEach(value => this.add(value[0], value[1])); 
@@ -13,6 +12,14 @@ export class Set2D {
         const set2D: Set2D = new Set2D();
         values.forEach(value => set2D.add(value.row, value.col));
         return set2D
+    }
+
+    getPairs(): IVector2[] {
+        return Object.entries(this.map).flatMap(entry => {
+            const row: number = Number(entry[0])
+            const columnSet: Set<number> = entry[1]
+            return [...columnSet].map(col => ({row: row, col: col}))
+        })
     }
     
     get length(): number { return Object.values(this.map).reduce( (prev, curr) => prev + curr.size, 0); } 

@@ -255,8 +255,33 @@ export function lerp(t: number, first: IVector2, second: IVector2): IVector2 {
 // Program Specific
 import { Set2D } from "classes/Structures/Set2D";
 
-export function filterVector2ListDuplicates(list: IVector2[]) {
-    const set2D = new Set2D()
+function vector2ListToSet2D(list: IVector2[]): Set2D {
+    const set2D: Set2D = new Set2D()
+    list.forEach(vec => set2D.add(vec.row, vec.col))
+    return set2D;
+}
+
+function getVector2ListDuplicatesSet(list: IVector2[]): Set2D {
+    const found: Set2D = new Set2D()
+    const duplicates: Set2D = new Set2D()
+
+    list.forEach(vec => {
+        if (found.has(vec.row, vec.col)) {
+            duplicates.add(vec.row, vec.col)
+        }
+        found.add(vec.row, vec.col)
+        return true
+    })
+
+    return duplicates
+}
+
+export function getVector2ListDuplicates(list: IVector2[]): IVector2[] {
+    return getVector2ListDuplicatesSet(list).getPairs()
+}
+
+export function filterVector2ListDuplicates(list: IVector2[]): IVector2[] {
+    const set2D: Set2D = new Set2D()
     return list.filter(vec => {
         if (set2D.has(vec.row, vec.col)) {
             return false
@@ -264,6 +289,12 @@ export function filterVector2ListDuplicates(list: IVector2[]) {
         set2D.add(vec.row, vec.col)
         return true
     })
+}
+
+export function removeVector2ListDuplicates(list: IVector2[]): IVector2[] {
+    const duplicates: Set2D = getVector2ListDuplicatesSet(list)
+    console.log(duplicates.getPairs())
+    return list.filter(vec => !duplicates.has(vec.row, vec.col))
 }
 
 export function filterVector2ListMatches(list: IVector2[], matches: IVector2[]) {
