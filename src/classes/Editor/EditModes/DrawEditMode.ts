@@ -3,16 +3,9 @@ import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { getLine } from "functions/shapes";
 import { StatefulData } from "interfaces/StatefulData"
 import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2"
+import { LifeLikeEditorData } from "interfaces/EditorData";
 
-export interface DrawData {
-    boardData: StatefulData<IVector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
-    lastHoveredCell: IVector2,
-    isPointerDown: boolean,
-        isRendering: boolean;
-}
-
-export class DrawEditMode extends EditMode<DrawData> {
+export class DrawEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {
@@ -21,14 +14,14 @@ export class DrawEditMode extends EditMode<DrawData> {
         }
 
         const [, setBoard] = this.data.boardData;
-        const hoveredCell = this.data.getHoveredCell(event);
+        const hoveredCell = this.data.currentHoveredCell;
 
         setBoard(board => filterVector2ListDuplicates(board.concat(hoveredCell)));
     }
 
     onPointerMove(event: PointerEvent<Element>) {
         const [, setBoard] = this.data.boardData;
-        const hoveredCell = this.data.getHoveredCell(event);
+        const hoveredCell = this.data.currentHoveredCell;
         const lastHoveredCell = this.data.lastHoveredCell;
         if (this.data.isPointerDown && !this.data.isRendering) {
             setBoard(board => filterVector2ListDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )) )

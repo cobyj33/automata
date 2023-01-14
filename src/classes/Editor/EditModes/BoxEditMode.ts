@@ -3,21 +3,14 @@ import {getLine} from "functions/shapes";
 import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2";
 import { StatefulData } from "interfaces/StatefulData";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
+import { LifeLikeEditorData } from "interfaces/EditorData";
 
 type LineSegment = {
     first: IVector2,
     second: IVector2
 }
 
-export interface BoxData {
-    boardData: StatefulData<IVector2[]>,
-    ghostTilePositions: StatefulData<IVector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => IVector2,
-    isPointerDown: boolean,
-        isRendering: boolean;
-}
-
-export class BoxEditMode extends EditMode<BoxData> {
+export class BoxEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     start: IVector2 | undefined;
     end: IVector2 | undefined;
@@ -38,7 +31,7 @@ export class BoxEditMode extends EditMode<BoxData> {
             return;
         }
 
-        this.start = this.data.getHoveredCell(event);
+        this.start = this.data.currentHoveredCell;
         this.end = {...this.start };
     }
 
@@ -50,10 +43,10 @@ export class BoxEditMode extends EditMode<BoxData> {
         }
 
         if (this.data.isPointerDown && this.start !== undefined && this.end !== undefined) {
-            const hoveredCell = this.data.getHoveredCell(event);
+            const hoveredCell = this.data.currentHoveredCell;
             if (!( this.end.row === hoveredCell.row && this.end.col === hoveredCell.col  )) {
                 const toRemove = new Set<string>(this.boxCells.map(cell => JSON.stringify(cell)));
-                const { 1: setGhostTilePositions } = this.data.ghostTilePositions;
+                const [_,  setGhostTilePositions] = this.data.ghostTilePositions;
                 setGhostTilePositions( positions => positions.filter( cell => !toRemove.has(JSON.stringify(cell)) ) )
 
                 if (this.boxLocked) {

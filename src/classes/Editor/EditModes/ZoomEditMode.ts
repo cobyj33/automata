@@ -3,16 +3,12 @@ import {StatefulData} from "interfaces/StatefulData";
 import { Vector2 } from "interfaces/Vector2";
 import {View} from "interfaces/View";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
+import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
 
 const zoomDirection: Vector2 = new Vector2(-1, -1)
 
-export interface ZoomData {
-    viewData: StatefulData<View>;
-    isPointerDown: boolean
-}
-
 const MIN_CELL_SIZE = 1;
-export class ZoomEditMode extends EditMode<ZoomData> {
+export class ZoomEditMode extends EditMode<EditorData> {
     cursor() { return 'url("https://img.icons8.com/external-royyan-wijaya-detailed-outline-royyan-wijaya/24/000000/external-magnifying-glass-interface-royyan-wijaya-detailed-outline-royyan-wijaya.png"), nwse-resize' }
 
     onPointerMove(event: PointerEvent<Element>) {

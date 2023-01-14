@@ -32,7 +32,7 @@ export class EllipseEditMode extends EditMode<EllipseData> {
             return;
         }
 
-        this.start = this.data.getHoveredCell(event);
+        this.start = this.data.currentHoveredCell;
         this.end = { ...this.start };
     }
 
@@ -44,7 +44,7 @@ export class EllipseEditMode extends EditMode<EllipseData> {
         }
 
         if (this.data.isPointerDown && this.start !== undefined && this.start !== null && this.end !== undefined && this.end !== null) {
-            const hoveredCell = this.data.getHoveredCell(event);
+            const hoveredCell = this.data.currentHoveredCell;
             if (!(this.end.row === hoveredCell.row && this.end.col === hoveredCell.col)) {
                 const toRemove = new Set<string>(this.currentCells.map(cell => JSON.stringify(cell)));
                 const [, setGhostTilePositions] = this.data.ghostTilePositions;

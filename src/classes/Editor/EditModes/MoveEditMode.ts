@@ -4,14 +4,10 @@ import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {addVector2} from "interfaces/Vector2";
 import { StatefulData } from 'interfaces/StatefulData';
 import { View } from 'interfaces/View';
+import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
 
 
-export interface MoveData {
-    viewData: StatefulData<View>;
-    isPointerDown: boolean
-}
-
-export class MoveEditMode extends EditMode<MoveData>{
+export class MoveEditMode extends EditMode<EditorData>{
     cursor() { return 'move' }
      
     onPointerMove(event: PointerEvent<Element>) {

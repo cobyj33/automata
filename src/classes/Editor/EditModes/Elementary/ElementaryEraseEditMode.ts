@@ -17,7 +17,7 @@ export interface ElementaryEraseData {
     isRendering: boolean;
 }
 
-export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
+export class ElementaryEraseEditMode extends EditMode<ElementaryEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {
@@ -26,7 +26,7 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
         }
 
         const [, setBoard] = this.data.boardData;
-        const hoveredCell: number = this.data.getHoveredCell(event);
+        const hoveredCell: number = this.data.currentHoveredCell;
         
         setBoard(board => {
             if (hoveredCell >= 0 && hoveredCell < board.length) {
@@ -44,7 +44,7 @@ export class ElementaryEraseEditMode extends EditMode<ElementaryEraseData> {
         }
 
         const [, setBoard] = this.data.boardData;
-        const hoveredCell: number = this.data.getHoveredCell(event);
+        const hoveredCell: number = this.data.currentHoveredCell;
         const lastHoveredCell: number = this.data.lastHoveredCell;
         
         if (this.data.isPointerDown) {

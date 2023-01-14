@@ -11,28 +11,18 @@ import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "functions/
 import { ElementaryBoardRender } from "ui/components/ElementaryBoardRender";
 import { StatefulData } from "interfaces/StatefulData"
 import { pointerPositionInElement, getHoveredCell } from 'functions/editorFunctions';
-import { ZoomEditMode, ZoomData } from 'classes/Editor/EditModes/ZoomEditMode';
-import { MoveEditMode, MoveData } from 'classes/Editor/EditModes/MoveEditMode';
+import { ZoomEditMode } from 'classes/Editor/EditModes/ZoomEditMode';
+import { MoveEditMode } from 'classes/Editor/EditModes/MoveEditMode';
 import { EditMode } from 'classes/Editor/EditModes/EditMode';
 import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
 import { Box } from "interfaces/Box";
 import { isSameNumberArray } from "functions/util";
+import { ElementaryEditorData } from "interfaces/EditorData";
 
-interface ElementaryEditorData {
-    boardData: StatefulData<number[]>;
-    viewData: StatefulData<View>;
-    ghostTilePositions: StatefulData<number[]>;
-    getHoveredCell: (event: PointerEvent<Element>) => number;
-    lastHoveredCell: number;
-    isPointerDown: boolean;
-    isRendering: boolean;
-}
 
 const defaultWidth = 1000;
-
 type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
-type DataUnion = ElementaryDrawData | ElementaryEraseData | ElementaryLineData | MoveData | ZoomData | ElementaryEditorData;
 
 export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[]> }) => {
 
@@ -43,7 +33,9 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   const [cursor, setCursor] = useState<string>('');
   const [ghostTilePositions, setGhostTilePositions] = useState<number[]>([]);
   const [rule, setRule] = useState<number>(30);
-  const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
+  // const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
+  const currentHoveredCell = useRef<number>(0);
+  const lastHoveredCell = useRef<number>(0)
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
   const [rendering, setRendering] = useState<boolean>(false);  
   const [inputRule, setInputRule] = useState<string>("");
@@ -57,8 +49,8 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       boardData: [board, setBoard],
       viewData: [view, setView],
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
-      lastHoveredCell: lastHoveredCell,
-      getHoveredCell: getCurrentHoveredCell,
+      lastHoveredCell: lastHoveredCell.current,
+      currentHoveredCell: currentHoveredCell.current,
       isPointerDown: isPointerDown.current,
       isRendering: rendering
     }
@@ -66,7 +58,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   
   const [editMode, setEditMode] = useState<EditorEditMode>("MOVE");
 
-  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<DataUnion>}> = useRef({ 
+  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<ElementaryEditorData>}> = useRef({ 
     "DRAW": new ElementaryDrawEditMode(getElementaryEditorData()),
     "ZOOM": new ZoomEditMode(getElementaryEditorData()),
     "MOVE": new MoveEditMode(getElementaryEditorData()),
@@ -78,31 +70,32 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     setCursor(editorModes.current[editMode].cursor());
   }, [editMode])
 
+  function updateHoveredCellData(event: PointerEvent<Element>) {
+    lastHoveredCell.current = currentHoveredCell.current
+    currentHoveredCell.current = getCurrentHoveredCell(event)
+  }
+
   function onPointerMove(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getElementaryEditorData())
+    updateHoveredCellData(event)
+    editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerMove?.(event);
-    const currentHoveredCell = getCurrentHoveredCell(event)
-    if (!(lastHoveredCell === currentHoveredCell)) {
-      setLastHoveredCell(currentHoveredCell)
-    }
   }
   
   function onPointerDown(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getElementaryEditorData())
+    updateHoveredCellData(event)
+    editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerDown?.(event);
-    const currentHoveredCell = getCurrentHoveredCell(event)
-    if (!(lastHoveredCell === currentHoveredCell)) {
-      setLastHoveredCell(currentHoveredCell)
-    }
   }
   
   function onPointerUp(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getElementaryEditorData())
+    updateHoveredCellData(event)
+    editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerUp?.(event);
   }
 
   function onPointerLeave(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getElementaryEditorData())
+    updateHoveredCellData(event)
+    editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onPointerLeave?.(event);
   }
 
@@ -116,7 +109,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   
   const [undo, redo] = useHistory([board, setBoard], isSameNumberArray);
   function onKeyDown(event: KeyboardEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getElementaryEditorData())
+    editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onKeyDown?.(event);
 
     if (event.code === "KeyZ" && event.shiftKey === true && event.ctrlKey === true) {
@@ -131,12 +124,12 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   }
 
   function onKeyUp(event: KeyboardEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getElementaryEditorData())
+    editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onKeyUp?.(event);
   }
 
   function onWheel(event: WheelEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getElementaryEditorData())
+    editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onWheel?.(event);
   }
 

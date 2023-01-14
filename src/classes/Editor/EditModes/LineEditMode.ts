@@ -21,13 +21,13 @@ export class LineEditMode extends EditMode<LineData> {
     line: LineSegment = LineSegment.from(0, 0, 0, 0)
 
     onPointerDown(event: PointerEvent<Element>) {
-        const hoveredCell = this.data.getHoveredCell(event)
+        const hoveredCell = this.data.currentHoveredCell
         this.line = new LineSegment(hoveredCell, hoveredCell) 
     }
 
     onPointerMove(event: PointerEvent<Element>) {
         if (this.data.isPointerDown && !this.data.isRendering) {
-            const hoveredCell = this.data.getHoveredCell(event);
+            const hoveredCell = this.data.currentHoveredCell;
             if (!(this.line.end.equals(hoveredCell))) {
                 const toRemove = this.line.cells()
                 this.line = this.line.withEnd(hoveredCell)

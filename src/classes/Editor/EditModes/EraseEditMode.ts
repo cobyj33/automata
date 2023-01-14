@@ -22,7 +22,7 @@ export class EraseEditMode extends EditMode<EraseData> {
         }
 
         const [, setBoard] = this.data.boardData;
-        const hoveredCell = this.data.getHoveredCell(event);
+        const hoveredCell = this.data.currentHoveredCell;
         setBoard(board => board.filter(cell => !(cell.row === hoveredCell.row && cell.col === hoveredCell.col)  ));
     }
 
@@ -32,7 +32,7 @@ export class EraseEditMode extends EditMode<EraseData> {
         }
 
         const [, setBoard] = this.data.boardData;
-        const hoveredCell = this.data.getHoveredCell(event);
+        const hoveredCell = this.data.currentHoveredCell;
         const lastHoveredCell = this.data.lastHoveredCell;
         if (this.data.isPointerDown) {
             const newCells = getLine(lastHoveredCell, hoveredCell) 

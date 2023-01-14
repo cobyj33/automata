@@ -8,7 +8,7 @@ export abstract class EditMode<Data> {
         this.data = data;
     }
     
-    setEditorData(data: Data) {
+    sendUpdatedEditorData(data: Data) {
         this.data = data;
     }
 
