@@ -1,6 +1,7 @@
 import { IVector2, Vector2 } from "interfaces/Vector2";
-import { Dimension2D, IDimension2D } from "./Dimension";
-import { LineSegment } from "./LineSegment";
+import { Dimension2D, IDimension2D } from "interfaces/Dimension";
+import { LineSegment } from "interfaces/LineSegment";
+import { Range, rangeIntersect } from "interfaces/Range";
 
 
 export interface IBox {
@@ -146,7 +147,7 @@ export class Box implements IBox {
     }
 
     boxIntersect(other: Box): boolean {
-        return other.corners().some(corner => this.pointInside(corner)) || this.corners().some(corner => other.pointInside(corner))
+        return rangeIntersect(this.left, this.right, other.left, other.right) && rangeIntersect(this.top, this.bottom, other.top, other.bottom)
     }
 
     intersectingArea(other: Box): Box {

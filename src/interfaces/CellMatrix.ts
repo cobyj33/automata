@@ -47,6 +47,10 @@ export class CellMatrix {
         return this.box.area
     }
 
+    get topleft() {
+        return this.box.topleft
+    }
+
     static fromNumberMatrix(matrix: number[][], position: Vector2): CellMatrix {
         if (isRectangularMatrix(matrix)) {
             return new CellMatrix(new Uint8ClampedArray(matrix.flat()), new Box(position, new Dimension2D(matrix[0].length, matrix.length)))

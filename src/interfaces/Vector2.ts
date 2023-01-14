@@ -95,6 +95,10 @@ export class Vector2 implements IVector2 {
         return Vector2.fromIVector2(addVector2(this, other))
     }
 
+    addcomp(row: number, col: number) {
+        return this.add({ row: row, col: col })
+    }
+
     subtract(other: IVector2): Vector2 {
         return Vector2.fromIVector2(subtractVector2(this, other))
     }

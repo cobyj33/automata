@@ -156,13 +156,9 @@ export function getBoardMatrixShaderProgram(gl: WebGL2RenderingContext): WebGLPr
 
 export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, cellMatrix: CellMatrix, inputtedMatrixRenderProgram: WebGLProgram | null = null) {
     const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
+    const startCoordinates: IVector2 = cellMatrix.topleft.subtract(view.position).scale(view.cellSize)
 
-  const startCoordinates: IVector2 = {
-      row: (cellMatrix.row - view.row) * view.cellSize,
-      col: (cellMatrix.col - view.col) * view.cellSize
-  }
-
-  const viewArea: Box = getViewArea(gl.canvas, view);
+    const viewArea: Box = getViewArea(gl.canvas, view);
     if (!viewArea.boxIntersect(cellMatrix.box)) {
         return;
     }
@@ -171,18 +167,19 @@ export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, ce
     const searchedCellVertices = new Float32Array(cellMatrix.width * cellMatrix.height * 2);
     let numberOfVertices = 0;
 
-    for (let row = visibleCells.row; row < visibleCells.row + visibleCells.height; row++) {
-      for (let col = visibleCells.col; col < visibleCells.col + visibleCells.width; col++) {
-          if (viewArea.pointInside({ row: cellMatrix.row + row, col: cellMatrix.col + col }) && cellMatrix.at(row, col) === 1) {
-              searchedCellVertices[numberOfVertices] = startCoordinates.col + col * view.cellSize + view.cellSize / 2;
-              searchedCellVertices[numberOfVertices + 1] = startCoordinates.row + row * view.cellSize + view.cellSize / 2;
-              numberOfVertices += 2;
-          }
-      }
+    for (let row = visibleCells.top; row < visibleCells.bottom; row++) {
+        for (let col = visibleCells.left; col < visibleCells.right; col++) {
+            const currentPosition = cellMatrix.topleft.addcomp(row, col)
+            if (viewArea.pointInside(currentPosition) && cellMatrix.at(row, col) === 1) {
+                searchedCellVertices[numberOfVertices] = startCoordinates.col + col * view.cellSize + view.cellSize / 2;
+                searchedCellVertices[numberOfVertices + 1] = startCoordinates.row + row * view.cellSize + view.cellSize / 2;
+                numberOfVertices += 2;
+            }
+        }
     }
 
     const cellVertices = new Float32Array(searchedCellVertices.subarray(0, numberOfVertices));
-    
+
     const VBO = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
     gl.bufferData(gl.ARRAY_BUFFER, cellVertices, gl.STATIC_DRAW);
