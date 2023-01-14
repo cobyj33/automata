@@ -9,10 +9,11 @@ import ElementaryBoard from 'ui/components/ElementaryBoard';
 import { Box } from 'interfaces/Box';
 
 export type BoardType = "LIFELIKE" | "ELEMENTARY"
+const DEFAULT_ELEMENTARY_EDITOR_DATA_WIDTH = 1000;
 
 function EditorPage() {
   const [lifeLikeBoard, setLifeLikeBoard] = useState<IVector2[]>([])
-  const [elementaryBoard, setElementaryBoard] = useState<number[]>(new Array<number>(1000).fill(0))
+  const [elementaryBoard, setElementaryBoard] = useState<number[]>(new Array<number>(DEFAULT_ELEMENTARY_EDITOR_DATA_WIDTH).fill(0))
 
   function typeToBoard(boardType: BoardType): JSX.Element {
     switch (boardType) {

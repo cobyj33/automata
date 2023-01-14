@@ -3,7 +3,7 @@ import { View } from "interfaces/View"
 import { IVector2, Vector2 } from "interfaces/Vector2"
 import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
-import { ElementaryDrawEditMode, ElementaryDrawData } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
+import { ElementaryDrawEditMode } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
 import {ElementaryLineEditMode, ElementaryLineData } from "classes/Editor/EditModes/Elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
@@ -14,14 +14,14 @@ import { pointerPositionInElement, getHoveredCell } from 'functions/editorFuncti
 import { ZoomEditMode } from 'classes/Editor/EditModes/ZoomEditMode';
 import { MoveEditMode } from 'classes/Editor/EditModes/MoveEditMode';
 import { EditMode } from 'classes/Editor/EditModes/EditMode';
-import { ElementaryEraseEditMode, ElementaryEraseData } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
+import { ElementaryEraseEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
 import { Box } from "interfaces/Box";
 import { isSameNumberArray } from "functions/util";
-import { ElementaryEditorData } from "interfaces/EditorData";
+import { EditorData, ElementaryEditorData } from "interfaces/EditorData";
 
 
-const defaultWidth = 1000;
+const DEFAULT_WIDTH = 1000;
 type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
 
 export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[]> }) => {
@@ -58,7 +58,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   
   const [editMode, setEditMode] = useState<EditorEditMode>("MOVE");
 
-  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<ElementaryEditorData>}> = useRef({ 
+  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<ElementaryEditorData> | EditMode<EditorData>}> = useRef({ 
     "DRAW": new ElementaryDrawEditMode(getElementaryEditorData()),
     "ZOOM": new ZoomEditMode(getElementaryEditorData()),
     "MOVE": new MoveEditMode(getElementaryEditorData()),
