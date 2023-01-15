@@ -1,4 +1,4 @@
-import { PointerEvent } from "react";
+import { KeyboardEvent, PointerEvent } from "react";
 import { IVector2, filterVector2ListDuplicates, filterVector2ListMatches } from "interfaces/Vector2";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {getLine} from 'functions/shapes';
@@ -7,43 +7,32 @@ import { Box } from "interfaces/Box";
 import { LineSegment } from "interfaces/LineSegment";
 import { hover } from "@testing-library/user-event/dist/hover";
 import { LifeLikeEditorData } from "interfaces/EditorData";
+import { ShapeEditMode } from "./ShapeEditMode";
 
 export class LineEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
-    line: LineSegment = LineSegment.from(0, 0, 0, 0)
+    shapemode: ShapeEditMode = new ShapeEditMode(getLine)
 
-    onPointerDown(event: PointerEvent<Element>) {
-        const hoveredCell = this.data.currentHoveredCell
-        this.line = new LineSegment(hoveredCell, hoveredCell) 
+    onPointerDown(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerDown(event, this.data)
+        
     }
 
-    onPointerMove(event: PointerEvent<Element>) {
-        if (this.data.isPointerDown && !this.data.isRendering) {
-            const hoveredCell = this.data.currentHoveredCell;
-            if (!(this.line.end.equals(hoveredCell))) {
-                const toRemove = this.line.cells()
-                this.line = this.line.withEnd(hoveredCell)
-                const [, setGhostTilePositions] = this.data.ghostTilePositions;
-                setGhostTilePositions(positions => filterVector2ListMatches(positions, toRemove).concat(this.line.cells()) )
-            }
-        }
+    onPointerMove(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerMove(event, this.data)
     }
 
-    onPointerUp(event: PointerEvent<Element>) {
-
-        if (!this.data.isRendering) {
-            const [, setBoard] = this.data.boardData;
-            const [bounds] = this.data.boundsData;
-            const newCells: IVector2[] = this.line.cells().filter(cell => bounds.pointInside(cell));
-            
-            setBoard(board =>  filterVector2ListDuplicates(board.concat(newCells)))
-            const [, setGhostTilePositions] = this.data.ghostTilePositions;
-            setGhostTilePositions( positions => filterVector2ListMatches(positions, this.line.cells()))
-        }
-
-        this.line = LineSegment.from(0, 0, 0, 0)
+    onPointerUp(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerUp(event, this.data)
     }
 
+    onKeyDown(event: KeyboardEvent<Element>): void {
+        this.shapemode.onKeyDown(event, this.data)
+    }
+
+    onKeyUp(event: KeyboardEvent<Element>): void {
+        this.shapemode.onKeyUp(event, this.data)
+    }
 }
 
 export default LineEditMode
