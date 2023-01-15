@@ -88,6 +88,23 @@ export function clamp(value: number, lower: number, higher: number) {
 }
 
 /**
+ * Creates a sequence of numbers from lowest to highest counting by 1
+ * 
+ * Similar to the "range" function found in Python
+ * 
+ * It is not required for "first" to be less than "second"
+ * 
+ * @param first The first bounds for the range
+ * @param second The second bounds for the range
+ * @returns An array counting from the lowest bounds to the highest bounds, incrementing by 1 each index
+ */
+export function range(first: number, second: number): number[] {
+    const min: number = Math.min(first, second);
+    const distance: number = Math.abs(first - second);
+    return Array.from({length: distance}, (val, index) => index + min);
+}
+
+/**
  * A wrapper function for creating a set state alias for react state in which a child object of that state can be easily changed
  * 
  * 

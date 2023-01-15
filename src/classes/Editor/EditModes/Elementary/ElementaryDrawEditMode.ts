@@ -3,12 +3,8 @@ import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
 import { ElementaryEditorData } from "interfaces/EditorData";
+import { range } from "functions/util";
 
-function range(first: number, second: number): number[] {
-    const min: number = Math.min(first, second);
-    const distance: number = Math.abs(first - second);
-    return Array.from({length: distance}, (val, index) => index + min);
-}
 
 export class ElementaryDrawEditMode extends EditMode<ElementaryEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
