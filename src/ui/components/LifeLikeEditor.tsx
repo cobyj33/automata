@@ -25,12 +25,13 @@ import { BsCircle } from "react-icons/bs"
 
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
+import { Dimension2D } from "interfaces/Dimension";
 
 
 type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
 
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
-  const boardHolder = React.useRef<HTMLDivElement>(null);
+  const boardHolderRef = React.useRef<HTMLDivElement>(null);
   const ghostCanvas = React.useRef<HTMLCanvasElement>(null);
   const [cursor, setCursor] = React.useState<string>('');
   
@@ -45,7 +46,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   const currentHoveredCell = React.useRef<Vector2>(Vector2.ZERO)
   const [automata, setAutomata] = React.useState<string>("B3/S23");
   const [editMode, setEditMode] = React.useState<LifeLikeEditorEditMode>("MOVE");
-  const isPointerDown: React.MutableRefObject<boolean> = useIsPointerDown(boardHolder);
+  const isPointerDown: React.MutableRefObject<boolean> = useIsPointerDown(boardHolderRef);
 
     React.useEffect( () => {
         if (rendering === false) {
@@ -65,6 +66,15 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     return getHoveredCell(pointerPositionInElement(event), view).trunc()
   }
 
+  function getViewportSize(): Dimension2D {
+    const boardHolder = boardHolderRef.current
+    if (boardHolder !== null && boardHolder !== undefined) {
+      const rect: DOMRect = boardHolder.getBoundingClientRect()
+      return new Dimension2D(rect.width, rect.height)
+    }
+    return Dimension2D.ZERO
+  }
+
   function getEditorData(): LifeLikeEditorData {
     return {
       boardData: [board, setBoard],
@@ -74,7 +84,8 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
       lastHoveredCell: lastHoveredCell,
       currentHoveredCell: currentHoveredCell.current,
       isPointerDown: isPointerDown.current,
-      isRendering: rendering
+      isRendering: rendering,
+      viewportSize: getViewportSize()
     }
   }
   
@@ -164,7 +175,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   return (
     <div className={gameBoardStyles["editor"]}>
 
-      <div style={{cursor: cursor}} ref={boardHolder} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
+      <div style={{cursor: cursor}} ref={boardHolderRef} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
           {rendering ? 
               <div>

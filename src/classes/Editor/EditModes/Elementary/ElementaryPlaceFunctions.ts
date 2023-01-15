@@ -11,12 +11,12 @@ export function elementaryPlaceDown(data: ElementaryEditorData, toPlace: number)
     }
 
     const [, setBoard] = data.boardData;
-    const hoveredCell: number = data.currentHoveredCell;
+    const hoveredColumn: number = data.currentHoveredColumn;
     
     setBoard(board => {
-        if (hoveredCell >= 0 && hoveredCell < board.length) {
+        if (hoveredColumn >= 0 && hoveredColumn < board.length) {
             const newBoard: number[] = [...board];
-            newBoard[hoveredCell] = toPlace;
+            newBoard[hoveredColumn] = toPlace;
             return newBoard
         }
         return board;
@@ -29,11 +29,9 @@ export function elementaryPlaceMove(data: ElementaryEditorData, toPlace: number)
     }
 
     const [, setBoard] = data.boardData;
-    const hoveredCell: number = data.currentHoveredCell;
-    const lastHoveredCell: number = data.lastHoveredCell;
     if (data.isPointerDown) {
         setBoard(board => {
-            const line: number[] = range(lastHoveredCell, hoveredCell);
+            const line: number[] = range(data.lastHoveredColumn, data.currentHoveredColumn);
             const newBoard: number[] = [...board]
 
             line.forEach(lineCell => {

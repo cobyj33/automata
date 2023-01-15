@@ -20,6 +20,7 @@ import { Box } from "interfaces/Box";
 import { isEqualNumberArray } from "functions/util";
 import { EditorData, ElementaryEditorData } from "interfaces/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
+import { Dimension2D } from "interfaces/Dimension";
 
 
 type ElementaryEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
@@ -29,19 +30,30 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   const [view, setView] = useState<View>(View.from(-5, 0, 50));
   const [board, setBoard] = boardData;
 
-  const boardHolder = useRef(null);
+  const boardHolderRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = useState<string>('');
   const [ghostTilePositions, setGhostTilePositions] = useState<number[]>([]);
   const [rule, setRule] = useState<number>(30);
   // const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
-  const currentHoveredCell = useRef<number>(0);
-  const lastHoveredCell = useRef<number>(0)
-  const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
+  
+  const currentHoveredCell = useRef<Vector2>(Vector2.ZERO)
+  const lastHoveredCell = useRef<Vector2>(Vector2.ZERO)
+
+  const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolderRef);
   const [rendering, setRendering] = useState<boolean>(false);  
   const [inputRule, setInputRule] = useState<string>("");
 
-  function getCurrentHoveredCell(event: PointerEvent<Element>): number {
-    return Math.trunc(getHoveredCell(pointerPositionInElement(event), view).col)
+  function getCurrentHoveredCell(event: PointerEvent<Element>): Vector2 {
+    return getHoveredCell(pointerPositionInElement(event), view).trunc()
+  }
+
+  function getViewportSize(): Dimension2D {
+    const boardHolder = boardHolderRef.current
+    if (boardHolder !== null && boardHolder !== undefined) {
+      const rect: DOMRect = boardHolder.getBoundingClientRect()
+      return new Dimension2D(rect.width, rect.height)
+    }
+    return Dimension2D.ZERO
   }
 
   function getElementaryEditorData(): ElementaryEditorData {
@@ -51,8 +63,11 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell.current,
       currentHoveredCell: currentHoveredCell.current,
+      lastHoveredColumn: lastHoveredCell.current.col,
+      currentHoveredColumn: currentHoveredCell.current.col,
       isPointerDown: isPointerDown.current,
-      isRendering: rendering
+      isRendering: rendering,
+      viewportSize: getViewportSize()
     }
   }
   
@@ -154,7 +169,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     
     return (
     <div className={elementaryStyles["editor"]}  >
-      <div className={elementaryStyles["board-holder"]} ref={boardHolder} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
+      <div className={elementaryStyles["board-holder"]} ref={boardHolderRef} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
           { rendering ? <ElementaryBoardRender view={view} start={board} rule={rule} /> : 
               <BoundedBoardDrawing board={CellMatrix.fromNumberMatrix([board], Vector2.ZERO)} view={view} bounds={Box.from(0, 0, board.length, 1)} />
           }

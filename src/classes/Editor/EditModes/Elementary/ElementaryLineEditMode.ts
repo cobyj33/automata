@@ -22,7 +22,7 @@ export class ElementaryLineEditMode extends EditMode<ElementaryEditorData> {
             return;
         }
 
-        this.start = this.data.currentHoveredCell;
+        this.start = this.data.currentHoveredColumn;
         this.end = this.start;
     }
 
@@ -36,12 +36,12 @@ export class ElementaryLineEditMode extends EditMode<ElementaryEditorData> {
         if (this.data.isPointerDown && this.start !== undefined && this.start !== null && this.end !== undefined && this.end !== null) {
             let start = this.start
             let end = this.end;
-            const hoveredCell = this.data.currentHoveredCell;
-            if (!(end === hoveredCell)) {
+            const hoveredColumn = this.data.currentHoveredColumn;
+            if (!(end === hoveredColumn)) {
                 const toRemove = new Set<number>(range(start, end));
                 const [, setGhostTilePositions] = this.data.ghostTilePositions;
                 setGhostTilePositions( positions => positions.filter( col => !toRemove.has( col ) ))
-                end = hoveredCell;
+                end = hoveredColumn;
                 setGhostTilePositions( positions => positions.concat( range(start, end) ) )
             }
             this.start = start;

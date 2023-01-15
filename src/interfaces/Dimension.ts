@@ -9,6 +9,7 @@ type Dimension2DTuple = [number, number]
 export class Dimension2D implements IDimension2D {
     readonly width: number
     readonly height: number
+    static readonly ZERO = new Dimension2D(0, 0)
 
     constructor(width: number, height: number) {
         this.width = width
