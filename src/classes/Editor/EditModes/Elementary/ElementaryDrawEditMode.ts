@@ -4,53 +4,19 @@ import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
 import { ElementaryEditorData } from "interfaces/EditorData";
 import { range } from "functions/util";
+import { elementaryPlaceDown, elementaryPlaceMove } from "./ElementaryPlaceFunctions";
 
 
 export class ElementaryDrawEditMode extends EditMode<ElementaryEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
 
     onPointerDown(event: PointerEvent<Element>) {
-        if (this.data.isRendering) {
-            return;
-        }
-
-        const [, setBoard] = this.data.boardData;
-        const hoveredCell: number = this.data.currentHoveredCell;
-        
-        setBoard(board => {
-            if (hoveredCell >= 0 && hoveredCell < board.length) {
-                const newBoard: number[] = [...board];
-                newBoard[hoveredCell] = 1;
-                return newBoard
-            }
-            return board;
-        })
+        elementaryPlaceDown(this.data, 1)
     }
 
     onPointerMove(event: PointerEvent<Element>) {
-        if (this.data.isRendering) {
-            return;
-        }
-
-        const [, setBoard] = this.data.boardData;
-        const hoveredCell: number = this.data.currentHoveredCell;
-        const lastHoveredCell: number = this.data.lastHoveredCell;
-        if (this.data.isPointerDown) {
-            setBoard(board => {
-                const line: number[] = range(lastHoveredCell, hoveredCell);
-                const newBoard: number[] = [...board]
-
-                line.forEach(lineCell => {
-                    if (lineCell >= 0 && lineCell < newBoard.length) {
-                        newBoard[lineCell] = 1;
-                    }
-                })
-
-                return newBoard
-            })
-        }
+        elementaryPlaceMove(this.data, 1)
     }
-
 }
 
 export default ElementaryDrawEditMode
