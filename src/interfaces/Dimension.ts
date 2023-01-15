@@ -52,6 +52,10 @@ export class Dimension2D implements IDimension2D {
         return new Dimension2D(this.width + width, this.height + height)
     }
 
+    subtract(other: Dimension2D) {
+        return new Dimension2D(this.width - other.width, this.height - other.height)
+    }
+
     trunc(): Dimension2D {
         return new Dimension2D(Math.trunc(this.width), Math.trunc(this.height))
     }
