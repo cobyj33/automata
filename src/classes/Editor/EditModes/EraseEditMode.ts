@@ -13,7 +13,7 @@ export class EraseEditMode extends EditMode<LifeLikeEditorData> {
             return;
         }
 
-        const [, setBoard] = this.data.boardData;
+        const setBoard = this.data.boardData[1];
         const hoveredCell = this.data.currentHoveredCell;
         setBoard(board => board.filter(cell => !(cell.row === hoveredCell.row && cell.col === hoveredCell.col)  ));
     }
@@ -23,7 +23,7 @@ export class EraseEditMode extends EditMode<LifeLikeEditorData> {
             return;
         }
 
-        const [, setBoard] = this.data.boardData;
+        const setBoard = this.data.boardData[1];
         const hoveredCell = this.data.currentHoveredCell;
         const lastHoveredCell = this.data.lastHoveredCell;
         if (this.data.isPointerDown) {

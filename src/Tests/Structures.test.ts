@@ -23,4 +23,16 @@ test("2D Set remove test", () => {
     expect(set.length).toBe(2);
 });
 
+test("2D Set get pairs", () => {
+    const set: Set2D = new Set2D();
+    set.add(10, 10);
+    set.add(2, 4);
+    set.add(3, 6);
+    set.add(12, 10);
+    set.add(10, 10)
+    const pairs = set.getPairs();
+    
+
+})
+
 

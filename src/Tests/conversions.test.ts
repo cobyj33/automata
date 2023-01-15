@@ -1,19 +1,8 @@
-import { IVector2 } from "interfaces/Vector2"
-import { cellMatrixToVector2, cellsToCellMatrix } from "functions/conversions"
-import { isEqualArrays } from "functions/util"
+import { IVector2, vector2Equals } from "interfaces/Vector2"
+import { CellMatrix } from "interfaces/CellMatrix"
+import { isEqualNumberArray, isSimilarNumberArray } from "functions/util";
+import { Box } from "interfaces/Box";
 
-
-test('isEqualArrays', () => {
-    expect(isEqualArrays([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])).toBe(true);
-});
-
-test('isEqualArrays - Same Values but Reordered', () => {
-    expect(isEqualArrays([1, 2, 3, 4, 5], [2, 1, 4, 3, 5])).toBe(true);
-})
-
-test('isEqualArrays - Duplicates', () => {
-    expect(isEqualArrays([1, 2, 3, 4, 4], [4, 4, 3, 2, 1])).toBe(true);
-})
 
 test('cells To Matrix', () => {
 
@@ -25,7 +14,7 @@ test('cells To Matrix', () => {
 
     console.log("start: ", start);
 
-    const finish: Uint8ClampedArray = cellsToCellMatrix([
+    const finish: Uint8ClampedArray = CellMatrix.fromIVector2List([
         { row: 0, col:  1},
         { row: 0, col:  2},
         { row: 2, col:  2},
@@ -33,11 +22,11 @@ test('cells To Matrix', () => {
         { row: 0, col:  5},
         { row: 0, col:  6},
         { row: 0, col:  7},
-    ]).matrix
+    ]).cellData
 
     console.log("finish: ", finish);
 
-    expect(isEqualArrays(Array.from(start), Array.from(finish))).toBe(true);
+    expect(isEqualNumberArray(Array.from(start), Array.from(finish))).toBe(true);
 })
 
 test('matrix to cells', () => {
@@ -51,13 +40,7 @@ test('matrix to cells', () => {
         0, 0, 0, 0, 0, 0, 0, 0, 0
     ];
 
-    const cells: IVector2[] = cellMatrixToVector2( {
-        row: 0,
-        col: 0,
-        matrix: new Uint8ClampedArray(matrix),
-        width: WIDTH,
-        height: HEIGHT
-    })
+    const cells: IVector2[] = new CellMatrix(new Uint8ClampedArray(matrix), Box.from(0, 0, WIDTH, HEIGHT)).toVector2List()
 
     const expected = [
         { row: 1, col: 1 },
@@ -70,7 +53,7 @@ test('matrix to cells', () => {
     ]
 
     const passed = expected.every(cell => {
-        return cells.some(otherCell => cell.col === otherCell.col && cell.row === otherCell.row)
+        return cells.some(otherCell => vector2Equals(cell, otherCell))
     }) && expected.length === cells.length;
     console.log(expected, cells)
 

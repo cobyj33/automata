@@ -1,5 +1,3 @@
-import { factory } from "typescript"
-
 
 export interface IDimension2D {
     readonly width: number,

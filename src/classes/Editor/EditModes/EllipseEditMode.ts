@@ -41,7 +41,7 @@ export class EllipseEditMode extends EditMode<LifeLikeEditorData> {
             const hoveredCell = this.data.currentHoveredCell;
             if (!(this.end.row === hoveredCell.row && this.end.col === hoveredCell.col)) {
                 const toRemove = new Set<string>(this.currentCells.map(cell => JSON.stringify(cell)));
-                const [, setGhostTilePositions] = this.data.ghostTilePositions;
+                const setGhostTilePositions = this.data.ghostTilePositions[1];
                 setGhostTilePositions( positions => positions.filter( cell => !toRemove.has(JSON.stringify(cell)) ) )
                 
                 if (this.circleLocked) {

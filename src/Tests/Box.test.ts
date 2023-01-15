@@ -1,19 +1,20 @@
-import { Box, inBox, getEnclosingBox } from "interfaces/Box";
+import { Box } from "interfaces/Box";
 import { IVector2 } from "interfaces/Vector2"
+
+test("Equal Boxes", () => {
+    const first: Box = Box.from(0, 2, 5, 4);
+    const second: Box = Box.from(0, 2, 5, 4)
+    expect(first.equals(second)).toBe(true)
+})
 
 test("inBox", () => {
     const cell: IVector2 = { row: 1, col: 0 };
-    const box: Box = {
-        row: -1,
-        col: -1,
-        width: 3,
-        height: 3,
-    }
-    expect(inBox(cell, box)).toBe(true);
+    const box: Box = Box.from(-1, -1, 3, 3)
+    expect(box.pointInside(cell)).toBe(true);
 })
 
 test('getEnclosingBox', () => {
-    const box = getEnclosingBox([{ row: 2, col: 0 },
+    const box = Box.enclosed([{ row: 2, col: 0 },
         { row: 5, col: 0 },
         { row: 3, col: 1 },
         { row: 7, col: 4 },
@@ -22,12 +23,7 @@ test('getEnclosingBox', () => {
     ])
 
 
-    const expected = {
-        row: 2,
-        col: 0,
-        width: 4,
-        height: 5
-    }
+    const expected = Box.from(2, 0, 4, 5)
 
-    expect(box).toMatchObject(expected)
+    expect(box.equals(expected)).toBe(true)
 })

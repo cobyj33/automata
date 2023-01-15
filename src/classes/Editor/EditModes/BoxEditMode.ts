@@ -46,7 +46,7 @@ export class BoxEditMode extends EditMode<LifeLikeEditorData> {
             const hoveredCell = this.data.currentHoveredCell;
             if (!( this.end.row === hoveredCell.row && this.end.col === hoveredCell.col  )) {
                 const toRemove = new Set<string>(this.boxCells.map(cell => JSON.stringify(cell)));
-                const [_,  setGhostTilePositions] = this.data.ghostTilePositions;
+                const setGhostTilePositions = this.data.ghostTilePositions[1];
                 setGhostTilePositions( positions => positions.filter( cell => !toRemove.has(JSON.stringify(cell)) ) )
 
                 if (this.boxLocked) {
@@ -74,11 +74,10 @@ export class BoxEditMode extends EditMode<LifeLikeEditorData> {
         }
 
         if (this.start !== undefined && this.end !== undefined) {
-            const { 1: setBoard } = this.data.boardData;
+            const setBoard = this.data.boardData[1];
+            const setGhostTilePositions = this.data.ghostTilePositions[1];
 
             setBoard(board => filterVector2ListDuplicates(board.concat(this.boxCells)))
-
-            const { 1: setGhostTilePositions } = this.data.ghostTilePositions;
             const toRemove = new Set<string>(this.boxCells.map(cell => JSON.stringify(cell)));
             setGhostTilePositions( positions => positions.filter( cell =>  !toRemove.has(JSON.stringify(cell)) ) )
         }
@@ -110,7 +109,6 @@ export class BoxEditMode extends EditMode<LifeLikeEditorData> {
             this.boxLocked = false;
         }
     }
-
 }
 
 export default BoxEditMode

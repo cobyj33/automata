@@ -17,7 +17,7 @@ import { EditMode } from 'classes/Editor/EditModes/EditMode';
 import { ElementaryEraseEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
 import { Box } from "interfaces/Box";
-import { isSameNumberArray } from "functions/util";
+import { isEqualNumberArray } from "functions/util";
 import { EditorData, ElementaryEditorData } from "interfaces/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
 
@@ -110,7 +110,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     setBoard(new Array<number>(board.length).fill(0));
   }
   
-  const [undo, redo] = useHistory([board, setBoard], isSameNumberArray);
+  const [undo, redo] = useHistory([board, setBoard], isEqualNumberArray);
   function onKeyDown(event: KeyboardEvent<Element>) {
     editorModes.current[editMode].sendUpdatedEditorData(getElementaryEditorData())
     editorModes.current[editMode].onKeyDown?.(event);
@@ -156,7 +156,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     <div className={elementaryStyles["editor"]}  >
       <div className={elementaryStyles["board-holder"]} ref={boardHolder} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
           { rendering ? <ElementaryBoardRender view={view} start={board} rule={rule} /> : 
-              <BoundedBoardDrawing board={CellMatrix.fromNumberMatrix([board], new Vector2(0, 0))} view={view} bounds={Box.from(0, 0, board.length, 1)} />
+              <BoundedBoardDrawing board={CellMatrix.fromNumberMatrix([board], Vector2.ZERO)} view={view} bounds={Box.from(0, 0, board.length, 1)} />
           }
       </div>
 

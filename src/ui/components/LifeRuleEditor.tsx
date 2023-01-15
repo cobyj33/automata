@@ -49,7 +49,7 @@ export const LifeRuleEditor = ({ lifeRule }: { lifeRule: StatefulData<string> })
                 <div className={lifeRuleEditorStyles["assisted-change-area"]}>
                     <span className={lifeRuleEditorStyles["text"]}> Neighbors needed to be Born </span>
                     <div className={lifeRuleEditorStyles["selection-button-list"]}>
-                        { new Array(10).fill(0).map(( num, index ) => (
+                        { new Array(9).fill(0).map(( num, index ) => (
                         <button className={`${lifeRuleEditorStyles["select-button"]} ${lifeRuleEditorStyles[`${birth.has(index) ? "selected" : "unselected"}`]} `} onClick={() => birth.has(index) ? (() => { birth.delete(index); setBirth(new Set<number>(birth)); })() : (() => { birth.add(index); setBirth(new Set<number>(birth)); })() } key={`rule editor birth ${index}`}> {index} </button>
                             )) }
                     </div>
@@ -57,7 +57,7 @@ export const LifeRuleEditor = ({ lifeRule }: { lifeRule: StatefulData<string> })
                     <span className={lifeRuleEditorStyles["text"]}> Neighbors needed to Survive </span>
                     
                     <div className={lifeRuleEditorStyles["selection-button-list"]}>
-                        { new Array(10).fill(0).map(( num, index ) => (
+                        { new Array(9).fill(0).map(( num, index ) => (
                             <button onClick={() => survive.has(index) ? (() => { survive.delete(index); setSurvive(new Set<number>(survive)); })() : (() => { survive.add(index); setSurvive(new Set<number>(survive)); })() } className={`${lifeRuleEditorStyles["select-button"]} ${lifeRuleEditorStyles[`${survive.has(index) ? "selected" : "unselected"}`]} `} key={`rule editor survive ${index}`}> {index} </button>
                         )) }
                     </div>

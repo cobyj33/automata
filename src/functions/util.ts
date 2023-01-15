@@ -1,5 +1,16 @@
+import { T } from "vitest/dist/types-bae746aa";
+
 type IComparer<T> = (first: T, second: T) => boolean;
 
+/**
+ * Determines if two number matrices are equal to each other
+ * 
+ * Two number matrices are considered equal if they have the same amount of rows, the same amount of columns in each row, and each data point is equal and in the same place
+ * 
+ * @param first A number matrix
+ * @param second Another number matrix
+ * @returns Whether the two matrices are equal according to the described conditions above
+ */
 export function isEqualNumberMatrix(first: number[][], second: number[][]) {
     if (first.length !== second.length) {
         return false;
@@ -16,17 +27,31 @@ export function isEqualNumberMatrix(first: number[][], second: number[][]) {
             }
         }
     }
+
     return true;
 }
 
-export function padMatrixSides(matrix: number[][], amount: number): number[][] {
-    const newMatrix = Array.from({ length: matrix.length + (amount * 2)}, () => new Array<number>(matrix[0].length + (amount * 2)).fill(0));
+
+/** Add padding to the sides of a matrix of 
+ * 
+ * @param matrix The matrix that needs padding
+ * @param amount The amount to pad each side of the matrix
+ * @param padValue The value to pad the matrix with, default is 0
+ * @returns A new matrix with padded sides
+ * @throws Error if the amount given is a non-integer value
+ */
+export function padMatrixSides(matrix: number[][], amount: number, padValue: number = 0): number[][] {
+    if (Number.isInteger(amount)) {
+        throw new Error("ERROR: padMatrixSides, Cannot pad matrix sides by a non-integer value")
+    }
+    const newMatrix = Array.from({ length: matrix.length + (amount * 2)}, () => new Array<number>(matrix[0].length + (amount * 2)).fill(padValue));
     
     for (let row = 0; row < matrix.length; row++) {
         for (let col = 0; col < matrix[row].length; col++) {
             newMatrix[row + amount][col + amount] = matrix[row][col];
         }
     }
+
     return newMatrix;
 }
 
@@ -131,7 +156,59 @@ export function createSetStateAlias<Child, Parent>(setter: React.Dispatch<React.
     }
 }
 
-export function isSameNumberArray(first: number[], second: number[]) {
+export function getArrayFrequencyMap<T>(array: T[]): Map<T, number> {
+    const map = new Map<T, number>()
+    array.forEach(value => {
+        const occurrances = map.get(value)
+        if (occurrances !== null && occurrances !== undefined) {
+            map.set(value, occurrances + 1)
+        } else {
+            map.set(value, 1)
+        }
+    })
+    return map;
+}
+
+function areEqualNumberFrequencyMaps(first: Map<number, number>, second: Map<number, number>) {
+    if (first.keys.length !== second.keys.length) {
+        return false;
+    }
+
+    const firstIter = Array.from(first.entries())
+    for (let [key, value] of firstIter) {
+        if (second.get(key) === null || second.get(key) === undefined) {
+            return false
+        }
+
+        if (second.get(key) !== first.get(key)) {
+            return false
+        }
+    }
+
+    const secondIter = Array.from(second.entries())
+    for (let [key, value] of secondIter) {
+
+        if (first.get(key) === null || first.get(key) === undefined) {
+            return false
+        }
+
+        if (first.get(key) !== second.get(key)) {
+            return false
+        }
+    }
+    return true
+}
+
+/**
+ * Determines if two number arrays are the same
+ * 
+ * Number arrays are considered the same if they have the same length and every data point at every index is the same
+ * 
+ * @param first A number array
+ * @param second Another number array
+ * @returns Whether the two number arrays are considered equal according to the described conditions
+ */
+export function isEqualNumberArray(first: number[], second: number[]) {
     if (first.length !== second.length) {
         return false;
     }
@@ -145,47 +222,79 @@ export function isSameNumberArray(first: number[], second: number[]) {
     return true;
 }
 
-export function isEqualArrays<T>(first: T[], second: T[]) {
+/**
+ * Determines if two number arrays are similar according to if they have the same data points, although they may not be in the same order
+ * 
+ * @param first A number array
+ * @param second Another number array
+ * @returns Whether the two number arrays are considered similar according to the described conditions
+ */
+export function isSimilarNumberArray(first: number[], second: number[]) {
     if (first.length !== second.length) {
-        return false;
-    }
-
-    const firstMap: Map<T, number> = new Map<T, number>();
-    
-    first.forEach(value => {
-        const currentValue: number | undefined = firstMap.get(value);
-        if (currentValue !== undefined && currentValue !== null) {
-            firstMap.set(value, currentValue + 1);
-        } else {
-            firstMap.set(value, 1);
-        }
-    });
-
-    const secondMap: Map<T, number> = new Map<T, number>();
-    second.forEach(value =>  {
-        const currentValue: number | undefined = secondMap.get(value);
-        if (currentValue !== undefined && currentValue !== null) {
-            secondMap.set(value, currentValue + 1);
-        } else {
-            secondMap.set(value, 1);
-        }
-    })
-    
-    if (firstMap.keys.length !== secondMap.keys.length) {
-        return false;
+        return false
     }
     
-    let matching: boolean = true;
-    firstMap.forEach((value, key) => {
-        if (secondMap.get(key) !== value) {
-            matching = false;
-        }
-    })
-
-    return matching;
+    const firstFreqMap = getArrayFrequencyMap(first)
+    const secondFreqMap = getArrayFrequencyMap(second)
+    return areEqualNumberFrequencyMaps(firstFreqMap, secondFreqMap);
 }
 
-export function isRectangularMatrix<T>(matrix: T[][]) {
+// /**
+//  * Checks if two arrays are 
+//  * 
+//  * @param first 
+//  * @param second 
+//  * @returns 
+//  */
+// export function isEqualArrays<T>(first: T[], second: T[]) {
+//     if (first.length !== second.length) {
+//         return false;
+//     }
+
+//     const firstMap: Map<T, number> = new Map<T, number>();
+    
+//     first.forEach(value => {
+//         const currentValue: number | undefined = firstMap.get(value);
+//         if (currentValue !== undefined && currentValue !== null) {
+//             firstMap.set(value, currentValue + 1);
+//         } else {
+//             firstMap.set(value, 1);
+//         }
+//     });
+
+//     const secondMap: Map<T, number> = new Map<T, number>();
+//     second.forEach(value =>  {
+//         const currentValue: number | undefined = secondMap.get(value);
+//         if (currentValue !== undefined && currentValue !== null) {
+//             secondMap.set(value, currentValue + 1);
+//         } else {
+//             secondMap.set(value, 1);
+//         }
+//     })
+    
+//     if (firstMap.keys.length !== secondMap.keys.length) {
+//         return false;
+//     }
+    
+//     let matching: boolean = true;
+//     firstMap.forEach((value, key) => {
+//         if (secondMap.get(key) !== value) {
+//             matching = false;
+//         }
+//     })
+
+//     return matching;
+// }
+
+/**
+ * Test if a matrix is rectangular or not
+ * 
+ * A matrix is considered rectangular if it's height is not 0, and all rows have the same amount of columns
+ * 
+ * @param matrix A matrix of a data type
+ * @returns If the matrix is rectangular or not
+ */
+export function isRectangularMatrix<T>(matrix: T[][]): boolean {
     if (matrix.length === 0) return true;
     const width = matrix[0].length;
 
@@ -195,32 +304,28 @@ export function isRectangularMatrix<T>(matrix: T[][]) {
     return true;
 }
 
-export function isValidCellMatrix(matrix: number[][]) {
-    if (!isRectangularMatrix(matrix)) return false;
-    if (matrix.length === 0) return true;
-
-    for (let row = 0; row < matrix.length; row++) {
-        if (matrix[row][0] !== 0 || matrix[row][matrix[row].length - 1] !== 0) {
-            return false;
-        }
-    }
-
-    for (let col = 0; col < matrix[0].length; col++) {
-        if (matrix[0][col] !== 0 || matrix[matrix.length - 1][col] !== 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 
+/**
+ * Checks whether a certain row and column is in bounds of a number matrix
+ * 
+ * @param matrix A number matrix
+ * @param row the row of the matrix to check
+ * @param col the column of the matrix to check
+ * @returns Whether the row and column is in bounds of the number matrix
+ */
 export function isInBounds(matrix: number[][], row: number, col: number) {
     if (matrix.length === 0) return false;
     if (matrix[0].length === 0) return false;
     return row >= 0 && row < matrix.length && col >= 0 && col < matrix[0].length;
 }
 
+/**
+ * Concatenates multiple Uint8ClampedArrays into one Uint8ClampedArray
+ * 
+ * @param arrays A variable argument of Uint8ClampedArrays
+ * @returns A concatenated Uint8ClampedArray of all inputted arrays
+ */
 export function concatUint8ClampedArrays(...arrays: Uint8ClampedArray[]): Uint8ClampedArray {
     const totalLength = arrays.reduce((prev, curr) => prev + curr.length, 0)
     const newArray = new Uint8ClampedArray(totalLength)

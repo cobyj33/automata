@@ -4,7 +4,6 @@ import { View } from 'interfaces/View';
 import { Box } from 'interfaces/Box';
 import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
 import { CellMatrix } from 'interfaces/CellMatrix';
-import {cellsInBoxToCellMatrix} from 'functions/conversions';
 import {getNextLifeGeneration} from 'functions/generationFunctions';
 
 export interface RenderData {
@@ -12,7 +11,7 @@ export interface RenderData {
 }
 
 export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { start: IVector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
-    const [currentRender, setCurrentRender] = useState<CellMatrix>(cellsInBoxToCellMatrix(start, bounds));
+    const [currentRender, setCurrentRender] = useState<CellMatrix>(CellMatrix.fromBoundedIVector2List(start, bounds));
     const [currentGeneration, setCurrentGeneration] = useState<number>(0);
 
     useEffect( () => {

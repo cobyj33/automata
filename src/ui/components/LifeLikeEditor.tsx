@@ -42,7 +42,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, 100, 100));
   const [ghostTilePositions, setGhostTilePositions] = React.useState<IVector2[]>([]);
   const [lastHoveredCell, setLastHoveredCell] = React.useState<IVector2>({ row: 0, col: 0 });
-  const currentHoveredCell = React.useRef<Vector2>(new Vector2(0, 0))
+  const currentHoveredCell = React.useRef<Vector2>(Vector2.ZERO)
   const [automata, setAutomata] = React.useState<string>("B3/S23");
   const [editMode, setEditMode] = React.useState<LifeLikeEditorEditMode>("MOVE");
   const isPointerDown: React.MutableRefObject<boolean> = useIsPointerDown(boardHolder);
@@ -195,10 +195,10 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
             <EditModeButton target="BOX" current={editMode} setter={setEditMode}> <FaBox /> </EditModeButton>
             <EditModeButton target="ELLIPSE" current={editMode} setter={setEditMode}> <BsCircle /> </EditModeButton>
-            <button className={getSelectedEditButtonStyles(rendering)} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-            <button className={`${gameBoardStyles["edit-button"]}`} onClick={clear}> <AiOutlineClear /> </button>
-            <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
-            <button className={gameBoardStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
+            <EditToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </EditToggleButton>
+            <EditButton onClick={clear}> <AiOutlineClear /> </EditButton>
+            <EditButton onClick={undo}> <FaUndo /> </EditButton>
+            <EditButton onClick={redo}> <FaRedo /> </EditButton>
           </div>
       </div>
 
@@ -206,12 +206,26 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   )
 }
 
-function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: LifeLikeEditorEditMode, current: LifeLikeEditorEditMode, setter: React.Dispatch<LifeLikeEditorEditMode> }) {
-  return <button className={getSelectedEditButtonStyles(current === target)} onClick={() => setter(target)}>{children}</button>
+function getSelectedStyles(condition: boolean): string {
+  return condition ? gameBoardStyles["selected"] : ""
 }
 
-function getSelectedEditButtonStyles(condition: boolean): string {
-  return `${gameBoardStyles["edit-button"]} ${condition ? gameBoardStyles["selected"] : ""}`
+interface EditButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+function EditButton(props: EditButtonProps) {
+  return <button className={gameBoardStyles["edit-button"]} {...props} />
 }
+
+interface ToggleEditButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  selected: boolean
+}
+
+function EditToggleButton({ selected, ...props }: ToggleEditButtonProps) {
+  return <button className={`${gameBoardStyles["edit-button"]} ${getSelectedStyles(selected)}`} {...props} />
+}
+
+function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: LifeLikeEditorEditMode, current: LifeLikeEditorEditMode, setter: React.Dispatch<LifeLikeEditorEditMode> }) {
+  return <EditToggleButton selected={current === target} onClick={() => setter(target)}>{children}</EditToggleButton>
+}
+
 
 export default LifeLikeEditor

@@ -13,7 +13,7 @@ interface ElementaryRenderData {
 
 export const ElementaryBoardRender = ({ start, view,  rule }: { start: number[], view: View, rule: number }) => {
     const [currentRenderData, setCurrentRenderData] = useState<ElementaryRenderData>({
-        cellMatrix: CellMatrix.fromNumberMatrix([start], new Vector2(0, 0)),
+        cellMatrix: CellMatrix.fromNumberMatrix([start], Vector2.ZERO),
         currentLine: new Uint8ClampedArray(start)
     });
 
