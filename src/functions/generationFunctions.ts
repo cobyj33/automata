@@ -1,4 +1,6 @@
 import { CellMatrix } from 'interfaces/CellMatrix';
+import { IVector2 } from 'interfaces/Vector2';
+import { FaLeaf } from 'react-icons/fa';
 
 type LifeRuleData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {
@@ -188,6 +190,54 @@ export function getNextElementaryGeneration(currentGeneration: Uint8ClampedArray
         output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules);
     }
     return output;
+}
+
+const patternTextFilterRegex = /[^*.\n\rOo]/g
+
+export function isValidPatternText(text: string): boolean {
+    const filteredText = text.replace(patternTextFilterRegex, "")
+    console.log(filteredText)
+    if (filteredText.length === 0) {
+        return false;
+    }
+
+    const lines = filteredText.split(/[\n\r]/g)
+    console.log(lines)
+    if (lines.length === 0) {
+        return false;
+    }
+
+    const requiredWidth = lines[0].length
+    
+    return lines.every(line => line.length === requiredWidth)
+}
+
+export function parsePatternText(text: string): IVector2[] {
+    if (!isValidPatternText(text)) {
+        throw new Error("Attemped to parse invalid pattern text: " + text)
+    }
+
+    let cells: IVector2[] = []
+    const filteredText = text.replace(patternTextFilterRegex, "")
+    const onValues = ["*", "O", "o"]
+    const offValues = ["."] 
+
+    const lines = filteredText.split(/[\n\r]/g)
+    console.log(lines)
+    console.log(filteredText)
+    lines.forEach((line, row) => {
+        line.split("").forEach((char, col) => {
+                if (onValues.some(val => val === char)) {
+                    cells.push({ row: row, col: col })
+                }
+            }
+        )
+    })
+    let row = 0;
+    let col = 0;
+
+
+    return cells;
 }
 
 // export async function getNextElementaryGenerationAsync(currentGeneration: Uint8ClampedArray, numberRule: number): Promise<Uint8ClampedArray> {

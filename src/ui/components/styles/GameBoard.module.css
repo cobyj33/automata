@@ -19,16 +19,19 @@
     border: 5px solid black;
 }
 
+.left-side-bar, .right-side-bar {
+    background-color: rgb(20, 20, 20);
+    padding: 10px;
+}
+
 .left-side-bar {
     grid-column: 1 / 4;
     grid-row: 1 / 8;
-    background-color: rgb(20, 20, 20);
 }
 
 .right-side-bar {
     grid-column: 10 / 13;
     grid-row: 1 / 8;
-    background-color: rgb(20, 20, 20);
 }
 
 .tool-bar {
@@ -69,6 +72,7 @@
     flex-direction: row;
     justify-content: center;
     pointer-events: none;
+    gap: 5px;
 }
 
 .edit-button {
@@ -77,8 +81,7 @@
     border: none;
     pointer-events: auto;
     aspect-ratio: 1;
-    margin-left: 15px;
-    padding: 15px;
+    padding: 5px;
 }
 
 .edit-button:hover:not(.disabled) {
@@ -139,3 +142,21 @@
     font-size: 16;
     color: white;
 } 
+
+.render-data-display {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5px;
+    background-color: black;
+    border-radius: 5px;
+}
+
+.render-data-label {
+    color: white;
+}
+
+.render-data-value {
+    color: white;
+}

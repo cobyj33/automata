@@ -155,6 +155,8 @@ export function getBoardMatrixShaderProgram(gl: WebGL2RenderingContext): WebGLPr
 } 
 
 export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, cellMatrix: CellMatrix, inputtedMatrixRenderProgram: WebGLProgram | null = null) {
+
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
     const startCoordinates: IVector2 = cellMatrix.topleft.subtract(view.position).scale(view.cellSize)
 

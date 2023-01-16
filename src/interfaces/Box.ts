@@ -107,6 +107,15 @@ export class Box implements IBox {
         return new Vector2(this.bottom, this.left)
     }
 
+    translate(vector: IVector2): Box {
+        return new Box(this.topleft.add(vector), this.size)
+    }
+
+    setCenter(vector: IVector2): Box {
+        const topleft = Vector2.fromIVector2(vector).subtract({ row: this.size.height / 2, col: this.size.width / 2 })
+        return new Box(topleft, this.size)
+    }
+
     expand(width: number, height: number): Box {
         return new Box(this.topleft, this.size.expand(width, height))
     }

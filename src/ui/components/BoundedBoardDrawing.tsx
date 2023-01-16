@@ -1,8 +1,8 @@
-import { RefObject, useEffect, useRef } from 'react'
+import React from 'react'
 import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { getViewArea, withCanvasAndContextWebGL2, } from 'functions/drawing';
-import { useWebGL2CanvasUpdater } from 'functions/hooks';
+import { useCanvasHolderUpdater, useWebGL2CanvasUpdater } from 'functions/hooks';
 import { Box } from 'interfaces/Box';
 import { CellMatrix } from 'interfaces/CellMatrix';
 import BoardDrawing from 'ui/components/BoardDrawing'
@@ -10,8 +10,8 @@ import LayeredCanvas from 'ui/components/LayeredCanvas';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 
 
-export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board: IVector2[] | CellMatrix, view: View, bounds: Box, className?: string }) => {
-    const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
+export const BoundedBoardDrawing = ({ board, view, bounds }: { board: IVector2[] | CellMatrix, view: View, bounds: Box }) => {
+    const canvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
     function blockOutBounds(gl: WebGL2RenderingContext) {
         const viewArea: Box = getViewArea(gl.canvas, view);
         gl.enable(gl.SCISSOR_TEST);
@@ -30,13 +30,14 @@ export const BoundedBoardDrawing = ({ board, view, bounds, className }: { board:
       })
     }
   
-    useEffect(render);
-    useWebGL2CanvasUpdater(canvasRef);
+    React.useEffect(render);
+    const canvasHolderRef = React.useRef<HTMLDivElement>(null)
+    useCanvasHolderUpdater(canvasRef, canvasHolderRef, render);
     
     return (
-        <LayeredCanvas>
-          <BoardDrawing board={board} view={view} className={className} />
-          <canvas className={className ?? boardDrawingStyles["board-drawing"]} ref={canvasRef}></canvas>
+        <LayeredCanvas ref={canvasHolderRef}>
+          <BoardDrawing board={board} view={view} />
+          <canvas className={boardDrawingStyles["board-drawing"]} ref={canvasRef}></canvas>
         </LayeredCanvas>
     )
 }

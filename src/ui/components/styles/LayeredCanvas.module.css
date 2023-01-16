@@ -13,4 +13,5 @@
 .layered-canvas > * {
     grid-row: 1 / 2;
     grid-column: 1 / 2;
+    align-items: stretch
 }

@@ -9,9 +9,9 @@ import { EditMode } from "automata/editor/main";
 import { BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from 'automata/editor/bounded';
 
 import { renderBoard, withCanvasAndContextWebGL2 } from 'functions/drawing';
-import { createLifeString, isValidLifeString, parseLifeLikeString } from 'functions/generationFunctions';
+import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeString, parsePatternText } from 'functions/generationFunctions';
 import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
-import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
+import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
 
 import LayeredCanvas from 'ui/components/LayeredCanvas';
 import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
@@ -26,9 +26,80 @@ import { BsCircle } from "react-icons/bs"
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
 import { Dimension2D } from "interfaces/Dimension";
-
+import { e } from "vitest/dist/index-761e769b";
 
 type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
+
+
+// interface LifeLikeEditorState {
+//     board: IVector2[],
+//     bounds: Box,
+//     view: View,
+//     cursor: string,
+
+//     rendering: boolean,
+//     currentGeneration: number,
+    
+
+
+//     ghostTilePositions: IVector2[],
+//     lastHoveredCell: Vector2,
+//     currentHoveredCell: Vector2,
+//     rule: string,
+//     editMode: LifeLikeEditorEditMode,
+//     pattern: IVector2[],
+//     isPointerDown: boolean,
+// }
+
+
+// interface LifeLikePanEditorAction {
+//     type: "pan",
+//     amount: IVector2
+// }
+
+// interface LifeLikeZoomEditorAction {
+//     type: "zoom"
+//     amount: number
+//     anchor: IVector2
+// }
+
+// interface LifeLikeDrawEditorAction {
+//     type: "draw"
+//     area: number
+//     anchor: IVector2
+// }
+
+// interface LifeLikeSelectEditorAction {
+//     type: "select"
+//     area: number
+//     anchor: IVector2
+// }
+
+// interface LifeLikeClearEditorAction {
+//     type: "clear"
+// }
+
+// interface LifeLikeClearSelectionEditorAction {
+//     type: "clear selection"
+// }
+
+
+// interface LifeLikeClearSelectionEditorAction {
+//     type: "move selection"
+// }
+
+// interface LifeLikeClearSelectionEditorAction {
+//     type: "clear selection"
+// }
+
+// interface LifeLikeSetPatternEditorAction
+
+// type LifeLikeEditorAction = LifeLikePanEditorAction | LifeLikeZoomEditorAction
+
+// const lifeLikeEditorReducer: React.Reducer<LifeLikeEditorState, LifeLikeEditorAction> = (state, action) => {
+    
+// }
+
 
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
   const boardHolderRef = React.useRef<HTMLDivElement>(null);
@@ -40,7 +111,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
   const [board, setBoard] = boardData;
   const [rendering, setRendering] = React.useState<boolean>(false);
-  const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, 100, 100));
+  const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, 150, 150));
   const [ghostTilePositions, setGhostTilePositions] = React.useState<IVector2[]>([]);
   const [lastHoveredCell, setLastHoveredCell] = React.useState<IVector2>({ row: 0, col: 0 });
   const currentHoveredCell = React.useRef<Vector2>(Vector2.ZERO)
@@ -54,13 +125,15 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
         }
     }, [rendering] )
 
-  React.useEffect( () => {
-    withCanvasAndContextWebGL2(ghostCanvas, ({ gl }) => {
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
-    })
-  }, [ghostTilePositions, lastHoveredCell])
+    function renderGhostCanvas() {
+        withCanvasAndContextWebGL2(ghostCanvas, ({ gl }) => {
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
+          })
+    }
+
+  React.useEffect(renderGhostCanvas, [ghostTilePositions, lastHoveredCell])
 
   function getCurrentHoveredCell(event: React.PointerEvent<Element>): Vector2 {
     return getHoveredCell(pointerPositionInElement(event), view).trunc()
@@ -170,7 +243,19 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     editorModes.current[editMode].onWheel?.(event);
   }
 
-  useWebGL2CanvasUpdater(ghostCanvas)
+  const [pattern, setPattern] = React.useState<string>("")
+  function loadPattern() {
+    if (isValidPatternText(pattern)) {
+        const cells = parsePatternText(pattern)
+        const box = Box.enclosed(cells).setCenter(bounds.center)
+        const translatedCells = cells.map(cell => Vector2.fromIVector2(cell)).map(cell => cell.add(box.topleft).trunc())
+        setBoard(translatedCells.filter(cell => bounds.pointInside(cell)))
+    } else {
+        console.error("Invalid pattern text: " + pattern)
+    }
+  }
+
+  useCanvasHolderUpdater(ghostCanvas, ghostCanvas, renderGhostCanvas)
 
   return (
     <div className={gameBoardStyles["editor"]}>
@@ -189,14 +274,26 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
       </aside>
 
       <aside className={gameBoardStyles["right-side-bar"]}>
-        {/* <div>
-            <h1> View </h1>
-            <h3> Position: {view.position.toString()} </h3>
-            <h3> CellSize: {view.cellSize} </h3> 
-        </div> */}
+
+        <div className={gameBoardStyles["edit-data"]}>
+            <div className={gameBoardStyles["view-data"]}>
+                <h3> View Position: Row: {view.position.row.toFixed(1)} Col: {view.position.col.toFixed(1)} </h3>
+                <h3> View CellSize: {view.cellSize} </h3> 
+            </div>
+
+            <h3> Hovering: Row: {currentHoveredCell.current.row} Col: {currentHoveredCell.current.col} </h3>
+
+        </div>
           <div className={gameBoardStyles["filler"]}> W.I.P... </div>
-          <div>
-            <p> Current Generation: { renderData.generation } </p> 
+
+          <div className={gameBoardStyles["render-data"]}>
+            <RenderDataDisplay label={"Current Generation: "} value={rendering ? String(renderData.generation) : "0"} />
+          </div>
+
+          <div className={gameBoardStyles[""]}>
+            <textarea onChange={(e) => setPattern(e.target.value)} value={pattern}></textarea>
+            <button onClick={loadPattern}>Load Pattern</button>
+            <button onClick={() => setPattern("")}>Clear Pattern</button>
           </div>
       </aside>
 
@@ -220,6 +317,13 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
   )
 }
 
+function RenderDataDisplay({ label, value }: { label: string, value: string }) {
+    return <div className={gameBoardStyles["render-data-display"]}>
+        <p className={gameBoardStyles["render-data-label"]}>{label}</p>
+        <p className={gameBoardStyles["render-data-value"]}>{value}</p>
+    </div>
+}
+
 function getSelectedStyles(condition: boolean): string {
   return condition ? gameBoardStyles["selected"] : ""
 }
@@ -240,6 +344,8 @@ function EditToggleButton({ selected, ...props }: ToggleEditButtonProps) {
 function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: LifeLikeEditorEditMode, current: LifeLikeEditorEditMode, setter: React.Dispatch<LifeLikeEditorEditMode> }) {
   return <EditToggleButton selected={current === target} onClick={() => setter(target)}>{children}</EditToggleButton>
 }
+
+
 
 
 export default LifeLikeEditor

@@ -3,7 +3,7 @@ import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View'
 import { RGBA, Color } from 'interfaces/Color';
 import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid, withCanvasAndContextWebGL2 } from 'functions/drawing';
-import { useWebGL2CanvasUpdater } from 'functions/hooks';
+import { useCanvasHolderUpdater, useWebGL2CanvasUpdater } from 'functions/hooks';
 import { CellMatrix } from 'interfaces/CellMatrix';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 import LayeredCanvas from 'ui/components/LayeredCanvas';
@@ -37,7 +37,7 @@ interface BoardDrawingConfig {
   minGridSize?: number
 }
 
-export const BoardDrawing = ({ board, view, className, config = { grid: true, minGridSize: 4 }  }: { board: IVector2[] | CellMatrix, view: View, className?: string, config?: BoardDrawingConfig }) => {
+export const BoardDrawing = ({ board, view, config = { grid: true, minGridSize: 4 }  }: { board: IVector2[] | CellMatrix, view: View, config?: BoardDrawingConfig }) => {
   const boardCanvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
   const gridCanvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
   const boardMatrixShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);
@@ -52,6 +52,7 @@ export const BoardDrawing = ({ board, view, className, config = { grid: true, mi
       if (Array.isArray(board)) {
         renderBoard(gl, view, board as IVector2[]);
       } else {
+        console.log("From board matrix")
         renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
       }
     })
@@ -102,8 +103,10 @@ export const BoardDrawing = ({ board, view, className, config = { grid: true, mi
         }
     }, [view]);
 
-    useWebGL2CanvasUpdater(boardCanvasRef);
-    useWebGL2CanvasUpdater(gridCanvasRef);
+    const canvasHolder = React.useRef<HTMLDivElement>(null)
+
+    useCanvasHolderUpdater(boardCanvasRef, canvasHolder, renderBoardCanvas)
+    useCanvasHolderUpdater(gridCanvasRef, canvasHolder, renderGridCanvas)
 
     React.useEffect(() => {
       withCanvasAndContextWebGL2(boardCanvasRef, ({ gl }) => {
@@ -117,9 +120,9 @@ export const BoardDrawing = ({ board, view, className, config = { grid: true, mi
       renderAll();
     }, [])
   
-  return <LayeredCanvas className={boardDrawingStyles["board-background"]}>
-          <canvas className={className ?? boardDrawingStyles["board-drawing"]} ref={boardCanvasRef}></canvas>
-          <canvas className={className ?? boardDrawingStyles["board-drawing"]} ref={gridCanvasRef}></canvas> 
+  return <LayeredCanvas ref={canvasHolder}>
+          <canvas className={boardDrawingStyles["board-drawing"]} ref={boardCanvasRef}></canvas>
+          <canvas className={boardDrawingStyles["board-drawing"]} ref={gridCanvasRef}></canvas> 
         </LayeredCanvas> 
 }
 
