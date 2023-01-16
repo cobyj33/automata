@@ -37,7 +37,6 @@ export class ZoomEditMode extends EditMode<EditorData> {
 
                     const panAmount = new Vector2(changeInViewportWorldSize.scale( this.anchorPercentage.row ).height, changeInViewportWorldSize.scale( this.anchorPercentage.col ).width)
 
-                    console.log(changeInViewportWorldSize)
                     return view.withCellSize(newCellSize).withPosition(pos => pos.add(panAmount))
                 })
             }

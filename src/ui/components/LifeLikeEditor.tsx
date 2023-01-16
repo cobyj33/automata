@@ -15,7 +15,7 @@ import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/
 
 import LayeredCanvas from 'ui/components/LayeredCanvas';
 import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
-import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
+import { LifeLikeGameRender, RenderData } from 'ui/components/LifeLikeGameRender';
 import LifeRuleEditor from "ui/components/LifeRuleEditor"
 
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaBox, FaUndo, FaRedo } from "react-icons/fa"
@@ -178,23 +178,26 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
       <div style={{cursor: cursor}} ref={boardHolderRef} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
           {rendering ? 
-              <div>
-                  <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
-                    <div className={gameBoardStyles['render-info']}>
-                        <p> Current Generation: { renderData.generation } </p>
-                    </div>
-              </div>
+                <LifeLikeGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
            : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
           <canvas className={gameBoardStyles["board-drawing"]} ref={ghostCanvas} />
         </LayeredCanvas>
       </div>
 
       <aside className={gameBoardStyles["left-side-bar"]}>
-        <LifeRuleEditor lifeRule={[automata, setAutomata]} />
+        <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} />
       </aside>
 
       <aside className={gameBoardStyles["right-side-bar"]}>
+        {/* <div>
+            <h1> View </h1>
+            <h3> Position: {view.position.toString()} </h3>
+            <h3> CellSize: {view.cellSize} </h3> 
+        </div> */}
           <div className={gameBoardStyles["filler"]}> W.I.P... </div>
+          <div>
+            <p> Current Generation: { renderData.generation } </p> 
+          </div>
       </aside>
 
       <div className={gameBoardStyles["tool-bar"]}>

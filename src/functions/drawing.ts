@@ -87,10 +87,10 @@ export function renderBoard(gl: WebGL2RenderingContext, view: View, board: IVect
     
     gl.enable(gl.SCISSOR_TEST);
     gl.clearColor(1, 1, 1, opacity);
-    for (let i = 0; i < shownCells.length; i++) {
-      gl.scissor( (shownCells[i].col - view.col) * view.cellSize, gl.canvas.height - (shownCells[i].row - view.row + 1) * view.cellSize, view.cellSize, view.cellSize); // +1 in y because scissor works from bottom left instead of top left
+    shownCells.forEach(cell => {
+        gl.scissor( (cell.col - view.col) * view.cellSize, gl.canvas.height - (cell.row - view.row + 1) * view.cellSize, view.cellSize, view.cellSize); // +1 in y because scissor works from bottom left instead of top left
         gl.clear(gl.COLOR_BUFFER_BIT);
-    }
+    })
     gl.disable(gl.SCISSOR_TEST);
     gl.clearColor(lastClearColor[0], lastClearColor[1], lastClearColor[2], lastClearColor[3]);
   }
@@ -235,21 +235,22 @@ export function getGridShaderProgram(gl: WebGL2RenderingContext): WebGLProgram |
 function getGridVertices(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Float32Array {
     const vertices: number[] = []
     let currentVertexIndex = 0;
-      for (let y = -view.cellSize; y <= canvas.height + view.cellSize; y += view.cellSize) {
-          vertices[currentVertexIndex] = -view.cellSize;
-          vertices[currentVertexIndex + 1] = y;
-          vertices[currentVertexIndex + 2] = canvas.width + view.cellSize;
-          vertices[currentVertexIndex + 3] = y;
-          currentVertexIndex += 4;
-      }
+    const offset = view.offset();
+    for (let y = -view.cellSize - offset.row; y <= canvas.height + view.cellSize; y += view.cellSize) {
+        vertices[currentVertexIndex] = -view.cellSize;
+        vertices[currentVertexIndex + 1] = y;
+        vertices[currentVertexIndex + 2] = canvas.width + view.cellSize;
+        vertices[currentVertexIndex + 3] = y;
+        currentVertexIndex += 4;
+    }
       
-      for (let x = -view.cellSize; x <= canvas.width + view.cellSize; x += view.cellSize) {
-          vertices[currentVertexIndex] = x;
-          vertices[currentVertexIndex + 1] = -view.cellSize;
-          vertices[currentVertexIndex + 2] = x;
-          vertices[currentVertexIndex + 3] = canvas.height + view.cellSize;
-          currentVertexIndex += 4;
-      }
+    for (let x = -view.cellSize - offset.col; x <= canvas.width + view.cellSize; x += view.cellSize) {
+        vertices[currentVertexIndex] = x;
+        vertices[currentVertexIndex + 1] = -view.cellSize;
+        vertices[currentVertexIndex + 2] = x;
+        vertices[currentVertexIndex + 3] = canvas.height + view.cellSize;
+        currentVertexIndex += 4;
+    }
 
     return new Float32Array(vertices);
 }

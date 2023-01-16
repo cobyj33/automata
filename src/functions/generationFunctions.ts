@@ -132,7 +132,7 @@ export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleStr
 // }
 
 
-function isValidElementaryRule(rule: number): boolean {
+export function isValidElementaryRule(rule: number): boolean {
     return rule >= 0 && rule <= 255;
 }
 

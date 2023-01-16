@@ -8,7 +8,7 @@ import { ElementaryLineEditMode  } from "classes/Editor/EditModes/Elementary/Ele
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
 import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "functions/hooks";
-import { ElementaryBoardRender } from "ui/components/ElementaryBoardRender";
+import { ElementaryBoardRender, RenderController } from "ui/components/ElementaryBoardRender";
 import { StatefulData } from "interfaces/StatefulData"
 import { pointerPositionInElement, getHoveredCell } from 'functions/editorFunctions';
 import { ZoomEditMode } from 'classes/Editor/EditModes/ZoomEditMode';
@@ -21,6 +21,8 @@ import { isEqualNumberArray } from "functions/util";
 import { EditorData, ElementaryEditorData } from "interfaces/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
 import { Dimension2D } from "interfaces/Dimension";
+import { isValidElementaryRule } from "functions/generationFunctions";
+import { preview } from "vite";
 
 
 type ElementaryEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
@@ -151,20 +153,8 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     editorModes.current[editMode].onWheel?.(event);
   }
 
-  function onRuleInputChanged(event: ChangeEvent<Element>) {
-    const inputElement = event.target as HTMLInputElement
-    const input = Number(inputElement.value)
-    setInputRule(inputElement.value);
-    if (!isNaN(input)) {
-
-        if (input >= 0 && input <= 255) {
-            setRule(input);
-        }
-
-    }
-  }
-
   
+
   // useCanvasUpdater(ghostCanvas)
     
     return (
@@ -176,14 +166,8 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       </div>
 
       <aside className={elementaryStyles["left-side-bar"]}>
-        <div className={elementaryStyles["rule-input-area"]}>
-            <div className={elementaryStyles["current-rule-display"]}>
-              Current Rule: <span className={elementaryStyles["current-rule"]}>{rule}</span>          
-            </div>
-            <span> Rule must be between 0 and 255 </span>
-
-            <input className={`${elementaryStyles["rule-input"]} ${elementaryStyles[`${Number(inputRule) === rule ? 'valid' : 'invalid'}`]} `} onChange={onRuleInputChanged} value={inputRule}  />
-          </div>    
+        <ElementaryRuleEditor rule={rule} onRuleRequest={(newRule) => setRule(newRule)} />
+            
           
         <div className={elementaryStyles["filler"]}> W.I.P... </div>
       </aside>
@@ -221,6 +205,70 @@ function EditModeButton({ children = "", target, current, setter }: { children?:
   return <button className={getSelectedEditButtonStyles(current === target)} onClick={() => setter(target)}>{children}</button>
 }
 
+const DEFAULT_ELEMENTARY_PREVIEW_MAX_GENERATIONS = 100;
+function ruleEditorPreviewStart(length: number = 100): number[] {
+    const arr = new Array(length).fill(length)
+    arr[Math.trunc(length / 2)] = 1
+    return arr
+}
 
+function ElementaryRuleEditor({ rule, onRuleRequest }: { rule: number, onRuleRequest: (num: number) => void }) {
+    const [ruleInput, setRuleInput] = useState<number>(30)
+    const [requestedRule, setRequestedRule] = useState<number>(30)
+    const renderController = useRef<RenderController>(new RenderController())
+    const previewHolderRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
+
+    function restartPreview() {
+        renderController.current.fire("restart")
+    }
+
+    useEffect( () => {
+        restartPreview()
+    }, [requestedRule])
+
+    function onRuleInputChanged(event: ChangeEvent<Element>) {
+        const inputElement = event.target as HTMLInputElement
+        const input = Number(inputElement.value)
+        if (!isNaN(input)) {
+            setRuleInput(input)
+            if (isValidElementaryRule(input)) {
+                setRequestedRule(input);
+            }
+        }
+    }
+
+    function sendRule() {
+        onRuleRequest(requestedRule)
+    }
+
+    function getPreviewMaxGeneration(): number {
+        const previewContainer = previewHolderRef.current
+        if (previewContainer !== null && previewContainer !== undefined) {
+            const rect: DOMRect = previewContainer.getBoundingClientRect();
+            return Math.trunc(rect.height)
+        }
+        return DEFAULT_ELEMENTARY_PREVIEW_MAX_GENERATIONS;
+    }
+
+
+
+
+    return (
+        <div className={elementaryStyles["rule-input-area"]}>
+            <div className={elementaryStyles["current-rule-display"]}>
+                Current Rule: <span className={elementaryStyles["current-rule"]}>{rule}</span>          
+            </div>
+            <span> Rule must be between 0 and 255 </span>
+
+            <input className={`${elementaryStyles["rule-input"]} ${elementaryStyles[`${isValidElementaryRule(Number(ruleInput)) ? 'valid' : 'invalid'}`]} `} onChange={onRuleInputChanged} value={ruleInput}  />
+            <button onClick={sendRule}> Set Rule {requestedRule} </button>
+
+            <div style={{width: 100, height: 100}} ref={previewHolderRef}>
+                <ElementaryBoardRender start={ruleEditorPreviewStart()} view={new View(Vector2.ZERO, 1)} rule={requestedRule} maxGeneration={getPreviewMaxGeneration()} controller={renderController} />
+            </div>
+            <button onClick={restartPreview}>Restart Preview</button>
+        </div>  
+    )
+}
 
 export default ElementaryBoard

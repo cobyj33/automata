@@ -10,7 +10,7 @@ export interface RenderData {
     generation: number
 }
 
-export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { start: IVector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
+export const LifeLikeGameRender = ({ start, view, bounds, automata, getData }: { start: IVector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
     const [currentRender, setCurrentRender] = useState<CellMatrix>(CellMatrix.fromBoundedIVector2List(start, bounds));
     const [currentGeneration, setCurrentGeneration] = useState<number>(0);
 
@@ -28,4 +28,4 @@ export const BoundedGameRender = ({ start, view, bounds, automata, getData }: { 
     return <BoundedBoardDrawing bounds={bounds} board={currentRender} view={view} />
 }
 
-export default BoundedGameRender
+export default LifeLikeGameRender

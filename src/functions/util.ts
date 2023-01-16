@@ -337,3 +337,13 @@ export function concatUint8ClampedArrays(...arrays: Uint8ClampedArray[]): Uint8C
     }
     return newArray
 }
+
+/**
+ * Switches the keys and the values on an object
+ * 
+ * @param obj 
+ * @returns Switched object
+ */
+export function switchKeysAndValues<T extends Object>(obj: T) {
+    return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k]))
+}
