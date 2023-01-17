@@ -15,7 +15,7 @@ export class Vector2 implements IVector2 {
         this.col = col;
     }
 
-    static fromIVector2(vector: IVector2) {
+    static fromData(vector: IVector2) {
         return new Vector2(vector.row, vector.col)
     }
 
@@ -56,27 +56,27 @@ export class Vector2 implements IVector2 {
     }
 
     rotate(angle: number): Vector2 {
-        return Vector2.fromIVector2(rotateVector2(this, angle))
+        return Vector2.fromData(rotateVector2(this, angle))
     }
 
     toLength(length: number): Vector2 {
-        return Vector2.fromIVector2(vector2ToLength(this, length))
+        return Vector2.fromData(vector2ToLength(this, length))
     }
 
     scale(amount: number): Vector2 {
-        return Vector2.fromIVector2(scaleVector2(this, amount))
+        return Vector2.fromData(scaleVector2(this, amount))
     }
 
     alterToCol(col: number): Vector2 {
-        return Vector2.fromIVector2(vector2AlterToCol(this, col))
+        return Vector2.fromData(vector2AlterToCol(this, col))
     }
 
     alterToRow(row: number): Vector2 {
-        return Vector2.fromIVector2(vector2AlterToRow(this, row));
+        return Vector2.fromData(vector2AlterToRow(this, row));
     }
 
     normalize(): Vector2 {
-        return Vector2.fromIVector2(vector2Normalized(this))
+        return Vector2.fromData(vector2Normalized(this))
     }
 
     toString(): string {
@@ -84,15 +84,15 @@ export class Vector2 implements IVector2 {
     }
 
     translate(row: number, col: number): Vector2 {
-        return Vector2.fromIVector2(translateVector2(this, row, col))
+        return Vector2.fromData(translateVector2(this, row, col))
     }
 
     int(): Vector2 {
-        return Vector2.fromIVector2(vector2Int(this))
+        return Vector2.fromData(vector2Int(this))
     }
 
     add(other: IVector2): Vector2 {
-        return Vector2.fromIVector2(addVector2(this, other))
+        return Vector2.fromData(addVector2(this, other))
     }
 
     addcomp(row: number, col: number) {
@@ -100,11 +100,11 @@ export class Vector2 implements IVector2 {
     }
 
     subtract(other: IVector2): Vector2 {
-        return Vector2.fromIVector2(subtractVector2(this, other))
+        return Vector2.fromData(subtractVector2(this, other))
     }
 
     round(): Vector2 {
-        return Vector2.fromIVector2(roundVector2(this))
+        return Vector2.fromData(roundVector2(this))
     }
 
     distance(other: IVector2): number {
@@ -112,7 +112,7 @@ export class Vector2 implements IVector2 {
     }
 
     midpoint(other: IVector2): Vector2 {
-        return Vector2.fromIVector2(midPointBetweenVector2(this, other))
+        return Vector2.fromData(midPointBetweenVector2(this, other))
     }
 
     angleBetween(other: IVector2): number {
@@ -124,11 +124,11 @@ export class Vector2 implements IVector2 {
     }
 
     lerp(t: number, other: IVector2): Vector2 {
-        return Vector2.fromIVector2(lerp(t, this, other))
+        return Vector2.fromData(lerp(t, this, other))
     }
 
     adjacent(): [Vector2, Vector2, Vector2, Vector2] {
-        return adjacentVector2(this).map(vec => Vector2.fromIVector2(vec)) as [Vector2, Vector2, Vector2, Vector2]
+        return adjacentVector2(this).map(vec => Vector2.fromData(vec)) as [Vector2, Vector2, Vector2, Vector2]
     }
 
     equals(other: any): boolean {
@@ -138,6 +138,18 @@ export class Vector2 implements IVector2 {
             }
         }
         return false
+    }
+
+    abs(): Vector2 {
+        return Vector2.fromData(vector2Abs(this))
+    }
+
+    min(): number {
+        return Math.min(this.row, this.col)
+    }
+
+    max(): number {
+        return Math.max(this.row, this.col)
     }
 
     clone(): Vector2 {
@@ -249,6 +261,14 @@ export function vector2Equals(vector: IVector2, other: IVector2): boolean {
 
 export function lerp(t: number, first: IVector2, second: IVector2): IVector2 {
     return addVector2(first, scaleVector2( subtractVector2(second, first), t))
+}
+
+export function vector2IsInteger(vec: IVector2): boolean {
+    return Number.isInteger(vec.row) && Number.isInteger(vec.col)
+}
+
+export function vector2Abs(vec: IVector2): IVector2 {
+    return { row: Math.abs(vec.row), col: Math.abs(vec.col) }
 }
 
 

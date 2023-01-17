@@ -9,7 +9,7 @@ import { compileProgramFromFiles, fetchTextFile } from "./webgl";
 import { Dimension2D } from "interfaces/Dimension";
 
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
-    return new Box(view.position, Dimension2D.fromIDimension2D(canvas).scale(1/view.cellSize).ceil())
+    return new Box(view.position, Dimension2D.fromData(canvas).scale(1/view.cellSize).ceil())
 }
 
 export function quadVertices() {

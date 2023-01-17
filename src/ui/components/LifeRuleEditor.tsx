@@ -1,8 +1,8 @@
 import lifeRuleEditorStyles from "ui/components/styles/LifeRuleEditor.module.css"
-import { useImmerReducer, ImmerReducer } from "use-immer";
+import { useImmerReducer, ImmerReducer, useImmer } from "use-immer";
 import { useState, useRef, useCallback, useEffect, RefObject } from "react";
-import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData } from "functions/generationFunctions"
-import { getLifeRuleName, getNamedLifeRuleString, isNamedLifeRule, NamedLifeRule, NAMED_LIFE_RULES_LIST } from "data";
+import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData, getLifeStringErrors } from "functions/generationFunctions"
+import { getLifeRuleName, getNamedLifeRuleString, isNamedLifeRuleString, NamedLifeRule, NAMED_LIFE_RULES_LIST } from "data";
 import ToggleButton from "./reuse/ToggleButton";
 import { capitalized } from "functions/util";
 import { SubmitButton } from "./reuse/SubmitButton";
@@ -47,7 +47,7 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
         <SideBarEditorTool>
             <div className="flex flex-col gap-1 m-2">
                 <SideBarToolTitle> Life-Like Rule Data </SideBarToolTitle> 
-                <Description> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRule(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
+                <Description> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRuleString(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
                 <Description> Neighbors to be Born: { Array.from(parsedRule().birth.keys()).sort((a, b) => a - b).join(", ") } </Description>
                 <Description> Neighbors to Survive: { Array.from(parsedRule().survival.keys()).sort((a, b) => a - b).join(", ") } </Description>
             </div>
@@ -128,7 +128,7 @@ const AssistedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRu
 
 
 const NamedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) => {
-    const [selectedNamedRule, setSelectedNamedRule] = useState<NamedLifeRule>("Conway's Game Of Life")
+    const [selectedNamedRule, setSelectedNamedRule] = useState<NamedLifeRule>(isNamedLifeRuleString(currentRule) ? getLifeRuleName(currentRule) : "Conway's Game Of Life")
 
     function submit() {
         onLifeRuleSelect(getNamedLifeRuleString(selectedNamedRule))
@@ -136,55 +136,58 @@ const NamedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleS
 
     return (
         <SideBarToolSection>
-
-            <div className="flex flex-col">
-                <div className="flex flex-col justify-center items-center p-2 m-1 rounded-lg">
+            <main className="flex flex-col">
+                <section className="flex flex-col justify-center items-center p-2 m-1 rounded-lg">
                     <Description> { selectedNamedRule } </Description>
                     <Description> <span className="text-green-400">{ getNamedLifeRuleString(selectedNamedRule) }</span> </Description> 
-                </div>
+                </section>
 
-                <div className="relative overflow-auto border border-black" style={{minHeight: 150}}>
+                <section className="relative overflow-auto border border-black" style={{minHeight: 150}}>
                     <div className="flex-grow grid grid-cols-3 absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
                         { NAMED_LIFE_RULES_LIST.map(namedRule => <ToggleButton selected={selectedNamedRule === namedRule} key={namedRule} onClick={() => setSelectedNamedRule(namedRule)}><span className="text-xs">{namedRule}</span></ToggleButton>)  }
                     </div>
-                </div>
-            </div>
-
+                </section>
+            </main>
             <SubmitButton onClick={submit}>Submit</SubmitButton>
         </SideBarToolSection> )
 }
 
+interface RawLifeRuleEditorState {
+    input: string,
+    error: string
+}
+type RawLifeRuleEditorUpdateInputAction = { type: "update input", input: string }
+type RawLifeRuleEditorActions = RawLifeRuleEditorUpdateInputAction
+type RawLifeRuleEditorStateReducer = ImmerReducer<RawLifeRuleEditorState, RawLifeRuleEditorActions>
+
+const rawLifeReducer: RawLifeRuleEditorStateReducer = (draft, action) => {
+    const { type } = action;
+    switch (type) {
+        case "update input":
+            const { input } = action
+            draft.input = input;
+            draft.error = getLifeStringErrors(input)
+    }
+    return draft;
+}
+
 const RawLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) => {
-    const [automataInput, setAutomataInput] = useState<string>(currentRule)
-    const [ruleErr, setRuleErr] = useState<string>("");
+    const [inputState, inputStateDispatch] = useImmerReducer<RawLifeRuleEditorState, RawLifeRuleEditorActions>(rawLifeReducer, { input: currentRule, error: "" })
+    const { input, error } = inputState
 
-    const validityErrorCallback = useCallback((error: string) => {
-        if (error !== ruleErr) {
-            setRuleErr(error)
-        }
-    }, [ruleErr])
+    function hasError() { return error.length > 0 }
 
-    useEffect( () => {
-        if (isValidLifeString(automataInput, validityErrorCallback)) {
-            setRuleErr("")
-        }
-    }, [automataInput])
-
-    function rawSubmit() {
-        if (isValidLifeString(automataInput, validityErrorCallback)) {
-            onLifeRuleSelect(automataInput)
-            setRuleErr("")
+    function trySubmit() {
+        if (!hasError()) {
+            onLifeRuleSelect(input)
         }
     }
 
-    function hasError() { return ruleErr !== "" }
-
-
     return (
         <SideBarToolSection> 
-            { hasError() ? <ErrorText>{ ruleErr }</ErrorText> : "" }
-            <TextInput valid={isValidLifeString(automataInput, validityErrorCallback)} value={automataInput} onChange={(e) => { setAutomataInput(e.target.value) }} />
-            <SubmitButton error={hasError()} onClick={rawSubmit}>Submit</SubmitButton>
+            { hasError() ? <ErrorText>{ error }</ErrorText> : "" }
+            <TextInput valid={!hasError()} value={input} onChange={(e) => inputStateDispatch({ type: "update input", input: e.target.value })} />
+            <SubmitButton error={hasError()} onClick={trySubmit}>Submit</SubmitButton>
         </SideBarToolSection> );
 }
 

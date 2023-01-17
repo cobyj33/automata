@@ -1,7 +1,12 @@
-import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2"
+import { Box } from "interfaces/Box";
+import { IVector2, filterVector2ListDuplicates, subtractVector2, Vector2, addVector2, translateVector2 } from "interfaces/Vector2"
+
+export const Supported2DShapes = ["LINE", "ELLIPSE", "CIRCLE", "BOX", "SQUARE"] as const;
+export type LifeLikeAvailableShapes = typeof Supported2DShapes[number]
 
 
-export function getLine(start: IVector2, end: IVector2): IVector2[] {
+export type ShapeFunction = (start: IVector2, end: IVector2) => IVector2[]
+export const getLine: ShapeFunction = (start: IVector2, end: IVector2) => {
     if (start.row === end.row && start.col === end.col) { return [{ ...start }]; }
     const {row: row1, col: col1} = start;
     const {row: row2, col: col2} = end;
@@ -32,7 +37,7 @@ export function getLine(start: IVector2, end: IVector2): IVector2[] {
     return filterVector2ListDuplicates(intersections)
 }
 
-export function getEllipse(start: IVector2, end: IVector2): IVector2[] {
+export const getEllipse: ShapeFunction = (start: IVector2, end: IVector2) => {
     if (start.row === end.row && start.col === end.col) { return [{ ...start }]; }
     const {row: row1, col: col1} = start;
     const {row: row2, col: col2} = end;
@@ -59,4 +64,30 @@ export function getEllipse(start: IVector2, end: IVector2): IVector2[] {
     } 
     
     return filterVector2ListDuplicates(intersections)
+}
+
+export const getCircle: ShapeFunction = (start: IVector2, end: IVector2) => {
+    const sideLength = Vector2.fromData(start).subtract(end).abs().min();
+    return getEllipse(start, translateVector2(start, sideLength, sideLength))
+}
+
+export const getBox: ShapeFunction = (start: IVector2, end: IVector2) => {
+    return Box.enclosed([start, end]).cells()
+}
+
+export const getSquare: ShapeFunction = (start: IVector2, end: IVector2) => {
+    const sideLength = Vector2.fromData(start).subtract(end).abs().min();
+    return getBox(start, translateVector2(start, sideLength, sideLength))
+}
+
+export const SHAPE_TO_SHAPE_FUNCTION: Readonly<{[key in LifeLikeAvailableShapes]: ShapeFunction}> = {
+    "LINE": getLine,
+    "BOX": getBox,
+    "CIRCLE": getCircle,
+    "ELLIPSE": getEllipse,
+    "SQUARE": getSquare
+}
+
+export function getShapeFunction(shape: LifeLikeAvailableShapes) {
+    return SHAPE_TO_SHAPE_FUNCTION[shape]
 }

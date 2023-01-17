@@ -1155,15 +1155,15 @@ export const DIAGRAMS: Readonly<{[key in NamedLifeDiagram]: string[]}> = Object.
     ]
 })
 
-export const RULE_STRINGS_TO_NAMED_LIFE_RULES: Readonly<{ [key: string]: string }> = Object.freeze( Object.fromEntries( Object.entries(NAMED_LIFE_RULES_TO_RULE_STRINGS).map(entry => ([entry[1], entry[0]]) ) ) )
+export const RULE_STRINGS_TO_NAMED_LIFE_RULES: Readonly<{ [key: string]: NamedLifeRule }> = Object.freeze( Object.fromEntries( Object.entries(NAMED_LIFE_RULES_TO_RULE_STRINGS).map(entry => ([entry[1], entry[0] as NamedLifeRule]) ) ) )
 // export const NAMED_LIFE_RULES_LIST: Readonly<string[]> = Object.freeze(Object.keys(NAMED_LIFE_RULES_TO_RULE_STRINGS))
 export const NAMED_RULE_STRINGS_LIST: Readonly<string[]> = Object.freeze(Object.values(NAMED_LIFE_RULES_TO_RULE_STRINGS))
 
-export function isNamedLifeRule(ruleString: string): boolean {
+export function isNamedLifeRuleString(ruleString: string): boolean {
     return ruleString in RULE_STRINGS_TO_NAMED_LIFE_RULES
 }
 
-export function isNamedDiagram(name: string): boolean {
+export function isNamedDiagram(name: string): name is NamedLifeDiagram {
     return name in DIAGRAM_NAMES
 }
 
@@ -1171,7 +1171,7 @@ export function getDiagram(diagramName: NamedLifeDiagram): string {
     return DIAGRAMS[diagramName].join("\n")
 }
 
-export function getLifeRuleName(ruleString: string): string {
+export function getLifeRuleName(ruleString: string): NamedLifeRule {
     return RULE_STRINGS_TO_NAMED_LIFE_RULES[ruleString]
 }
 
@@ -1179,6 +1179,9 @@ export function getNamedLifeRuleString(namedRule: NamedLifeRule): string {
     return NAMED_LIFE_RULES_TO_RULE_STRINGS[namedRule]
 }
 
-export function isNamedLifeRuleString(namedRule: string): boolean {
+export function isNamedLifeRule(namedRule: string): namedRule is NamedLifeRule {
     return namedRule in NAMED_LIFE_RULES_LIST
 }
+
+export const MIN_CELL_SIZE = 1;
+export const MAX_CELL_SIZE = 64

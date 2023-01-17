@@ -4,23 +4,27 @@ import { FaLeaf } from 'react-icons/fa';
 
 export type LifeRuleData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {
+    const error = getLifeStringErrors(lifeString);
+    if (error.length > 0) {
+        errorOutput?.(error)
+        return false;
+    }
+    return true;
+}
+
+export function getLifeStringErrors(lifeString: string): string {
     const sides = lifeString.split("/");
     if (sides.length !== 2) {
-        errorOutput?.("Error: Not able to split string into birth and survival counts, format must include a forward slash B<NUMS>/S<NUMS> ");
-        return false;
+        return "Error: Not able to split string into birth and survival counts, format must include a forward slash B<NUMS>/S<NUMS> "
     } else if (sides[0].charAt(0) !== "B" || sides[1].charAt(0) !== "S") {
-       errorOutput?.("Error: B and S are backwards, please switch to B<NUMS>/S<NUMS> ");
-       return false; 
-    } else if (sides[0].substr(1).split('').some((char: string) => isNaN(Number.parseInt(char))) || sides[1].substr(1).split('').some((char: string) => isNaN(Number.parseInt(char)))) {
-       errorOutput?.("Error: Must include numbers after B and after /S B<NUMS>/S<NUMS> ");
-        return false;
-    } else if (new Set<string>(sides[0].substr(1).split('')).size !== sides[0].length - 1 || new Set<string>(sides[1].substr(1).split('')).size !== sides[1].length - 1) {
-       errorOutput?.("Error: Replicate number on one side of B<NUMS>/S<NUMS> ");
-       return false;
+       return "Error: B and S are backwards, please switch to B<NUMS>/S<NUMS> "
+    } else if (sides[0].substring(1).split('').some((char: string) => isNaN(Number.parseInt(char))) || sides[1].substring(1).split('').some((char: string) => isNaN(Number.parseInt(char)))) {
+       return "Error: Must include numbers after B and after /S B<NUMS>/S<NUMS> "
+    } else if (new Set<string>(sides[0].substring(1).split('')).size !== sides[0].length - 1 || new Set<string>(sides[1].substring(1).split('')).size !== sides[1].length - 1) {
+       return "Error: Replicate number on one side of B<NUMS>/S<NUMS> "
     }
 
-
-    return true;
+    return "";
 }
 
 function canMakeLifeString(survivalNums: number[], birthNums: number[]): boolean {

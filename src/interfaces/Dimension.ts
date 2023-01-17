@@ -32,7 +32,7 @@ export class Dimension2D implements IDimension2D {
         return new Dimension2D(tuple[0], tuple[1])
     }
 
-    static fromIDimension2D(data: IDimension2D) {
+    static fromData(data: IDimension2D) {
         return new Dimension2D(data.width, data.height)
     }
 

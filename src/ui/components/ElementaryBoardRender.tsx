@@ -70,6 +70,7 @@ function nextElementaryBoard(state: ElementaryRenderData, action: ElementaryRend
     }
 }
 
+
 function restartElementaryBoard(state: ElementaryRenderData, action: ElementaryRenderDataRestartAction): ElementaryRenderData {
     const { startData } = action
     return getStartingElementaryBoardData(startData)

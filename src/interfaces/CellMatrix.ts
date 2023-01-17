@@ -4,23 +4,28 @@ import { Dimension2D, IDimension2D } from "./Dimension";
 import { IVector2, Vector2 } from "./Vector2";
 
 
-// export interface CellMatrix extends Box {
-//     matrix: Uint8ClampedArray;
-// }
+export interface ICellMatrix {
+    readonly cellData: Uint8ClampedArray;
+    readonly box: IBox
+}
 
 
-export class CellMatrix {
+export class CellMatrix implements ICellMatrix {
     readonly cellData: Uint8ClampedArray
     readonly box: Box
 
     constructor(cellData: Uint8ClampedArray, box: IBox) {
-        const boxobj = Box.fromIBox(box)
+        const boxobj = Box.fromData(box)
         if (cellData.length !== boxobj.area) {
             throw new Error("Invalid Cell Data: Must be equal to the area of the box of the matrix")
         }
 
         this.cellData = cellData;
         this.box = boxobj
+    }
+
+    static fromData(data: ICellMatrix) {
+        return new CellMatrix(data.cellData, data.box)
     }
 
     get width() {

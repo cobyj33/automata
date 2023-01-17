@@ -31,24 +31,10 @@ import SideBarEditorTool from "./reuse/editor/SideBarTool";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { getRefBoundingClientRect } from "functions/reactUtil";
 import Description from "./reuse/Description";
+import { ElementaryEditorEditMode } from "state/elementary";
 
 
-interface ElementaryEditorState {
-    readonly board: number[],
-    readonly ghostBoard: number[],
-    readonly view: View,
-    readonly ghostTilePositions: IVector2[],
-    readonly rule: number,
-    readonly isPointerDown: boolean,
-    readonly rendering: boolean,
-    readonly currentGeneration: number,
-    readonly viewport: Dimension2D,
-    readonly currentHoveredCell: number,
-    readonly lastHoveredCell: number,
-}
 
-
-type ElementaryEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
 
 export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[]> }) => {
 

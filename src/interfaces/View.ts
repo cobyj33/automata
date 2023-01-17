@@ -10,7 +10,7 @@ export class View implements IView {
     readonly cellSize: number;
 
     constructor(position: IVector2, cellSize: number) {
-        this.position = Vector2.fromIVector2(position)
+        this.position = Vector2.fromData(position)
         this.cellSize = cellSize
     }
 
@@ -47,7 +47,7 @@ export class View implements IView {
     }
 
     offset(): Vector2 {
-        return Vector2.fromIVector2(getViewOffset(this))
+        return Vector2.fromData(getViewOffset(this))
     }
 
     clone(): View {

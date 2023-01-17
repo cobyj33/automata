@@ -1,4 +1,4 @@
-import { IVector2, Vector2 } from "interfaces/Vector2";
+import { filterVector2ListDuplicates, IVector2, Vector2 } from "interfaces/Vector2";
 import { Dimension2D, IDimension2D } from "interfaces/Dimension";
 import { LineSegment } from "interfaces/LineSegment";
 import { Range, rangeIntersect } from "interfaces/Range";
@@ -15,15 +15,15 @@ export class Box implements IBox {
     static readonly ZERO: Box = Box.from(0, 0, 0, 0)
 
     constructor(topleft: IVector2, size: IDimension2D) {
-        this.topleft = Vector2.fromIVector2(topleft)
-        this.size = Dimension2D.fromIDimension2D(size)
+        this.topleft = Vector2.fromData(topleft)
+        this.size = Dimension2D.fromData(size)
     }
 
     static from(row: number, col: number, width: number, height: number) {
         return new Box(new Vector2(row, col), new Dimension2D(width, height))
     }
 
-    static fromIBox(box: IBox) {
+    static fromData(box: IBox) {
         return new Box(box.topleft, box.size)
     }
 
@@ -112,7 +112,7 @@ export class Box implements IBox {
     }
 
     setCenter(vector: IVector2): Box {
-        const topleft = Vector2.fromIVector2(vector).subtract({ row: this.size.height / 2, col: this.size.width / 2 })
+        const topleft = Vector2.fromData(vector).subtract({ row: this.size.height / 2, col: this.size.width / 2 })
         return new Box(topleft, this.size)
     }
 
@@ -153,6 +153,10 @@ export class Box implements IBox {
             new LineSegment(this.bottomright, this.bottomleft),
             new LineSegment(this.bottomleft, this.topleft),
         ];
+    }
+
+    cells(): IVector2[] {
+        return filterVector2ListDuplicates(this.lines().flatMap(line => line.cells()))
     }
 
     boxIntersect(other: Box): boolean {

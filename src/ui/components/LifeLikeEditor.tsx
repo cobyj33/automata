@@ -34,71 +34,9 @@ import SideBarEditorTool from "./reuse/editor/SideBarTool";
 import Description from "./reuse/Description";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { DIAGRAM_NAMES, getDiagram } from "data";
-
-type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
-
-
-interface LifeLikeEditorState {
-    board: IVector2[],
-    bounds: Box,
-    view: View,
-    cursor: string,
-
-    rendering: boolean,
-    currentGeneration: number,
-
-    ghostTilePositions: IVector2[],
-    lastHoveredCell: Vector2,
-    currentHoveredCell: Vector2,
-    rule: string,
-    editMode: LifeLikeEditorEditMode,
-    pattern: IVector2[],
-    isPointerDown: boolean,
-    viewport: Dimension2D
-}
+import { LifeLikeEditorEditMode } from "state/lifelike";
 
 
-interface LifeLikePanEditorAction {
-    type: "pan",
-    amount: IVector2
-}
-
-interface LifeLikeZoomEditorAction {
-    type: "zoom"
-    amount: number
-    anchor: IVector2
-}
-
-interface LifeLikeDrawEditorAction {
-    type: "draw"
-    area: number
-    anchor: IVector2
-}
-
-interface LifeLikeSelectEditorAction {
-    type: "select"
-    area: number
-    anchor: IVector2
-}
-
-interface LifeLikeClearEditorAction {
-    type: "clear"
-}
-
-interface LifeLikeRenderDataResetEditorAction {
-    type: "reset "
-}
-
-// interface LifeLikeSetPatternEditorAction
-
-// type LifeLikeEditorAction = LifeLikePanEditorAction | LifeLikeZoomEditorAction
-
-// const lifeLikeEditorReducer: React.Reducer<LifeLikeEditorState, LifeLikeEditorAction> = (state, action) => {
-//     const { type } = action
-//     switch (type) {
-
-//     }
-// }
 
 
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
@@ -248,7 +186,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     if (isValidPatternText(pattern)) {
         const cells = parsePatternText(pattern)
         const box = Box.enclosed(cells).setCenter(bounds.center)
-        const translatedCells = cells.map(cell => Vector2.fromIVector2(cell)).map(cell => cell.add(box.topleft).trunc())
+        const translatedCells = cells.map(cell => Vector2.fromData(cell)).map(cell => cell.add(box.topleft).trunc())
         setBoard(translatedCells.filter(cell => bounds.pointInside(cell)))
     } else {
         console.error("Invalid pattern text: " + pattern)

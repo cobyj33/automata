@@ -6,8 +6,8 @@ export class LineSegment implements ILineSegment {
     readonly end: Vector2
 
     constructor(start: IVector2, end: IVector2) {
-        this.start = Vector2.fromIVector2(start)
-        this.end = Vector2.fromIVector2(end)
+        this.start = Vector2.fromData(start)
+        this.end = Vector2.fromData(end)
     }
 
     withEnd(end: IVector2): LineSegment {
