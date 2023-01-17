@@ -294,7 +294,7 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
         gl.uniform2f(offsetLocation, view.offset().col, view.offset().row);
         
 
-        gl.drawArrays(gl.LINES, 0, Math.trunc(gridVertices.length / 2));
+        gl.drawArrays(gl.LINES, 0, gridVertices.length);
 }
 
 
