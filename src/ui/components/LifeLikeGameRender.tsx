@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Reducer, useEffect, useRef, useState } from 'react'
 import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { Box } from 'interfaces/Box';
@@ -6,8 +6,9 @@ import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
 import { CellMatrix } from 'interfaces/CellMatrix';
 import {getNextLifeGeneration} from 'functions/generationFunctions';
 
+
 export interface RenderData {
-    generation: number
+    readonly generation: number
 }
 
 export const LifeLikeGameRender = ({ start, view, bounds, automata, getData }: { start: IVector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {

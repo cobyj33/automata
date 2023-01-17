@@ -1,4 +1,4 @@
-import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent } from "react";
+import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent, useReducer } from "react";
 import { View } from "interfaces/View"
 import { IVector2, Vector2 } from "interfaces/Vector2"
 import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
@@ -25,9 +25,26 @@ import { isValidElementaryRule } from "functions/generationFunctions";
 import { preview } from "vite";
 
 
+interface ElementaryEditorState {
+    readonly board: number[],
+    readonly ghostBoard: number[],
+    readonly view: View,
+    readonly ghostTilePositions: IVector2[],
+    readonly rule: number,
+    readonly isPointerDown: boolean,
+    readonly rendering: boolean,
+    readonly currentGeneration: number,
+    readonly viewport: Dimension2D,
+    readonly currentHoveredCell: number,
+    readonly lastHoveredCell: number,
+}
+
+
 type ElementaryEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "LINE"
 
 export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[]> }) => {
+
+    // const [editor, setEditor] = useReducer()
 
   const [view, setView] = useState<View>(View.from(-5, 0, 50));
   const [board, setBoard] = boardData;
@@ -43,7 +60,6 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolderRef);
   const [rendering, setRendering] = useState<boolean>(false);  
-  const [inputRule, setInputRule] = useState<string>("");
 
   function getCurrentHoveredCell(event: PointerEvent<Element>): Vector2 {
     return getHoveredCell(pointerPositionInElement(event), view).trunc()

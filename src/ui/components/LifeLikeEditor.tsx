@@ -31,73 +31,66 @@ import { e } from "vitest/dist/index-761e769b";
 type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
 
 
-// interface LifeLikeEditorState {
-//     board: IVector2[],
-//     bounds: Box,
-//     view: View,
-//     cursor: string,
+interface LifeLikeEditorState {
+    board: IVector2[],
+    bounds: Box,
+    view: View,
+    cursor: string,
 
-//     rendering: boolean,
-//     currentGeneration: number,
-    
+    rendering: boolean,
+    currentGeneration: number,
 
-
-//     ghostTilePositions: IVector2[],
-//     lastHoveredCell: Vector2,
-//     currentHoveredCell: Vector2,
-//     rule: string,
-//     editMode: LifeLikeEditorEditMode,
-//     pattern: IVector2[],
-//     isPointerDown: boolean,
-// }
-
-
-// interface LifeLikePanEditorAction {
-//     type: "pan",
-//     amount: IVector2
-// }
-
-// interface LifeLikeZoomEditorAction {
-//     type: "zoom"
-//     amount: number
-//     anchor: IVector2
-// }
-
-// interface LifeLikeDrawEditorAction {
-//     type: "draw"
-//     area: number
-//     anchor: IVector2
-// }
-
-// interface LifeLikeSelectEditorAction {
-//     type: "select"
-//     area: number
-//     anchor: IVector2
-// }
-
-// interface LifeLikeClearEditorAction {
-//     type: "clear"
-// }
-
-// interface LifeLikeClearSelectionEditorAction {
-//     type: "clear selection"
-// }
+    ghostTilePositions: IVector2[],
+    lastHoveredCell: Vector2,
+    currentHoveredCell: Vector2,
+    rule: string,
+    editMode: LifeLikeEditorEditMode,
+    pattern: IVector2[],
+    isPointerDown: boolean,
+    viewport: Dimension2D
+}
 
 
-// interface LifeLikeClearSelectionEditorAction {
-//     type: "move selection"
-// }
+interface LifeLikePanEditorAction {
+    type: "pan",
+    amount: IVector2
+}
 
-// interface LifeLikeClearSelectionEditorAction {
-//     type: "clear selection"
-// }
+interface LifeLikeZoomEditorAction {
+    type: "zoom"
+    amount: number
+    anchor: IVector2
+}
+
+interface LifeLikeDrawEditorAction {
+    type: "draw"
+    area: number
+    anchor: IVector2
+}
+
+interface LifeLikeSelectEditorAction {
+    type: "select"
+    area: number
+    anchor: IVector2
+}
+
+interface LifeLikeClearEditorAction {
+    type: "clear"
+}
+
+interface LifeLikeRenderDataResetEditorAction {
+    type: "reset "
+}
 
 // interface LifeLikeSetPatternEditorAction
 
 // type LifeLikeEditorAction = LifeLikePanEditorAction | LifeLikeZoomEditorAction
 
 // const lifeLikeEditorReducer: React.Reducer<LifeLikeEditorState, LifeLikeEditorAction> = (state, action) => {
-    
+//     const { type } = action
+//     switch (type) {
+
+//     }
 // }
 
 
@@ -130,7 +123,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             gl.clearColor(0, 0, 0, 0);
             gl.clear(gl.COLOR_BUFFER_BIT);
             renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
-          })
+        })
     }
 
   React.useEffect(renderGhostCanvas, [ghostTilePositions, lastHoveredCell])
