@@ -176,14 +176,20 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       </div>
 
       <aside className={elementaryStyles["left-side-bar"]}>
-        <ElementaryRuleEditor rule={rule} onRuleRequest={(newRule) => setRule(newRule)} />
-            
-          
-        <div className={elementaryStyles["filler"]}> W.I.P... </div>
+        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+            <ElementaryRuleEditor rule={rule} onRuleRequest={(newRule) => setRule(newRule)} />
+            <SideBarEditorTool>
+                <SideBarToolTitle>W.I.P...</SideBarToolTitle>
+            </SideBarEditorTool>
+        </div>
       </aside>
 
       <aside className={elementaryStyles["right-side-bar"]}>
-          <div className={elementaryStyles["filler"]}> W.I.P... </div>
+        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+            <SideBarEditorTool>
+                <SideBarToolTitle>W.I.P...</SideBarToolTitle>
+            </SideBarEditorTool>
+        </div>
       </aside>
 
 

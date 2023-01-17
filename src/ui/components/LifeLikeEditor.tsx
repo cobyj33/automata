@@ -208,10 +208,17 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
       </div>
 
       <aside className={gameBoardStyles["left-side-bar"]}>
-        <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} />
+        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+            <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} />
+            <SideBarEditorTool>
+                    <SideBarToolTitle>W.I.P...</SideBarToolTitle>
+            </SideBarEditorTool>
+        </div>
       </aside>
 
       <aside className={gameBoardStyles["right-side-bar"]}>
+        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+
 
         <SideBarEditorTool>
             <SideBarToolTitle>Editor Data</SideBarToolTitle> 
@@ -244,11 +251,14 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             </div>
         </SideBarEditorTool>
 
-          <div className={gameBoardStyles["filler"]}> W.I.P... </div>
+            <SideBarEditorTool>
+                <SideBarToolTitle>W.I.P...</SideBarToolTitle>
+            </SideBarEditorTool>
+          </div>
       </aside>
 
       <div className={gameBoardStyles["tool-bar"]}>
-          <div className={gameBoardStyles["editing-buttons"]}> 
+          <div className="flex flex-row justify-center gap-1 items-center"> 
             <EditModeButton target="DRAW" current={editMode} setter={setEditMode}> <FaBrush /> </EditModeButton>
             <EditModeButton target="MOVE" current={editMode} setter={setEditMode}> <FaArrowsAlt /> </EditModeButton>
             <EditModeButton target="ZOOM" current={editMode} setter={setEditMode}> <FaSearch /> </EditModeButton>

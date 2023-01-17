@@ -9,6 +9,12 @@
     background-color: rgb(40, 40, 40);
 }
 
+.left-side-bar, .right-side-bar {
+    background-color: rgb(20, 20, 20);
+    padding: 10px;
+    overflow: auto;
+}
+
 .board-holder {
     grid-column: 4 / 10;
     grid-row: 1 / 7;

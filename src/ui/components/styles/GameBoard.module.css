@@ -22,6 +22,7 @@
 .left-side-bar, .right-side-bar {
     background-color: rgb(20, 20, 20);
     padding: 10px;
+    overflow: auto;
 }
 
 .left-side-bar {
@@ -59,44 +60,6 @@
     height: 100%;
 }
 
-.editing-buttons {
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.edit-button {
-    border-radius: 5px;
-    background-color: white;
-    border: none;
-    pointer-events: auto;
-    aspect-ratio: 1;
-    padding: 5px;
-}
-
-.edit-button:hover:not(.disabled) {
-    transition: background-color 0.25s;
-    background-color: rgb(220, 220, 220);
-}
-
-.edit-button:active:not(.disabled) {
-    transition: background-color 0.1s transform 0.1s;
-    background-color: black;
-    transform: translateY(2px);
-}
-
-.edit-button.selected:hover {
-    transition: background-color 0.25s;
-    background-color: rgb(110, 110, 110);
-}
-
-.edit-button.selected {
-    background-color: rgb(50, 50, 50);
-}
-
 .render-data-display {
     display: flex;
     flex-direction: row;
@@ -105,12 +68,4 @@
     padding: 5px;
     background-color: black;
     border-radius: 5px;
-}
-
-.render-data-label {
-    color: white;
-}
-
-.render-data-value {
-    color: white;
 }
