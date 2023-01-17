@@ -57,21 +57,8 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
 
 }
 
-const loading = "Loading Preview";
-function LoadingText({ className = "" }: { className?: string }) {
-    const [text, setText] = useState<string>(loading);
-    useEffect( () => {
-        if (text.endsWith("...")) {
-            setTimeout( () => requestAnimationFrame( () => setText(loading)), 100);
-        } else {
-            setTimeout( () => requestAnimationFrame( () => setText(text.concat("."))), 100);
-        }
-    }, [text]);
 
-    return (
-        <p className={className}> Loading Preview </p>
-    )
-}
+
 
 function AssistedLifeRuleEditor({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) {
     const [birth, setBirth] = useState<Set<number>>(new Set<number>(parseLifeLikeString(currentRule).birth));
@@ -84,7 +71,7 @@ function AssistedLifeRuleEditor({ currentRule, onLifeRuleSelect }: LifeRuleEdito
     function onSubmit() {
         onLifeRuleSelect(getLifeString());
     }
-
+    
     return (
         <div className={lifeRuleEditorStyles["assisted-change-area"]}>
             <span className={lifeRuleEditorStyles["text"]}> Neighbors needed to be Born </span>
