@@ -1,106 +1,161 @@
-import React from "react"
-import { ChangeEvent, KeyboardEvent, MutableRefObject, PointerEvent, RefObject, useCallback, useEffect, useRef, useState, WheelEvent } from 'react'
+import React, { useEffect } from "react"
 
-import { StatefulData } from 'interfaces/StatefulData';
-import { Vector2 } from 'interfaces/Vector2';
+import {Box } from 'interfaces/Box';
+import { IVector2, Vector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
+import { StatefulData } from 'interfaces/StatefulData';
+
 import { EditMode } from "automata/editor/main";
+import { BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from 'automata/editor/bounded';
 
-
-import { BoxEditMode, BoxData, DrawEditMode, DrawData, EllipseEditMode, EllipseData, LineEditMode, LineData, MoveEditMode, MoveData, ZoomEditMode, ZoomData, EraseEditMode, EraseData } from 'automata/editor/bounded';
-
+import { renderBoard, withCanvasAndContextWebGL2 } from 'functions/drawing';
+import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeString, parsePatternText } from 'functions/generationFunctions';
 import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
-import { useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
+import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
 
-import LifeRuleEditor from "ui/components/LifeRuleEditor"
-import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
-import { BoundedGameRender, RenderData } from 'ui/components/BoundedGameRender';
 import LayeredCanvas from 'ui/components/LayeredCanvas';
+import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
+import { LifeLikeGameRender, RenderData } from 'ui/components/LifeLikeGameRender';
+import LifeRuleEditor from "ui/components/LifeRuleEditor"
 
-import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaUndo, FaRedo } from "react-icons/fa"
+import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaBox, FaUndo, FaRedo } from "react-icons/fa"
 import { GiStraightPipe } from "react-icons/gi"
-import { BsCircle } from "react-icons/bs"
 import { AiOutlineClear } from "react-icons/ai"
-import { BiRectangle } from "react-icons/bi"
-
-import { renderBoard } from 'functions/drawing';
-import { Box } from 'interfaces/Box';
+import { BsCircle } from "react-icons/bs"
 
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
+import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
+import { Dimension2D } from "interfaces/Dimension";
+import { e } from "vitest/dist/index-761e769b";
 
-interface EditorData {
-    boardData: StatefulData<Vector2[]>;
-    boundsData: StatefulData<Box>;
-    viewData: StatefulData<View>;
-    lastHoveredCell: Vector2;
-    isPointerDown: boolean;
-    getHoveredCell: (event: PointerEvent<Element>) => Vector2;
-    ghostTilePositions: StatefulData<Vector2[]>
-    isRendering: boolean;
+type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
+
+
+interface LifeLikeEditorState {
+    board: IVector2[],
+    bounds: Box,
+    view: View,
+    cursor: string,
+
+    rendering: boolean,
+    currentGeneration: number,
+
+    ghostTilePositions: IVector2[],
+    lastHoveredCell: Vector2,
+    currentHoveredCell: Vector2,
+    rule: string,
+    editMode: LifeLikeEditorEditMode,
+    pattern: IVector2[],
+    isPointerDown: boolean,
+    viewport: Dimension2D
 }
 
-type EditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
-type UnionData = MoveData | ZoomData | DrawData | EraseData | BoxData | LineData | EllipseData | EditorData;
+
+interface LifeLikePanEditorAction {
+    type: "pan",
+    amount: IVector2
+}
+
+interface LifeLikeZoomEditorAction {
+    type: "zoom"
+    amount: number
+    anchor: IVector2
+}
+
+interface LifeLikeDrawEditorAction {
+    type: "draw"
+    area: number
+    anchor: IVector2
+}
+
+interface LifeLikeSelectEditorAction {
+    type: "select"
+    area: number
+    anchor: IVector2
+}
+
+interface LifeLikeClearEditorAction {
+    type: "clear"
+}
+
+interface LifeLikeRenderDataResetEditorAction {
+    type: "reset "
+}
+
+// interface LifeLikeSetPatternEditorAction
+
+// type LifeLikeEditorAction = LifeLikePanEditorAction | LifeLikeZoomEditorAction
+
+// const lifeLikeEditorReducer: React.Reducer<LifeLikeEditorState, LifeLikeEditorAction> = (state, action) => {
+//     const { type } = action
+//     switch (type) {
+
+//     }
+// }
 
 
-
-export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[]> }) => {
-  const boardHolder = useRef<HTMLDivElement>(null);
-  const ghostCanvas = useRef<HTMLCanvasElement>(null);
-  const [cursor, setCursor] = useState<string>('');
+export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
+  const boardHolderRef = React.useRef<HTMLDivElement>(null);
+  const ghostCanvas = React.useRef<HTMLCanvasElement>(null);
+  const [cursor, setCursor] = React.useState<string>('');
   
-    const [view, setView] = useState<View>({
-        row: 0,
-        col: 0,
-        cellSize: 10
-    });
-    const [renderData, setRenderData] = useState<RenderData>({ generation: 0 });
+    const [view, setView] = React.useState<View>(View.from(0, 0, 10));
+    const [renderData, setRenderData] = React.useState<RenderData>({ generation: 0 });
 
   const [board, setBoard] = boardData;
-  const [rendering, setRendering] = useState<boolean>(false);
-  const [bounds, setBounds] = useState<Box>({ row: 0, col: 0, width: 200, height: 200 });
-  const [ghostTilePositions, setGhostTilePositions] = useState<Vector2[]>([]);
-  const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>({ row: 0, col: 0 });
-  const [automata, setAutomata] = useState<string>("B3/S23");
-  const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolder);
+  const [rendering, setRendering] = React.useState<boolean>(false);
+  const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, 150, 150));
+  const [ghostTilePositions, setGhostTilePositions] = React.useState<IVector2[]>([]);
+  const [lastHoveredCell, setLastHoveredCell] = React.useState<IVector2>({ row: 0, col: 0 });
+  const currentHoveredCell = React.useRef<Vector2>(Vector2.ZERO)
+  const [automata, setAutomata] = React.useState<string>("B3/S23");
+  const [editMode, setEditMode] = React.useState<LifeLikeEditorEditMode>("MOVE");
+  const isPointerDown: React.MutableRefObject<boolean> = useIsPointerDown(boardHolderRef);
 
-    useEffect( () => {
+    React.useEffect( () => {
         if (rendering === false) {
             setRenderData({generation: 0});
         }
     }, [rendering] )
 
-  useEffect( () => {
-    const canvas: HTMLCanvasElement | null = ghostCanvas.current;
-    if (canvas !== null) {
-      const gl: WebGL2RenderingContext | null = canvas.getContext("webgl2");
-      if (gl !== null && gl !== undefined) {
-          gl.clearColor(0, 0, 0, 0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-        renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
-      }
+    function renderGhostCanvas() {
+        withCanvasAndContextWebGL2(ghostCanvas, ({ gl }) => {
+            gl.clearColor(0, 0, 0, 0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
+        })
     }
-  }, [ghostTilePositions, lastHoveredCell])
 
-  function getCurrentHoveredCell(event: PointerEvent<Element>) {
-    return boardHolder.current !== null ? getHoveredCell(pointerPositionInElement(event, boardHolder.current), view) : lastHoveredCell;
+  React.useEffect(renderGhostCanvas, [ghostTilePositions, lastHoveredCell])
+
+  function getCurrentHoveredCell(event: React.PointerEvent<Element>): Vector2 {
+    return getHoveredCell(pointerPositionInElement(event), view).trunc()
   }
 
-  function getEditorData(): EditorData {
+  function getViewportSize(): Dimension2D {
+    const boardHolder = boardHolderRef.current
+    if (boardHolder !== null && boardHolder !== undefined) {
+      const rect: DOMRect = boardHolder.getBoundingClientRect()
+      return new Dimension2D(rect.width, rect.height)
+    }
+    return Dimension2D.ZERO
+  }
+
+  function getEditorData(): LifeLikeEditorData {
     return {
       boardData: [board, setBoard],
       boundsData: [bounds, setBounds],
       viewData: [view, setView],
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
       lastHoveredCell: lastHoveredCell,
-      getHoveredCell: getCurrentHoveredCell,
+      currentHoveredCell: currentHoveredCell.current,
       isPointerDown: isPointerDown.current,
-      isRendering: rendering
+      isRendering: rendering,
+      viewportSize: getViewportSize()
     }
   }
   
-  const [editMode, setEditMode] = useState<EditorEditMode>("MOVE");
-  const editorModes: MutableRefObject<{[key in EditorEditMode]: EditMode<UnionData>}> = useRef({ 
+  const editorModes: React.MutableRefObject<{[key in LifeLikeEditorEditMode]: EditMode<LifeLikeEditorData> | EditMode<EditorData>}> = React.useRef({ 
     "DRAW": new DrawEditMode(getEditorData()),
     "ZOOM": new ZoomEditMode(getEditorData()),
     "MOVE": new MoveEditMode(getEditorData()),
@@ -110,49 +165,54 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
     "ELLIPSE": new EllipseEditMode(getEditorData())
   });
   
-  useEffect( () => {
+  React.useEffect( () => {
     setCursor(editorModes.current[editMode].cursor());
   }, [editMode])
 
-  function onPointerMove(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getEditorData())
+  function updateHoveredCellData(event: React.PointerEvent<Element>) {
+    setLastHoveredCell(currentHoveredCell.current)
+    currentHoveredCell.current = getCurrentHoveredCell(event)
+  }
+
+
+  function onPointerMove(event: React.PointerEvent<Element>) {
+    updateHoveredCellData(event)
+    editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onPointerMove?.(event);
-    const currentHoveredCell = getCurrentHoveredCell(event)
-    if (!(lastHoveredCell.row === currentHoveredCell.row && lastHoveredCell.col === currentHoveredCell.col)) {
-      setLastHoveredCell(currentHoveredCell)
-    }
   }
   
-  function onPointerDown(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getEditorData())
+  function onPointerDown(event: React.PointerEvent<Element>) {
+    updateHoveredCellData(event)
+    isPointerDown.current = true
+    editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onPointerDown?.(event);
-    const currentHoveredCell = getCurrentHoveredCell(event)
-    if (!(lastHoveredCell.row === currentHoveredCell.row && lastHoveredCell.col === currentHoveredCell.col)) {
-      setLastHoveredCell(currentHoveredCell)
-    }
   }
   
-  function onPointerUp(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getEditorData())
+  function onPointerUp(event: React.PointerEvent<Element>) {
+    updateHoveredCellData(event)
+    isPointerDown.current = false
+    editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onPointerUp?.(event);
   }
 
-  function onPointerLeave(event: PointerEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getEditorData())
+  function onPointerLeave(event: React.PointerEvent<Element>) {
+    updateHoveredCellData(event)
+    isPointerDown.current = false
+    editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onPointerLeave?.(event);
+  }
+
+  function toggleRendering() {
+    setRendering(!rendering)
   }
 
   function clear() {
     setBoard([]);
   }
-
-  function toggleRender() {
-    setRendering(!rendering)
-  }
   
-  const [undo, redo] = useHistory(boardData, (first: Vector2[], second: Vector2[]) => first.length === second.length && first.every(cell => second.includes(cell)) )
-  function onKeyDown(event: KeyboardEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getEditorData())
+  const [undo, redo] = useHistory(boardData, (first: IVector2[], second: IVector2[]) => first.length === second.length && first.every(cell => second.includes(cell)) )
+  function onKeyDown(event: React.KeyboardEvent<Element>) {
+    editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onKeyDown?.(event);
 
     if (event.code === "KeyZ" && event.shiftKey === true && event.ctrlKey === true) {
@@ -160,67 +220,125 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<Vector2[
     } else if (event.code === "KeyZ" && event.ctrlKey === true) {
       undo();
     } else if (event.code === 'Enter') {
-      toggleRender()
+      toggleRendering()
     } else if (event.code === 'KeyC') {
       clear()
-    } 
-
+    }
   }
 
-  function onKeyUp(event: KeyboardEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getEditorData())
+  function onKeyUp(event: React.KeyboardEvent<Element>) {
+    editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onKeyUp?.(event);
   }
 
-  function onWheel(event: WheelEvent<Element>) {
-    editorModes.current[editMode].setEditorData(getEditorData())
+  function onWheel(event: React.WheelEvent<Element>) {
+    editorModes.current[editMode].sendUpdatedEditorData(getEditorData())
     editorModes.current[editMode].onWheel?.(event);
   }
 
-  function selectedButtonStyle(type: EditorEditMode) {
-    return editMode === type ? gameBoardStyles["selected"] : ""
+  const [pattern, setPattern] = React.useState<string>("")
+  function loadPattern() {
+    if (isValidPatternText(pattern)) {
+        const cells = parsePatternText(pattern)
+        const box = Box.enclosed(cells).setCenter(bounds.center)
+        const translatedCells = cells.map(cell => Vector2.fromIVector2(cell)).map(cell => cell.add(box.topleft).trunc())
+        setBoard(translatedCells.filter(cell => bounds.pointInside(cell)))
+    } else {
+        console.error("Invalid pattern text: " + pattern)
+    }
   }
 
-  useWebGL2CanvasUpdater(ghostCanvas)
+  useCanvasHolderUpdater(ghostCanvas, ghostCanvas, renderGhostCanvas)
 
   return (
     <div className={gameBoardStyles["editor"]}>
 
-      <div style={{cursor: cursor}} ref={boardHolder} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
+      <div style={{cursor: cursor}} ref={boardHolderRef} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
         <LayeredCanvas>
           {rendering ? 
-                  <BoundedGameRender automata={automata} start={board} view={view} bounds={bounds} /> 
+                <LifeLikeGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
            : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
           <canvas className={gameBoardStyles["board-drawing"]} ref={ghostCanvas} />
         </LayeredCanvas>
       </div>
 
       <aside className={gameBoardStyles["left-side-bar"]}>
-        <LifeRuleEditor lifeRule={[automata, setAutomata]} />
+        <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} />
       </aside>
 
       <aside className={gameBoardStyles["right-side-bar"]}>
+
+        <div className={gameBoardStyles["edit-data"]}>
+            <div className={gameBoardStyles["view-data"]}>
+                <h3> View Position: Row: {view.position.row.toFixed(1)} Col: {view.position.col.toFixed(1)} </h3>
+                <h3> View CellSize: {view.cellSize} </h3> 
+            </div>
+
+            <h3> Hovering: Row: {currentHoveredCell.current.row} Col: {currentHoveredCell.current.col} </h3>
+
+        </div>
           <div className={gameBoardStyles["filler"]}> W.I.P... </div>
+
+          <div className={gameBoardStyles["render-data"]}>
+            <RenderDataDisplay label={"Current Generation: "} value={rendering ? String(renderData.generation) : "0"} />
+          </div>
+
+          <div className={gameBoardStyles[""]}>
+            <textarea onChange={(e) => setPattern(e.target.value)} value={pattern}></textarea>
+            <button onClick={loadPattern}>Load Pattern</button>
+            <button onClick={() => setPattern("")}>Clear Pattern</button>
+          </div>
       </aside>
 
       <div className={gameBoardStyles["tool-bar"]}>
           <div className={gameBoardStyles["editing-buttons"]}> 
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("DRAW")}`} onClick={() => setEditMode("DRAW")}> <FaBrush /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("MOVE")}`} onClick={() => setEditMode("MOVE")}> <FaArrowsAlt /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ZOOM")}`} onClick={() => setEditMode("ZOOM")}> <FaSearch /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ERASE")}`} onClick={() => setEditMode("ERASE")}> <FaEraser /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("LINE")}`} onClick={() => setEditMode("LINE")}> <GiStraightPipe /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("BOX")}`} onClick={() => setEditMode("BOX")}> <BiRectangle /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${selectedButtonStyle("ELLIPSE")}`} onClick={() => setEditMode("ELLIPSE")}> <BsCircle /> </button>
-            <button className={`${gameBoardStyles["edit-button"]} ${rendering ? gameBoardStyles['selected'] : '' }`} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-            <button className={gameBoardStyles["edit-button"]} onClick={clear}> <AiOutlineClear /> </button>
-            <button className={gameBoardStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
-            <button className={gameBoardStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
+            <EditModeButton target="DRAW" current={editMode} setter={setEditMode}> <FaBrush /> </EditModeButton>
+            <EditModeButton target="MOVE" current={editMode} setter={setEditMode}> <FaArrowsAlt /> </EditModeButton>
+            <EditModeButton target="ZOOM" current={editMode} setter={setEditMode}> <FaSearch /> </EditModeButton>
+            <EditModeButton target="ERASE" current={editMode} setter={setEditMode}> <FaEraser /> </EditModeButton>
+            <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
+            <EditModeButton target="BOX" current={editMode} setter={setEditMode}> <FaBox /> </EditModeButton>
+            <EditModeButton target="ELLIPSE" current={editMode} setter={setEditMode}> <BsCircle /> </EditModeButton>
+            <EditToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </EditToggleButton>
+            <EditButton onClick={clear}> <AiOutlineClear /> </EditButton>
+            <EditButton onClick={undo}> <FaUndo /> </EditButton>
+            <EditButton onClick={redo}> <FaRedo /> </EditButton>
           </div>
       </div>
 
     </div>
   )
 }
+
+function RenderDataDisplay({ label, value }: { label: string, value: string }) {
+    return <div className={gameBoardStyles["render-data-display"]}>
+        <p className={gameBoardStyles["render-data-label"]}>{label}</p>
+        <p className={gameBoardStyles["render-data-value"]}>{value}</p>
+    </div>
+}
+
+function getSelectedStyles(condition: boolean): string {
+  return condition ? gameBoardStyles["selected"] : ""
+}
+
+interface EditButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+function EditButton(props: EditButtonProps) {
+  return <button className={gameBoardStyles["edit-button"]} {...props} />
+}
+
+interface ToggleEditButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  selected: boolean
+}
+
+function EditToggleButton({ selected, ...props }: ToggleEditButtonProps) {
+  return <button className={`${gameBoardStyles["edit-button"]} ${getSelectedStyles(selected)}`} {...props} />
+}
+
+function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: LifeLikeEditorEditMode, current: LifeLikeEditorEditMode, setter: React.Dispatch<LifeLikeEditorEditMode> }) {
+  return <EditToggleButton selected={current === target} onClick={() => setter(target)}>{children}</EditToggleButton>
+}
+
+
+
 
 export default LifeLikeEditor

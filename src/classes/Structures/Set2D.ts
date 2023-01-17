@@ -1,39 +1,46 @@
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 
 
-type Map2D = {[key: number]: Set<number>}
 export class Set2D {
-    private map: Map2D = {};
+    private map: {[key: number]: Set<number>} = {};
 
     constructor(values: Array<[number, number]> = []) {
        values.forEach(value => this.add(value[0], value[1])); 
     }
 
-    static fromVector2DArray(values: Vector2[]): Set2D {
+    static fromVector2DArray(values: IVector2[]): Set2D {
         const set2D: Set2D = new Set2D();
         values.forEach(value => set2D.add(value.row, value.col));
         return set2D
     }
+
+    getPairs(): IVector2[] {
+        return Object.entries(this.map).flatMap(entry => {
+            const row: number = Number(entry[0])
+            const columnSet: Set<number> = entry[1]
+            return [...columnSet].map(col => ({row: row, col: col}))
+        })
+    }
     
     get length(): number { return Object.values(this.map).reduce( (prev, curr) => prev + curr.size, 0); } 
 
-    add(row: number, col: number): Set2D {
-        if (row in this.map) {
-           this.map[row].add(col); 
+    add(first: number, second: number): Set2D {
+        if (first in this.map) {
+           this.map[first].add(second); 
         } else {
-            this.map[row] = new Set<number>();
-            this.map[row].add(col);
+            this.map[first] = new Set<number>();
+            this.map[first].add(second);
         }
 
         return this;
     }
 
-    remove(row: number, col: number): Set2D {
-        if (row in this.map) {
-            if (this.map[row].has(col)) {
-                this.map[row].delete(col);
-                if (this.map[row].size === 0) {
-                    delete this.map[row];
+    remove(first: number, second: number): Set2D {
+        if (first in this.map) {
+            if (this.map[first].has(second)) {
+                this.map[first].delete(second);
+                if (this.map[first].size === 0) {
+                    delete this.map[first];
                 }
             }
         }
@@ -41,9 +48,9 @@ export class Set2D {
         return this;
     }
 
-    has(row: number, col: number): boolean {
-        if (row in this.map) {
-            if (col in this.map[row]) {
+    has(first: number, second: number): boolean {
+        if (first in this.map) {
+            if (this.map[first].has(second)) {
                 return true;
             }
         }

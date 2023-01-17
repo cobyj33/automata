@@ -1,19 +1,15 @@
-import { Vector2 } from "interfaces/Vector2";
-import { getViewOffset, View } from "interfaces/View";
-import { areBoxesIntersecting, Box, getIntersectingArea, inBox } from "interfaces/Box";
+import { IVector2 } from "interfaces/Vector2";
+import { View } from "interfaces/View";
+import { Box } from "interfaces/Box";
 import { CellMatrix } from "interfaces/CellMatrix";
 
 import gridVertexShader from "shaders/grid.vert?raw"
 import gridFragmentShader from "shaders/grid.frag?raw"
 import { compileProgramFromFiles, fetchTextFile } from "./webgl";
+import { Dimension2D } from "interfaces/Dimension";
 
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
-    return {
-        row: view.row,
-        col: view.col,
-        width: Math.ceil(canvas.width / view.cellSize),
-        height: Math.ceil(canvas.height / view.cellSize)
-    } 
+    return new Box(view.position, Dimension2D.fromIDimension2D(canvas).scale(1/view.cellSize).ceil())
 }
 
 export function quadVertices() {
@@ -70,7 +66,7 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
     return null;
 }
 
-// export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, board: Vector2[]) {
+// export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, board: IVector2[]) {
 //     context.save();
 //     context.fillStyle = 'white';
 //     const viewArea: Box = getViewArea(canvas, view);
@@ -84,17 +80,17 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
 //     context.restore();
 //   }
 
-export function renderBoard(gl: WebGL2RenderingContext, view: View, board: Vector2[], opacity: number = 1) {
+export function renderBoard(gl: WebGL2RenderingContext, view: View, board: IVector2[], opacity: number = 1) {
     const viewArea: Box = getViewArea(gl.canvas, view);
-    const shownCells = board.filter(cell => inBox(cell, viewArea));
+    const shownCells = board.filter(cell => viewArea.pointInside(cell));
     const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
     
     gl.enable(gl.SCISSOR_TEST);
     gl.clearColor(1, 1, 1, opacity);
-    for (let i = 0; i < shownCells.length; i++) {
-      gl.scissor( (shownCells[i].col - view.col) * view.cellSize, gl.canvas.height - (shownCells[i].row - view.row + 1) * view.cellSize, view.cellSize, view.cellSize); // +1 in y because scissor works from bottom left instead of top left
+    shownCells.forEach(cell => {
+        gl.scissor( (cell.col - view.col) * view.cellSize, gl.canvas.height - (cell.row - view.row + 1) * view.cellSize, view.cellSize, view.cellSize); // +1 in y because scissor works from bottom left instead of top left
         gl.clear(gl.COLOR_BUFFER_BIT);
-    }
+    })
     gl.disable(gl.SCISSOR_TEST);
     gl.clearColor(lastClearColor[0], lastClearColor[1], lastClearColor[2], lastClearColor[3]);
   }
@@ -102,7 +98,7 @@ export function renderBoard(gl: WebGL2RenderingContext, view: View, board: Vecto
   // export function renderBoardFromMatrix(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, cellMatrix: CellMatrix) {
   //   context.save();
   //   context.fillStyle = 'white';
-  //     const startCoordinates: Vector2 = {
+  //     const startCoordinates: IVector2 = {
   //         row: (cellMatrix.row - view.row) * view.cellSize,
   //         col: (cellMatrix.col - view.col) * view.cellSize
   //     }
@@ -159,42 +155,33 @@ export function getBoardMatrixShaderProgram(gl: WebGL2RenderingContext): WebGLPr
 } 
 
 export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, cellMatrix: CellMatrix, inputtedMatrixRenderProgram: WebGLProgram | null = null) {
+
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
+    const startCoordinates: IVector2 = cellMatrix.topleft.subtract(view.position).scale(view.cellSize)
 
-  const startCoordinates: Vector2 = {
-      row: (cellMatrix.row - view.row) * view.cellSize,
-      col: (cellMatrix.col - view.col) * view.cellSize
-  }
-
-  const viewArea: Box = getViewArea(gl.canvas, view);
-    if (!areBoxesIntersecting(viewArea, cellMatrix)) {
+    const viewArea: Box = getViewArea(gl.canvas, view);
+    if (!viewArea.boxIntersect(cellMatrix.box)) {
         return;
     }
 
-    let visibleCells: Box = getIntersectingArea(viewArea, cellMatrix);
-    visibleCells = {
-        row: Math.trunc(visibleCells.row),
-        col: Math.trunc(visibleCells.col),
-        width: Math.trunc(visibleCells.width),
-        height: Math.trunc(visibleCells.height)
-    }
-
-
+    const visibleCells: Box = viewArea.intersectingArea(cellMatrix.box).trunc();
     const searchedCellVertices = new Float32Array(cellMatrix.width * cellMatrix.height * 2);
     let numberOfVertices = 0;
 
-    for (let row = visibleCells.row; row < visibleCells.row + visibleCells.height; row++) {
-      for (let col = visibleCells.col; col < visibleCells.col + visibleCells.width; col++) {
-          if (inBox( { row: cellMatrix.row + row, col: cellMatrix.col + col }, viewArea ) && cellMatrix.matrix[row * cellMatrix.width + col] === 1) {
-              searchedCellVertices[numberOfVertices] = startCoordinates.col + col * view.cellSize + view.cellSize / 2;
-              searchedCellVertices[numberOfVertices + 1] = startCoordinates.row + row * view.cellSize + view.cellSize / 2;
-              numberOfVertices += 2;
-          }
-      }
+    for (let row = visibleCells.top; row < visibleCells.bottom; row++) {
+        for (let col = visibleCells.left; col < visibleCells.right; col++) {
+            const currentPosition = cellMatrix.topleft.addcomp(row, col)
+            if (viewArea.pointInside(currentPosition) && cellMatrix.at(row, col) === 1) {
+                searchedCellVertices[numberOfVertices] = startCoordinates.col + col * view.cellSize + view.cellSize / 2;
+                searchedCellVertices[numberOfVertices + 1] = startCoordinates.row + row * view.cellSize + view.cellSize / 2;
+                numberOfVertices += 2;
+            }
+        }
     }
 
     const cellVertices = new Float32Array(searchedCellVertices.subarray(0, numberOfVertices));
-    
+
     const VBO = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
     gl.bufferData(gl.ARRAY_BUFFER, cellVertices, gl.STATIC_DRAW);
@@ -250,21 +237,22 @@ export function getGridShaderProgram(gl: WebGL2RenderingContext): WebGLProgram |
 function getGridVertices(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Float32Array {
     const vertices: number[] = []
     let currentVertexIndex = 0;
-      for (let y = -view.cellSize; y <= canvas.height + view.cellSize; y += view.cellSize) {
-          vertices[currentVertexIndex] = -view.cellSize;
-          vertices[currentVertexIndex + 1] = y;
-          vertices[currentVertexIndex + 2] = canvas.width + view.cellSize;
-          vertices[currentVertexIndex + 3] = y;
-          currentVertexIndex += 4;
-      }
+    const offset = view.offset();
+    for (let y = -view.cellSize - offset.row; y <= canvas.height + view.cellSize; y += view.cellSize) {
+        vertices[currentVertexIndex] = -view.cellSize;
+        vertices[currentVertexIndex + 1] = y;
+        vertices[currentVertexIndex + 2] = canvas.width + view.cellSize;
+        vertices[currentVertexIndex + 3] = y;
+        currentVertexIndex += 4;
+    }
       
-      for (let x = -view.cellSize; x <= canvas.width + view.cellSize; x += view.cellSize) {
-          vertices[currentVertexIndex] = x;
-          vertices[currentVertexIndex + 1] = -view.cellSize;
-          vertices[currentVertexIndex + 2] = x;
-          vertices[currentVertexIndex + 3] = canvas.height + view.cellSize;
-          currentVertexIndex += 4;
-      }
+    for (let x = -view.cellSize - offset.col; x <= canvas.width + view.cellSize; x += view.cellSize) {
+        vertices[currentVertexIndex] = x;
+        vertices[currentVertexIndex + 1] = -view.cellSize;
+        vertices[currentVertexIndex + 2] = x;
+        vertices[currentVertexIndex + 3] = canvas.height + view.cellSize;
+        currentVertexIndex += 4;
+    }
 
     return new Float32Array(vertices);
 }
@@ -303,7 +291,7 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
         gl.enableVertexAttribArray(aPosLocation);
         gl.vertexAttribPointer(aPosLocation, 2, gl.FLOAT, false, 0, 0);
         gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-        gl.uniform2f(offsetLocation, getViewOffset(view).col, getViewOffset(view).row);
+        gl.uniform2f(offsetLocation, view.offset().col, view.offset().row);
         
 
         gl.drawArrays(gl.LINES, 0, Math.trunc(gridVertices.length / 2));
@@ -428,4 +416,87 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
 //     context.stroke();
 // }
 
+/**
+ * A helper function to get the canvas and Canvas 2D context of a React RefObject
+ * If there is no desired action on an error, it is probably best to use withCanvasAndContext2D, as this function requires error handling in case fetching the canvas and context fails
+ * 
+ * @param ref A React Ref Object to an HTML Canvas Element
+ * @returns The HTML Canvas and the Canvas Rendering Context taken from the ref object
+ * @throws Error when either the context cannot be gotten ("HTMLCanvasElement.getContext('2d') returns null or undefined"), or the value inside the ref to the canvas is null or undefined
+ */
+export function getCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasElement>): { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D } {
+    const canvas: HTMLCanvasElement | null = canvasRef.current 
+    if (canvas !== null && canvas !== undefined) {
+        const context = canvas.getContext("2d");
+        if (context !== null && context !== undefined) {
+            return { canvas: canvas, context: context };
+        }
+        throw new Error(`Could not get Canvas context, context declared ${context}`)
+    }
+    throw new Error(`Could not get Canvas Context: Canvas found to be ${canvas}`)
+}
+
+/**
+ * A helper function to get the canvas and Canvas 2D context of a React RefObject
+ * Accepts a canvas reference and a callback which only runs if the canvas and context2D from the reference are non-null
+ * Meant mostly to cut down on boilerplate of checking for a canvas and then a context, which can take around 5 or 6 lines of code to do absolutely nothing
+ * Optionally, there is a function that can be passed in as a third argument if code needs to be run in case the canvas or context could not be found, but if there needs to be handling on a failure, getCanvasAndContext2D is recommended for a try-catch format
+ * 
+ * This is meant to replace getCanvasAndContext2D, as it throws errors which have to be handled, while in most cases when these "errors" are throne nothing is supposed to happen anyway
+ * @param callbackfn A callback that takes in a canvas and context2D as parameters, and only runs if the canvas and context are non-null
+ * @returns void
+ */
+export function withCanvasAndContext2D(canvasRef: React.RefObject<HTMLCanvasElement>, callbackfn: ({ canvas, context }: { canvas: HTMLCanvasElement, context: CanvasRenderingContext2D }) => void, onerror?: () => void) {
+    const canvas: HTMLCanvasElement | null = canvasRef.current 
+    if (canvas !== null && canvas !== undefined) {
+        const context = canvas.getContext("2d");
+        if (context !== null && context !== undefined) {
+            callbackfn({ canvas: canvas, context: context })
+            return
+        }
+    }
+    onerror?.()
+}
+
+/**
+ * A helper function to get the canvas and WebGL2 context of a React RefObject
+ * If there is no desired action on an error, it is probably best to use withCanvasAndContextWebGL2, as this function requires error handling in case fetching the canvas and context fails
+ * 
+ * @param ref A React Ref Object to an HTML Canvas Element
+ * @returns The HTML Canvas and the WebGL2 Context taken from the ref object
+ * @throws Error when either the context cannot be gotten ("HTMLCanvasElement.getContext('webgl2') returns null or undefined"), or the value inside the ref to the canvas is null or undefined
+ */
+export function getCanvasAndContextWebGL2(canvasRef: React.RefObject<HTMLCanvasElement>): { canvas: HTMLCanvasElement, gl: WebGL2RenderingContext } {
+    const canvas: HTMLCanvasElement | null = canvasRef.current 
+    if (canvas !== null && canvas !== undefined) {
+        const gl = canvas.getContext("webgl2");
+        if (gl !== null && gl !== undefined) {
+            return { canvas: canvas, gl: gl };
+        }
+        throw new Error(`Could not get WebGL2 context, context declared ${gl}`)
+    }
+    throw new Error(`Could not get Canvas Context: Canvas found to be ${canvas}`)
+}
+
+/**
+ * A helper function to get the canvas and WebGL2 context of a React RefObject
+ * Accepts a canvas reference and a callback which only runs if the canvas and webgl2 context from the reference are non-null
+ * Meant mostly to cut down on boilerplate of checking for a canvas and then a context, which can take around 5 or 6 lines of code to do absolutely nothing
+ * Optionally, there is a function that can be passed in as a third argument if code needs to be run in case the canvas or context could not be found
+ * 
+ * This is meant to replace getCanvasAndContext2D, as it throws errors which have to be handled, while in most cases when these "errors" are throne nothing is supposed to happen anyway
+ * @param callbackfn A callback that takes in a canvas and context2D as parameters, and only runs if the canvas and context are non-null
+ * @returns 
+ */
+export function withCanvasAndContextWebGL2(canvasRef: React.RefObject<HTMLCanvasElement>, callbackfn: ( { canvas, gl }: { canvas: HTMLCanvasElement, gl: WebGL2RenderingContext }) => void, onerror?: () => void) {
+    const canvas: HTMLCanvasElement | null = canvasRef.current 
+    if (canvas !== null && canvas !== undefined) {
+        const gl = canvas.getContext("webgl2");
+        if (gl !== null && gl !== undefined) {
+            callbackfn({ canvas: canvas, gl: gl })
+            return
+        }
+    }
+    onerror?.()
+}
 

@@ -1,17 +1,20 @@
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2 } from "interfaces/Vector2";
 import { Box } from "./Box";
+import { CellMatrix } from "./CellMatrix";
 
 
-export class LifeLikeBoard {
-    cells: Vector2[] = []
-    bounds: Box | null = null
+export class CellBoard {
+    readonly cells: CellMatrix[] = []
 
-    constructor(cells: Vector2[]) {
+    constructor(cells: CellMatrix[]) {
         this.cells = cells
     }
 
-    setBox(bounds: Box): LifeLikeBoard {
-        this.bounds = bounds;
-        return this;
+    private reconstruct() {
+        
     }
+}
+
+export class BoundedCellBoard {
+
 }

@@ -1,83 +1,38 @@
-import { PointerEvent } from "react";
-import { removeDuplicates } from "functions/utilityFunctions";
-import { Vector2 } from "interfaces/Vector2";
+import { KeyboardEvent, PointerEvent } from "react";
+import { IVector2, filterVector2ListDuplicates, filterVector2ListMatches } from "interfaces/Vector2";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import {getLine} from 'functions/shapes';
 import {StatefulData} from "interfaces/StatefulData";
 import { Box } from "interfaces/Box";
+import { LineSegment } from "interfaces/LineSegment";
+import { hover } from "@testing-library/user-event/dist/hover";
+import { LifeLikeEditorData } from "interfaces/EditorData";
+import { ShapeEditMode } from "./ShapeEditMode";
 
-export interface LineData {
-    boardData: StatefulData<Vector2[]>,
-    boundsData: StatefulData<Box>,
-    ghostTilePositions: StatefulData<Vector2[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => Vector2,
-    isPointerDown: boolean,
-        isRendering: boolean;
-}
-
-export class LineEditMode extends EditMode<LineData> {
+export class LineEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
-    start: Vector2 | undefined;
-    end: Vector2 | undefined;
-    get cells(): Vector2[] {
-        if (this.start !== undefined && this.end !== undefined) {
-            return getLine(this.start, this.end); 
-        }
-        return []
+    shapemode: ShapeEditMode = new ShapeEditMode(getLine)
+
+    onPointerDown(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerDown(event, this.data)
+        
     }
 
-    onPointerDown(event: PointerEvent<Element>) {
-        if (this.data.isRendering) {
-            this.start = undefined;
-            this.end = undefined;
-            return;
-        }
-
-        this.start = this.data.getHoveredCell(event);
-        this.end = { ...this.start }
+    onPointerMove(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerMove(event, this.data)
     }
 
-    onPointerMove(event: PointerEvent<Element>) {
-        if (this.data.isRendering) {
-            this.start = undefined;
-            this.end = undefined;
-            return;
-        }
-
-        if (this.data.isPointerDown && this.start !== undefined && this.end !== undefined) {
-            const hoveredCell = this.data.getHoveredCell(event);
-            if (!(this.end.row === hoveredCell.row && this.end.col === hoveredCell.col)) {
-                const toRemove = new Set<string>(this.cells.map(cell => JSON.stringify(cell)));
-                const [, setGhostTilePositions] = this.data.ghostTilePositions;
-                setGhostTilePositions( positions => positions.filter( cell => !toRemove.has(JSON.stringify(cell)) ) )
-                this.end = hoveredCell;
-                setGhostTilePositions( positions => positions.concat( this.cells ) )
-            }
-        }
+    onPointerUp(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerUp(event, this.data)
     }
 
-    onPointerUp(event: PointerEvent<Element>) {
-        if (this.data.isRendering) {
-            this.start = undefined;
-            this.end = undefined;
-            return;
-        }
-
-        if (this.start !== undefined && this.end !== undefined) {
-            const [, setBoard] = this.data.boardData;
-            const [bounds] = this.data.boundsData;
-            const newCells: Vector2[] = getLine(this.start, this.end).filter(cell => cell.row >= bounds.row && cell.col >= bounds.col && cell.row < bounds.row + bounds.height && cell.col < bounds.col + bounds.width);
-
-            setBoard(board =>  removeDuplicates(board.concat(newCells)))
-            const [, setGhostTilePositions] = this.data.ghostTilePositions;
-            const toRemove = new Set<string>(newCells.map(cell => JSON.stringify(cell)));
-            setGhostTilePositions( positions => positions.filter( cell =>  !toRemove.has(JSON.stringify(cell)) ) )
-        }
-
-        this.start = undefined;
-        this.end = undefined
+    onKeyDown(event: KeyboardEvent<Element>): void {
+        this.shapemode.onKeyDown(event, this.data)
     }
 
+    onKeyUp(event: KeyboardEvent<Element>): void {
+        this.shapemode.onKeyUp(event, this.data)
+    }
 }
 
 export default LineEditMode

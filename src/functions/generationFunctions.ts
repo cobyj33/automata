@@ -1,4 +1,6 @@
 import { CellMatrix } from 'interfaces/CellMatrix';
+import { IVector2 } from 'interfaces/Vector2';
+import { FaLeaf } from 'react-icons/fa';
 
 type LifeRuleData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {
@@ -93,32 +95,30 @@ export function getNextLifeLikeGenerationFunction(matrix: Uint8ClampedArray, ind
 }
 
 export function getNextLifeGeneration(cellMatrix: CellMatrix, ruleString: string): Uint8ClampedArray  {
-    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix.length);
+    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.cellData.length);
     if (!isValidLifeString(ruleString)) {
-        console.error("Cannot parse invalid life string: ", ruleString);
-        output.set(cellMatrix.matrix, 0);
-        return output;
+        throw new Error("Cannot parse invalid life string: " + ruleString);
     }
 
     const ruleData = parseLifeLikeString(ruleString);
     for (let i = 0; i < output.length; i++) {
-        output[i] = getNextLifeLikeGenerationFunction(cellMatrix.matrix, i, cellMatrix.width, ruleData);
+        output[i] = getNextLifeLikeGenerationFunction(cellMatrix.cellData, i, cellMatrix.width, ruleData);
     }
 
     return output;
 }
 
 export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleString: string): Promise<Uint8ClampedArray>  {
-    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix.length);
+    const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.cellData.length);
     if (!isValidLifeString(ruleString)) {
         console.error("Cannot parse invalid life string: ", ruleString);
-        output.set(cellMatrix.matrix, 0);
+        output.set(cellMatrix.cellData, 0);
         return output;
     }
 
     const ruleData = parseLifeLikeString(ruleString);
     for (let i = 0; i < output.length; i++) {
-        await ( async () => output[i] = getNextLifeLikeGenerationFunction(cellMatrix.matrix, i, cellMatrix.width, ruleData) )();
+        await ( async () => output[i] = getNextLifeLikeGenerationFunction(cellMatrix.cellData, i, cellMatrix.width, ruleData) )();
     }
 
     return output;
@@ -134,7 +134,7 @@ export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleStr
 // }
 
 
-function isValidElementaryRule(rule: number): boolean {
+export function isValidElementaryRule(rule: number): boolean {
     return rule >= 0 && rule <= 255;
 }
 
@@ -192,23 +192,71 @@ export function getNextElementaryGeneration(currentGeneration: Uint8ClampedArray
     return output;
 }
 
-export async function getNextElementaryGenerationAsync(currentGeneration: Uint8ClampedArray, numberRule: number): Promise<Uint8ClampedArray> {
-    const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
-    if (!isValidElementaryRule(numberRule)) {
-        console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
-        for (let i = 0; i < output.length; i++) {
-            output[i] = currentGeneration[i];
-        }
-        return output;
+const patternTextFilterRegex = /[^*.\n\rOo]/g
+
+export function isValidPatternText(text: string): boolean {
+    const filteredText = text.replace(patternTextFilterRegex, "")
+    console.log(filteredText)
+    if (filteredText.length === 0) {
+        return false;
     }
 
-    const rules: Uint8ClampedArray = getElementaryRules(numberRule);
-    for (let i = 0; i < currentGeneration.length; i++) {
-        await ( async () => output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules))();
+    const lines = filteredText.split(/[\n\r]/g)
+    console.log(lines)
+    if (lines.length === 0) {
+        return false;
     }
 
-    return output;
+    const requiredWidth = lines[0].length
+    
+    return lines.every(line => line.length === requiredWidth)
 }
+
+export function parsePatternText(text: string): IVector2[] {
+    if (!isValidPatternText(text)) {
+        throw new Error("Attemped to parse invalid pattern text: " + text)
+    }
+
+    let cells: IVector2[] = []
+    const filteredText = text.replace(patternTextFilterRegex, "")
+    const onValues = ["*", "O", "o"]
+    const offValues = ["."] 
+
+    const lines = filteredText.split(/[\n\r]/g)
+    console.log(lines)
+    console.log(filteredText)
+    lines.forEach((line, row) => {
+        line.split("").forEach((char, col) => {
+                if (onValues.some(val => val === char)) {
+                    cells.push({ row: row, col: col })
+                }
+            }
+        )
+    })
+    let row = 0;
+    let col = 0;
+
+
+    return cells;
+}
+
+// export async function getNextElementaryGenerationAsync(currentGeneration: Uint8ClampedArray, numberRule: number): Promise<Uint8ClampedArray> {
+//     const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
+//     if (!isValidElementaryRule(numberRule)) {
+//         console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
+//         for (let i = 0; i < output.length; i++) {
+//             output[i] = currentGeneration[i];
+//         }
+//         return output;
+//     }
+
+//     const rules: Uint8ClampedArray = getElementaryRules(numberRule);
+//     for (let i = 0; i < currentGeneration.length; i++) {
+//         await ( async () => output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules))();
+//     }
+
+//     return output;
+// }
 
 // export function getElementaryKernel(rule: number) {
 
@@ -217,8 +265,8 @@ export async function getNextElementaryGenerationAsync(currentGeneration: Uint8C
 
 
 
-// async function getNextGeneration(board: Vector2[], lifeString: string): Promise<Vector2[]> {
-//     let newBoard: Vector2[] = []
+// async function getNextGeneration(board: IVector2[], lifeString: string): Promise<IVector2[]> {
+//     let newBoard: IVector2[] = []
 //     const renderingKernel = getLifeKernel(lifeString).setDynamicOutput(true).setDynamicArguments(true).setOutput([10]);
 
 //     const matrices: CellMatrix[] = partition(board);

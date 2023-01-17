@@ -74,8 +74,6 @@ export function useHistory<T>(stateData: StatefulData<T>, comparer: IComparer<T>
     const history= useRef<HistoryStack<T>>(new HistoryStack<T>());
 
     useEffect(() => {
-        console.log(state);
-        console.log(history.current.peek());
         if (history.current.empty === false) {
           if (comparer(state, history.current.peek()) === false) {
             history.current.pushState(state);
@@ -86,8 +84,6 @@ export function useHistory<T>(stateData: StatefulData<T>, comparer: IComparer<T>
       }, [state])
     
       function undo() {
-        console.log(history.current.length);
-        console.log(history.current.canGoBack());
         if (history.current.canGoBack()) {
           history.current.back();
           setState(history.current.state);
@@ -95,7 +91,6 @@ export function useHistory<T>(stateData: StatefulData<T>, comparer: IComparer<T>
       }
     
       function redo() {
-        console.log(history.current.length);
         if (history.current.canGoForward()) {
             history.current.forward();
           setState(history.current.state);
@@ -153,36 +148,75 @@ export function useCanvas2DUpdater(canvasRef: RefObject<HTMLCanvasElement>) {
       }, [])
 }
 
+export function useResizeObserver(toObserve: RefObject<HTMLElement>, ...actions: Action[]) {
+    const observer = useRef(new ResizeObserver(() => { actions.forEach(action => action())} ));
+    useEffect(() => {
+        if (toObserve.current !== null && toObserve.current !== undefined) {
+            observer.current.disconnect()
+            observer.current = new ResizeObserver(() => { actions.forEach(action => action())} )
+            observer.current.observe(toObserve.current)
+        }
+    })
+}
+
+/**
+ * A hook to automatically update a canvas's actual size to fit it's holder on window size changes and holder size changes
+ * 
+ * @param canvasRef Reference to a canvas object which is positioned absolutely and filling its holder completely
+ * @param canvasHolderRef Reference to the holder element which holds the absolutely positioned canvas
+ * @param actions variable argument of actions (methods which take no parameters and return void) to take on a canvas holder's resize. will generally be an action to re-render the canvas after changing sizes
+ */
+export function useCanvasHolderUpdater(canvasRef: RefObject<HTMLCanvasElement>, canvasHolderRef: RefObject<HTMLElement>, ...actions: Action[]): void {
+
+    const updateCanvasSize = useCallback( () => {
+      const canvas: HTMLCanvasElement | null = canvasRef.current;
+      const canvasHolder: HTMLElement | null = canvasHolderRef.current
+      if (canvas !== null && canvas !== undefined && canvasHolder !== null && canvasHolder !== undefined) {
+        const rect: DOMRect = canvasHolder.getBoundingClientRect();
+          canvas.width = rect.width;
+          canvas.height = rect.height;
+      }
+    }, [])
+  
+    useResizeObserver(canvasHolderRef, updateCanvasSize, ...actions)
+  
+    useEffect(() => {
+        updateCanvasSize();
+        window.addEventListener('resize', updateCanvasSize);
+        return () => window.removeEventListener('resize', updateCanvasSize);
+    }, [])
+  }
+
 // export function useEditModes(modes: { [key: string]: EditMode }, data: MutableRefObject<() => EditorData>, editMode: string, canvasRef: RefObject<HTMLElement>): void {
 //     const editorModes: MutableRefObject<{ [key: string]: EditMode }> = useRef(modes);
 
 //     const onPointerDown = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].setEditorData(data.current())
+//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
 //         editorModes.current[editMode].onPointerDown?.(event);
 //     }, [])
 
 //     const onPointerUp = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].setEditorData(data.current())
+//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
 //         editorModes.current[editMode].onPointerUp?.(event);
 //     }, [])
 
 //     const onPointerMove = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].setEditorData(data.current())
+//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
 //         editorModes.current[editMode].onPointerMove?.(event);
 //     }, [])
 
 //     const onPointerLeave = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].setEditorData(data.current())
+//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
 //         editorModes.current[editMode].onPointerLeave?.(event);
 //     }, [])
 
 //     const onKeyDown = useCallback((event: KeyboardEvent<Element>) => {
-//         editorModes.current[editMode].setEditorData(data.current())
+//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
 //         editorModes.current[editMode].onKeyDown?.(event);
 //     }, [])
 
 //     const onKeyUp = useCallback((event: KeyboardEvent<Element>) => {
-//         editorModes.current[editMode].setEditorData(data.current())
+//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
 //         editorModes.current[editMode].onKeyUp?.(event);
 //     }, [])
 

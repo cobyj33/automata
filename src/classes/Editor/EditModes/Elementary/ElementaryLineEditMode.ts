@@ -1,18 +1,8 @@
 import { PointerEvent } from "react";
-import { removeDuplicates } from "functions/utilityFunctions";
-import { Vector2 } from "interfaces/Vector2";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
-import {getLine} from 'functions/shapes';
 import { StatefulData } from "interfaces/StatefulData"
 import { CellMatrix } from "interfaces/CellMatrix"
-
-export interface ElementaryLineData {
-    boardData: StatefulData<CellMatrix>,
-    ghostTilePositions: StatefulData<number[]>,
-    getHoveredCell: (event: PointerEvent<Element>) => number,
-    isPointerDown: boolean,
-    isRendering: boolean;
-}
+import { ElementaryEditorData } from "interfaces/EditorData";
 
 function range(first: number, second: number): number[] {
     const min: number = Math.min(first, second);
@@ -20,7 +10,7 @@ function range(first: number, second: number): number[] {
     return Array.from({length: distance}, (val, index) => index + min);
 }
 
-export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
+export class ElementaryLineEditMode extends EditMode<ElementaryEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
     start: number | undefined;
     end: number | undefined;
@@ -32,7 +22,7 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
             return;
         }
 
-        this.start = this.data.getHoveredCell(event);
+        this.start = this.data.currentHoveredColumn;
         this.end = this.start;
     }
 
@@ -46,12 +36,12 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
         if (this.data.isPointerDown && this.start !== undefined && this.start !== null && this.end !== undefined && this.end !== null) {
             let start = this.start
             let end = this.end;
-            const hoveredCell = this.data.getHoveredCell(event);
-            if (!(end === hoveredCell)) {
+            const hoveredColumn = this.data.currentHoveredColumn;
+            if (!(end === hoveredColumn)) {
                 const toRemove = new Set<number>(range(start, end));
                 const [, setGhostTilePositions] = this.data.ghostTilePositions;
                 setGhostTilePositions( positions => positions.filter( col => !toRemove.has( col ) ))
-                end = hoveredCell;
+                end = hoveredColumn;
                 setGhostTilePositions( positions => positions.concat( range(start, end) ) )
             }
             this.start = start;
@@ -71,13 +61,10 @@ export class ElementaryLineEditMode extends EditMode<ElementaryLineData> {
             let end = this.end;
             const [, setBoard] = this.data.boardData;
             const line: number[] = range(start, end); 
-            setBoard(cellMatrix => {
-                const newMatrix: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.matrix);
-                line.forEach(num => newMatrix[num] = 1);
-                return {
-                    ...cellMatrix,
-                    matrix: newMatrix
-                }
+            setBoard(board => {
+                const newBoard: number[] = [...board];
+                line.forEach(num => newBoard[num] = 1);
+                return newBoard
             })
             const toRemove = new Set<number>(line);
             const [, setGhostTilePositions] = this.data.ghostTilePositions;

@@ -1,15 +1,28 @@
 import { useState } from 'react';
-import { Vector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'interfaces/Vector2';
 import editorPageStyles from 'ui/pages/styles/EditorPage.module.css';
-import { BoardType, GameBoard } from 'ui/components/GameBoard';
 
 import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu"
+import { CellMatrix } from 'interfaces/CellMatrix';
+import LifeLikeEditor from 'ui/components/LifeLikeEditor';
+import ElementaryBoard from 'ui/components/ElementaryBoard';
+import { Box } from 'interfaces/Box';
 
+export type BoardType = "LIFELIKE" | "ELEMENTARY"
+const DEFAULT_ELEMENTARY_EDITOR_DATA_WIDTH = 1000;
 
 function EditorPage() {
-  const [board, setBoard] = useState<Vector2[]>([]);
-  const [currentBoardType, setCurrentBoardType] = useState<BoardType>("LIFELIKE");
-  console.log(editorPageStyles)
+  const [lifeLikeBoard, setLifeLikeBoard] = useState<IVector2[]>([])
+  const [elementaryBoard, setElementaryBoard] = useState<number[]>(new Array<number>(DEFAULT_ELEMENTARY_EDITOR_DATA_WIDTH).fill(0))
+
+  function typeToBoard(boardType: BoardType): JSX.Element {
+    switch (boardType) {
+      case "LIFELIKE": return <LifeLikeEditor boardData={[lifeLikeBoard, setLifeLikeBoard]} />
+      case "ELEMENTARY": return <ElementaryBoard boardData={[elementaryBoard, setElementaryBoard]} />
+    }
+  }
+
+  const [currentBoard, setCurrentBoard] = useState<BoardType>("LIFELIKE");
 
   return (
     <div className={editorPageStyles["editor-page"]}>
@@ -34,13 +47,13 @@ function EditorPage() {
         </Menu> */}
 
         <Menu className={editorPageStyles["menu"]} transition menuClassName={editorPageStyles["menu-drop-down"]} menuButton={<MenuButton  className={editorPageStyles["menu-button"]}> Select Editor </MenuButton>}>
-          <MenuItem className={editorPageStyles["menu-item"]} onClick={() => setCurrentBoardType("LIFELIKE")}>Bounded Life Like Editor</MenuItem>
-          <MenuItem className={editorPageStyles["menu-item"]} onClick={() => setCurrentBoardType("ELEMENTARY")}>Elementary Editor</MenuItem>
+          <MenuItem className={editorPageStyles["menu-item"]} onClick={() => setCurrentBoard("LIFELIKE")}>Bounded Life Like Editor</MenuItem>
+          <MenuItem className={editorPageStyles["menu-item"]} onClick={() => setCurrentBoard("ELEMENTARY")}>Elementary Editor</MenuItem>
         </Menu>
       </nav>
 
       <div className={editorPageStyles["editor-area"]}>
-        <GameBoard type={currentBoardType} boardData={[board, setBoard]} />
+        { typeToBoard(currentBoard) }
       </div>
  
     </div> 
