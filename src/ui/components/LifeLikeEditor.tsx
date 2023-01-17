@@ -27,6 +27,13 @@ import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
 import { Dimension2D } from "interfaces/Dimension";
 import { e } from "vitest/dist/index-761e769b";
+import TextAreaInput from "./reuse/TextAreaInput";
+import ActionButton from "./reuse/ActionButton";
+import ToggleButton from "./reuse/ToggleButton";
+import SideBarEditorTool from "./reuse/editor/SideBarTool";
+import Description from "./reuse/Description";
+import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
+import { DIAGRAM_NAMES, getDiagram } from "data";
 
 type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";
 
@@ -268,26 +275,38 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
       <aside className={gameBoardStyles["right-side-bar"]}>
 
-        <div className={gameBoardStyles["edit-data"]}>
+        <SideBarEditorTool>
+            <SideBarToolTitle>Editor Data</SideBarToolTitle> 
             <div className={gameBoardStyles["view-data"]}>
-                <h3> View Position: Row: {view.position.row.toFixed(1)} Col: {view.position.col.toFixed(1)} </h3>
-                <h3> View CellSize: {view.cellSize} </h3> 
+                <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
+                <Description>{` View CellSize: ${view.cellSize} `}</Description> 
+                <Description>{` Hovering: ( Row: ${currentHoveredCell.current.row} Col: ${currentHoveredCell.current.col} ) `}</Description>
             </div>
+        </SideBarEditorTool>
 
-            <h3> Hovering: Row: {currentHoveredCell.current.row} Col: {currentHoveredCell.current.col} </h3>
+        <SideBarEditorTool>
+            <SideBarToolTitle>Render Data</SideBarToolTitle>
+            <div className="flex flex-col">
+                <Description> Current Generation: {rendering ? String(renderData.generation) : "0"} </Description>
+            </div>
+        </SideBarEditorTool>
 
-        </div>
+            
+        <SideBarEditorTool>
+            <div className="flex flex-col">
+                <TextAreaInput valid={isValidPatternText(pattern)} onChange={(e) => setPattern(e.target.value)} value={pattern}></TextAreaInput>
+                <ActionButton onClick={loadPattern}>Load Pattern</ActionButton>
+                <div className="relative overflow-auto border border-black" style={{minHeight: 150}}>
+                    <div className="flex-grow grid grid-cols-3 absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+                        { DIAGRAM_NAMES.map(namedDiagram => <ToggleButton selected={pattern === getDiagram(namedDiagram)} key={namedDiagram} onClick={() => setPattern(getDiagram(namedDiagram))}><span className="text-xs">{namedDiagram}</span></ToggleButton>)  }
+                    </div>
+                </div>
+                
+                <ActionButton onClick={() => setPattern("")}>Clear Pattern</ActionButton>
+            </div>
+        </SideBarEditorTool>
+
           <div className={gameBoardStyles["filler"]}> W.I.P... </div>
-
-          <div className={gameBoardStyles["render-data"]}>
-            <RenderDataDisplay label={"Current Generation: "} value={rendering ? String(renderData.generation) : "0"} />
-          </div>
-
-          <div className={gameBoardStyles[""]}>
-            <textarea onChange={(e) => setPattern(e.target.value)} value={pattern}></textarea>
-            <button onClick={loadPattern}>Load Pattern</button>
-            <button onClick={() => setPattern("")}>Clear Pattern</button>
-          </div>
       </aside>
 
       <div className={gameBoardStyles["tool-bar"]}>
@@ -299,10 +318,10 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
             <EditModeButton target="BOX" current={editMode} setter={setEditMode}> <FaBox /> </EditModeButton>
             <EditModeButton target="ELLIPSE" current={editMode} setter={setEditMode}> <BsCircle /> </EditModeButton>
-            <EditToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </EditToggleButton>
-            <EditButton onClick={clear}> <AiOutlineClear /> </EditButton>
-            <EditButton onClick={undo}> <FaUndo /> </EditButton>
-            <EditButton onClick={redo}> <FaRedo /> </EditButton>
+            <ToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
+            <ActionButton onClick={clear}> <AiOutlineClear /> </ActionButton>
+            <ActionButton onClick={undo}> <FaUndo /> </ActionButton>
+            <ActionButton onClick={redo}> <FaRedo /> </ActionButton>
           </div>
       </div>
 
@@ -317,25 +336,8 @@ function RenderDataDisplay({ label, value }: { label: string, value: string }) {
     </div>
 }
 
-function getSelectedStyles(condition: boolean): string {
-  return condition ? gameBoardStyles["selected"] : ""
-}
-
-interface EditButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
-function EditButton(props: EditButtonProps) {
-  return <button className={gameBoardStyles["edit-button"]} {...props} />
-}
-
-interface ToggleEditButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  selected: boolean
-}
-
-function EditToggleButton({ selected, ...props }: ToggleEditButtonProps) {
-  return <button className={`${gameBoardStyles["edit-button"]} ${getSelectedStyles(selected)}`} {...props} />
-}
-
 function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: LifeLikeEditorEditMode, current: LifeLikeEditorEditMode, setter: React.Dispatch<LifeLikeEditorEditMode> }) {
-  return <EditToggleButton selected={current === target} onClick={() => setter(target)}>{children}</EditToggleButton>
+  return <ToggleButton selected={current === target} onClick={() => setter(target)}>{children}</ToggleButton>
 }
 
 

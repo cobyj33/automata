@@ -38,44 +38,7 @@
     grid-row: 7 / 8;
     grid-column: 4 / 10;
     background-color: rgb(20, 20, 20);
-
 }
-
-.rule-input-area {
-    justify-self: center;
-    align-self: center;
-    width: 50%;
-    border-radius: 5px;
-    background-color: rgb(30, 30, 30);
-    color: white;
-    padding: 10px;
-    margin: 10px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
-    text-align: center;
-}
-
-.rule-input {
-    text-align: center;
-    border: none;
-    padding: 10px;
-    margin: 10px;
-}
-
-.rule-input.invalid {
-    background-color: red;
-    color: black;
-}
-
-.rule-input.valid {
-    background-color: lightgreen;
-    color: black;
-}
-
-
 
 .filler {
     display: flex;
@@ -88,54 +51,4 @@
 
 .filler:hover {
     border-bottom: 1px solid white;
-}
-
-
-
-.editing-buttons {
-    flex-basis: 50px;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    pointer-events: none;
-}
-
-
-.editing-buttons {
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    pointer-events: none;
-}
-
-.edit-button {
-    border-radius: 5px;
-    background-color: white;
-    border: none;
-    pointer-events: auto;
-    aspect-ratio: 1;
-    margin-left: 15px;
-    padding: 15px;
-}
-
-.edit-button:hover:not(.disabled) {
-    transition: background-color 0.25s;
-    background-color: rgb(220, 220, 220);
-}
-
-.edit-button:active:not(.disabled) {
-    transition: background-color 0.1s transform 0.1s;
-    background-color: black;
-    transform: translateY(2px);
-}
-
-.edit-button.selected:hover {
-    transition: background-color 0.25s;
-    background-color: rgb(110, 110, 110);
-}
-
-.edit-button.selected {
-    background-color: rgb(50, 50, 50);
 }

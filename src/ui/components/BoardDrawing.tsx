@@ -52,7 +52,6 @@ export const BoardDrawing = ({ board, view, config = { grid: true, minGridSize: 
       if (Array.isArray(board)) {
         renderBoard(gl, view, board as IVector2[]);
       } else {
-        console.log("From board matrix")
         renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
       }
     })
@@ -84,14 +83,18 @@ export const BoardDrawing = ({ board, view, config = { grid: true, minGridSize: 
       }
       return false;
     }
+    
+    function requestRenderGridCanvas() {
+        if (shouldRenderGrid()) {
+            renderGridCanvas();
+        } else {
+            clearGLCanvas(gridCanvasRef)
+        }
+    }
 
     function renderAll() {
         renderBoardCanvas();
-        if (shouldRenderGrid()) {
-          renderGridCanvas();
-        } else {
-          clearGLCanvas(gridCanvasRef)
-        }
+        requestRenderGridCanvas()
     }
 
     React.useEffect(renderBoardCanvas, [board]);
@@ -106,7 +109,7 @@ export const BoardDrawing = ({ board, view, config = { grid: true, minGridSize: 
     const canvasHolder = React.useRef<HTMLDivElement>(null)
 
     useCanvasHolderUpdater(boardCanvasRef, canvasHolder, renderBoardCanvas)
-    useCanvasHolderUpdater(gridCanvasRef, canvasHolder, renderGridCanvas)
+    useCanvasHolderUpdater(gridCanvasRef, canvasHolder, requestRenderGridCanvas)
 
     React.useEffect(() => {
       withCanvasAndContextWebGL2(boardCanvasRef, ({ gl }) => {

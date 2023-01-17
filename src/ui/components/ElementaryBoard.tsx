@@ -23,6 +23,14 @@ import { GiStraightPipe } from "react-icons/gi";
 import { Dimension2D } from "interfaces/Dimension";
 import { isValidElementaryRule } from "functions/generationFunctions";
 import { preview } from "vite";
+import SubmitButton from "./reuse/SubmitButton";
+import ActionButton from "./reuse/ActionButton";
+import TextInput from "./reuse/TextInput";
+import ToggleButton from "./reuse/ToggleButton";
+import SideBarEditorTool from "./reuse/editor/SideBarTool";
+import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
+import { getRefBoundingClientRect } from "functions/reactUtil";
+import Description from "./reuse/Description";
 
 
 interface ElementaryEditorState {
@@ -194,15 +202,16 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
 
       <div className={elementaryStyles["tool-bar"]}>
-        <div className={elementaryStyles["editing-buttons"]}> 
+
+        <div className="flex flex-row justify-center gap-1 items-center"> 
             <EditModeButton target="DRAW" current={editMode} setter={setEditMode}> <FaBrush /> </EditModeButton>
             <EditModeButton target="MOVE" current={editMode} setter={setEditMode}> <FaArrowsAlt /> </EditModeButton>
             <EditModeButton target="ZOOM" current={editMode} setter={setEditMode}> <FaSearch /> </EditModeButton>
             <EditModeButton target="ERASE" current={editMode} setter={setEditMode}> <FaEraser /> </EditModeButton>
             <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
-            <button className={getSelectedEditButtonStyles(rendering)} onClick={() => setRendering(!rendering)}> <FaPlay /> </button>
-            <button className={elementaryStyles["edit-button"]} onClick={undo}> <FaUndo /> </button>
-            <button className={elementaryStyles["edit-button"]} onClick={redo}> <FaRedo /> </button>
+            <ToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
+            <ActionButton onClick={undo}> <FaUndo /> </ActionButton>
+            <ActionButton onClick={redo}> <FaRedo /> </ActionButton>
         </div>
 
       </div>
@@ -212,21 +221,25 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     )
 }
 
-function getSelectedEditButtonStyles(condition: boolean): string {
-  return `${elementaryStyles["edit-button"]} ${condition ? elementaryStyles["selected"] : ""}`
-}
-
-
 function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: ElementaryEditorEditMode, current: ElementaryEditorEditMode, setter: React.Dispatch<ElementaryEditorEditMode> }) {
-  return <button className={getSelectedEditButtonStyles(current === target)} onClick={() => setter(target)}>{children}</button>
+  return <ToggleButton selected={current === target} onClick={() => setter(target)}>{children}</ToggleButton>
 }
 
 const DEFAULT_ELEMENTARY_PREVIEW_MAX_GENERATIONS = 100;
-function ruleEditorPreviewStart(length: number = 100): number[] {
+const DEFAULT_ELEMENTARY_PREVIEW_START_SIZE = 150;
+function ruleEditorPreviewStart(length: number = DEFAULT_ELEMENTARY_PREVIEW_START_SIZE): number[] {
     const arr = new Array(length).fill(length)
     arr[Math.trunc(length / 2)] = 1
     return arr
 }
+
+interface ElementaryRuleEditorData {
+    previewStart: number[],
+    rule: number,
+    requestedRule: number
+}
+
+
 
 function ElementaryRuleEditor({ rule, onRuleRequest }: { rule: number, onRuleRequest: (num: number) => void }) {
     const [ruleInput, setRuleInput] = useState<number>(30)
@@ -258,32 +271,35 @@ function ElementaryRuleEditor({ rule, onRuleRequest }: { rule: number, onRuleReq
     }
 
     function getPreviewMaxGeneration(): number {
-        const previewContainer = previewHolderRef.current
-        if (previewContainer !== null && previewContainer !== undefined) {
-            const rect: DOMRect = previewContainer.getBoundingClientRect();
-            return Math.trunc(rect.height)
-        }
-        return DEFAULT_ELEMENTARY_PREVIEW_MAX_GENERATIONS;
+        const rect = getRefBoundingClientRect(previewHolderRef)
+        return rect !== null && rect !== undefined ? Math.trunc(rect.height) : DEFAULT_ELEMENTARY_PREVIEW_MAX_GENERATIONS
     }
 
-
-
+    function getPreviewStartCount(): number {
+        const rect = getRefBoundingClientRect(previewHolderRef)
+        return rect !== null && rect !== undefined ? Math.trunc(rect.width) : DEFAULT_ELEMENTARY_PREVIEW_START_SIZE
+    }
 
     return (
-        <div className={elementaryStyles["rule-input-area"]}>
-            <div className={elementaryStyles["current-rule-display"]}>
-                Current Rule: <span className={elementaryStyles["current-rule"]}>{rule}</span>          
-            </div>
-            <span> Rule must be between 0 and 255 </span>
+        <SideBarEditorTool>
+            <SideBarToolTitle>Rule Editor</SideBarToolTitle>
+            <Description> Current Rule: <span className="text-green-400">{rule}</span> </Description>
+            <Description> Rule must be between 0 and 255 </Description>
 
-            <input className={`${elementaryStyles["rule-input"]} ${elementaryStyles[`${isValidElementaryRule(Number(ruleInput)) ? 'valid' : 'invalid'}`]} `} onChange={onRuleInputChanged} value={ruleInput}  />
-            <button onClick={sendRule}> Set Rule {requestedRule} </button>
+            <section className="grid grid-cols-2 gap-2 p-3 bg-neutral-900 rounded-lg">
+                <div className="flex flex-col">
+                    <TextInput valid={isValidElementaryRule(Number(ruleInput))} onChange={onRuleInputChanged} value={ruleInput}  />
+                    <ActionButton onClick={restartPreview}>Restart Preview</ActionButton>
+                </div>
 
-            <div style={{width: 100, height: 100}} ref={previewHolderRef}>
-                <ElementaryBoardRender start={ruleEditorPreviewStart()} view={new View(Vector2.ZERO, 1)} rule={requestedRule} maxGeneration={getPreviewMaxGeneration()} controller={renderController} />
-            </div>
-            <button onClick={restartPreview}>Restart Preview</button>
-        </div>  
+                <div ref={previewHolderRef}>
+                    <ElementaryBoardRender start={ruleEditorPreviewStart(getPreviewStartCount())} view={new View(Vector2.ZERO, 1)} rule={requestedRule} maxGeneration={getPreviewMaxGeneration()} controller={renderController} />
+                </div>
+            </section>
+
+            <SubmitButton onClick={sendRule}> Set Rule {requestedRule} </SubmitButton>
+
+        </SideBarEditorTool>  
     )
 }
 

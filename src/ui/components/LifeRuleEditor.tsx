@@ -1,12 +1,25 @@
 import lifeRuleEditorStyles from "ui/components/styles/LifeRuleEditor.module.css"
+import { useImmerReducer, ImmerReducer } from "use-immer";
 import { useState, useRef, useCallback, useEffect, RefObject } from "react";
-import { StatefulData } from "interfaces/StatefulData"
-import { isValidLifeString, createLifeString, parseLifeLikeString } from "functions/generationFunctions"
-import { parse } from "path";
+import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData } from "functions/generationFunctions"
 import { getLifeRuleName, getNamedLifeRuleString, isNamedLifeRule, NamedLifeRule, NAMED_LIFE_RULES_LIST } from "data";
+import ToggleButton from "./reuse/ToggleButton";
+import { capitalized } from "functions/util";
+import { SubmitButton } from "./reuse/SubmitButton";
+import TextInput from "./reuse/TextInput";
+import ErrorText from "./reuse/ErrorText";
+import SideBarEditorTool from "./reuse/editor/SideBarTool";
+import Description from "./reuse/Description";
+import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
+import SideBarToolSection from "./reuse/editor/SideBarToolSection";
 
-
-type RuleEditMode = "ASSISTED" | "RAW" | "NAMED";
+const RULE_EDIT_MODES = ["ASSISTED", "RAW", "NAMED"] as const;
+type RuleEditMode = typeof RULE_EDIT_MODES[number];
+interface LifeRuleEditorProps {
+    currentRule: string,
+    onLifeRuleSelect: (rule: string) => void
+}
+type LifeRuleEditorComponent = (props: LifeRuleEditorProps) => JSX.Element
 
 function getRuleEditor(mode: RuleEditMode, props: LifeRuleEditorProps) {
     switch (mode) {
@@ -16,11 +29,12 @@ function getRuleEditor(mode: RuleEditMode, props: LifeRuleEditorProps) {
     }
 }
 
-
 interface LifeRuleEditorProps {
     currentRule: string,
     onLifeRuleSelect: (rule: string) => void
 }
+
+
 export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
     const { currentRule, onLifeRuleSelect } = props
     const [ruleEditMode, setRuleEditMode] = useState<RuleEditMode>("ASSISTED");
@@ -30,95 +44,117 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
     }
 
     return (
-        <div className={lifeRuleEditorStyles["rule-editor"]}>
-            <div className={lifeRuleEditorStyles["life-rule-data"]}>
-                <h3 className={lifeRuleEditorStyles["title"]}> Life-Like Rule Data </h3> 
-                <span className={lifeRuleEditorStyles["text"]}> Current Rule: <span className={lifeRuleEditorStyles["current-life-rule"]}>{currentRule} {isNamedLifeRule(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </span>
-                <span className={lifeRuleEditorStyles["text"]}> Neighbors to be Born: { Array.from(parsedRule().birth.keys()).sort((a, b) => a - b).join(", ") } </span>
-                <span className={lifeRuleEditorStyles["text"]}> Neighbors to Survive: { Array.from(parsedRule().survival.keys()).sort((a, b) => a - b).join(", ") } </span>
+        <SideBarEditorTool>
+            <div className="flex flex-col gap-1 m-2">
+                <SideBarToolTitle> Life-Like Rule Data </SideBarToolTitle> 
+                <Description> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRule(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
+                <Description> Neighbors to be Born: { Array.from(parsedRule().birth.keys()).sort((a, b) => a - b).join(", ") } </Description>
+                <Description> Neighbors to Survive: { Array.from(parsedRule().survival.keys()).sort((a, b) => a - b).join(", ") } </Description>
             </div>
 
-            <div className={lifeRuleEditorStyles["mode-selection-area"]}>
-                <button className={`${lifeRuleEditorStyles["mode-selection-button"]} ${lifeRuleEditorStyles[`${ruleEditMode === "ASSISTED" ? "selected" : ""}`]} `} onClick={() => setRuleEditMode("ASSISTED")} > Assisted </button>
-                <button className={`${lifeRuleEditorStyles["mode-selection-button"]} ${lifeRuleEditorStyles[`${ruleEditMode === "RAW" ? "selected" : ""}`]} `} onClick={() => setRuleEditMode("RAW")} > Raw </button>
-                <button className={`${lifeRuleEditorStyles["mode-selection-button"]} ${lifeRuleEditorStyles[`${ruleEditMode === "NAMED" ? "selected" : ""}`]} `} onClick={() => setRuleEditMode("NAMED")} > Named </button>
+            <div className="flex flex-row justify-between items-center p-1 m-1 bg-neutral-800 rounded-lg">
+                { RULE_EDIT_MODES.map(mode => <ToggleButton selected={ruleEditMode === mode} onClick={() => setRuleEditMode(mode)} key={mode}>{capitalized(mode)}</ToggleButton>)}
             </div>
 
-            <div>
-                { getRuleEditor(ruleEditMode, props) } 
-            </div>
-
-            {/* <div ref={renderArea}> 
-                     Planned to be a preview of what the rule looks like getRender()
-            </div> */}
-
-        </div>
+            { getRuleEditor(ruleEditMode, props) } 
+        </SideBarEditorTool>
     )
-
 }
 
+type AssistedLifeRuleState = LifeRuleData
+type AssistedLifeRuleBirthToggleAction = { type: "toggle birth", num: number }
+type AssistedLifeRuleSurvivalToggleAction = { type: "toggle survival", num: number }
+type AssistedLifeRuleActions = AssistedLifeRuleBirthToggleAction | AssistedLifeRuleSurvivalToggleAction
+type AssistedLifeRuleStateReducerFunction = ImmerReducer<AssistedLifeRuleState, AssistedLifeRuleActions>
 
+const assistedLifeRuleReducer: AssistedLifeRuleStateReducerFunction = (draft, action) => {
+    const { type, num } = action
+    switch (type) {
+        case "toggle birth": 
+            if (!draft.birth.some(val => val === num)) {
+                draft.birth.push(num)
+            } else {
+                draft.birth = draft.birth.filter(val => val !== num)
+            }
+            break;
+        case "toggle survival":
+            if (!draft.survival.some(val => val === num)) {
+                draft.survival.push(num)
+            } else {
+                draft.survival = draft.survival.filter(val => val !== num)
+            }
+            break;
+    }
+    console.log(draft)
+    return draft
+}
 
-
-function AssistedLifeRuleEditor({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) {
-    const [birth, setBirth] = useState<Set<number>>(new Set<number>(parseLifeLikeString(currentRule).birth));
-    const [survive, setSurvive] = useState<Set<number>>(new Set<number>(parseLifeLikeString(currentRule).survival));
+const AssistedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) => {
+    const [input, inputDispatch] = useImmerReducer<AssistedLifeRuleState, AssistedLifeRuleActions>(assistedLifeRuleReducer, parseLifeLikeString(currentRule))
+    const { birth, survival } = input
 
     function getLifeString() {
-        return createLifeString(Array.from(birth).sort((a, b) => a - b), Array.from(survive).sort((a, b) => a - b));
+        return createLifeString([...birth].sort((a, b) => a - b), [...survival].sort((a, b) => a - b));
     }
 
     function onSubmit() {
+        console.log(getLifeString())
         onLifeRuleSelect(getLifeString());
     }
     
     return (
-        <div className={lifeRuleEditorStyles["assisted-change-area"]}>
-            <span className={lifeRuleEditorStyles["text"]}> Neighbors needed to be Born </span>
-            <div className={lifeRuleEditorStyles["selection-button-list"]}>
-                { new Array(9).fill(0).map(( num, index ) => (
-                <button className={`${lifeRuleEditorStyles["select-button"]} ${lifeRuleEditorStyles[`${birth.has(index) ? "selected" : "unselected"}`]} `} onClick={() => birth.has(index) ? (() => { birth.delete(index); setBirth(new Set<number>(birth)); })() : (() => { birth.add(index); setBirth(new Set<number>(birth)); })() } key={`rule editor birth ${index}`}> {index} </button>
+        <SideBarToolSection>
+            <section className="flex flex-col gap-2">
+                <Description> Neighbors needed to be Born </Description>
+                <div className="flex flex-row justify-evenly">
+                    { new Array(9).fill(0).map(( num, index ) => (
+                    <ToggleButton selected={birth.some(val => val === index)} onClick={() => inputDispatch({ type: "toggle birth", num: index })} key={`rule editor birth ${index}`}>{index}</ToggleButton>
+                        )) }
+                </div>
+            </section>
+
+            <section className="flex flex-col gap-2">
+                <Description> Neighbors needed to Survive </Description>
+                <div className="flex flex-row justify-evenly">
+                    { new Array(9).fill(0).map(( num, index ) => (
+                        <ToggleButton selected={survival.some(val => val === index)} onClick={() => inputDispatch({ type: "toggle survival", num: index })} key={`rule editor birth ${index}`}>{index}</ToggleButton>
                     )) }
-            </div>
+                </div>
+            </section>
 
-            <span className={lifeRuleEditorStyles["text"]}> Neighbors needed to Survive </span>
-            
-            <div className={lifeRuleEditorStyles["selection-button-list"]}>
-                { new Array(9).fill(0).map(( num, index ) => (
-                    <button onClick={() => survive.has(index) ? (() => { survive.delete(index); setSurvive(new Set<number>(survive)); })() : (() => { survive.add(index); setSurvive(new Set<number>(survive)); })() } className={`${lifeRuleEditorStyles["select-button"]} ${lifeRuleEditorStyles[`${survive.has(index) ? "selected" : "unselected"}`]} `} key={`rule editor survive ${index}`}> {index} </button>
-                )) }
-            </div>
-
-            <button className={lifeRuleEditorStyles["assisted-change-submit"]} onClick={onSubmit} > Sumbit </button>
-        
-        </div>);
+            <SubmitButton onClick={onSubmit} > Sumbit </SubmitButton>
+        </SideBarToolSection>);
 }
 
 
-function NamedLifeRuleEditor({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) {
+const NamedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) => {
     const [selectedNamedRule, setSelectedNamedRule] = useState<NamedLifeRule>("Conway's Game Of Life")
 
     function submit() {
         onLifeRuleSelect(getNamedLifeRuleString(selectedNamedRule))
     }
 
-    return ( <div>
-        <div className={lifeRuleEditorStyles[""]}>
-            <div>
-                <p> { selectedNamedRule } </p>
-                <p> { getNamedLifeRuleString(selectedNamedRule) } </p> 
+    return (
+        <SideBarToolSection>
+
+            <div className="flex flex-col">
+                <div className="flex flex-col justify-center items-center p-2 m-1 rounded-lg">
+                    <Description> { selectedNamedRule } </Description>
+                    <Description> <span className="text-green-400">{ getNamedLifeRuleString(selectedNamedRule) }</span> </Description> 
+                </div>
+
+                <div className="relative overflow-auto border border-black" style={{minHeight: 150}}>
+                    <div className="flex-grow grid grid-cols-3 absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+                        { NAMED_LIFE_RULES_LIST.map(namedRule => <ToggleButton selected={selectedNamedRule === namedRule} key={namedRule} onClick={() => setSelectedNamedRule(namedRule)}><span className="text-xs">{namedRule}</span></ToggleButton>)  }
+                    </div>
+                </div>
             </div>
 
-            <div>
-                { NAMED_LIFE_RULES_LIST.map(namedRule => <button key={namedRule} onClick={() => setSelectedNamedRule(namedRule)}>{namedRule}</button>)  }
-            </div>
-        </div>
-
-        <button onClick={submit}>Submit</button>
-    </div> )
+            <SubmitButton onClick={submit}>Submit</SubmitButton>
+        </SideBarToolSection> )
 }
 
-function RawLifeRuleEditor({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) {
+const RawLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) => {
     const [automataInput, setAutomataInput] = useState<string>(currentRule)
     const [ruleErr, setRuleErr] = useState<string>("");
 
@@ -141,16 +177,15 @@ function RawLifeRuleEditor({ currentRule, onLifeRuleSelect }: LifeRuleEditorProp
         }
     }
 
+    function hasError() { return ruleErr !== "" }
+
 
     return (
-        <div className={lifeRuleEditorStyles["raw-change-area"]}> 
-            { ruleErr !== "" ? <p> { ruleErr } </p> : "" }
-            <input type="text" className={`${lifeRuleEditorStyles["life-rule-string-input"]} ${lifeRuleEditorStyles[`${isValidLifeString(automataInput, validityErrorCallback) } ? "valid" : "invalid"}`]} `} value={automataInput} onChange={(e) => {
-                setAutomataInput(e.target.value); 
-            }} />
-
-            <button className={lifeRuleEditorStyles["raw-change-button"]} onClick={rawSubmit}>Submit</button>
-        </div> );
+        <SideBarToolSection> 
+            { hasError() ? <ErrorText>{ ruleErr }</ErrorText> : "" }
+            <TextInput valid={isValidLifeString(automataInput, validityErrorCallback)} value={automataInput} onChange={(e) => { setAutomataInput(e.target.value) }} />
+            <SubmitButton error={hasError()} onClick={rawSubmit}>Submit</SubmitButton>
+        </SideBarToolSection> );
 }
 
 export default LifeRuleEditor

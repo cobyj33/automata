@@ -2,7 +2,7 @@ import { CellMatrix } from 'interfaces/CellMatrix';
 import { IVector2 } from 'interfaces/Vector2';
 import { FaLeaf } from 'react-icons/fa';
 
-type LifeRuleData = { birth: number[], survival: number[] }
+export type LifeRuleData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {
     const sides = lifeString.split("/");
     if (sides.length !== 2) {

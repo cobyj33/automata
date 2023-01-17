@@ -1,18 +1,4 @@
-.rule-editor {
-    background-color: rgb(30, 30, 30);
-    border-radius: 5px;
-    text-align: center;
-    padding-right: 20px;
-    padding-left: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
 
-    margin: 10px;
-}
-
-.rule-editor:hover {
-    border-bottom: 2px solid white;
-}
 
 .rule-edit-area .rule-editor {
     display: flex;
@@ -43,32 +29,6 @@
     justify-content: space-evenly;
 }
 
-
-.mode-selection-button {
-    text-align: center;
-    border: none;
-    flex-grow: 1;
-    flex-basis: 20px;
-    padding: 5px;
-    border-radius: 10px;
-    color: white;
-    background-color: rgb(30, 30, 30);
-}
-
-.mode-selection-button:hover {
-    border: 2px solid white;
-}
-
-.mode-selection-button.selected {
-    transition: color 0.2s background-color 0.2s;
-    background-color: black;
-    border-bottom: 1px solid limegreen;
-}
-
-.mode-selection-button.selected:hover {
-    border: 2px solid limegreen;
-}
-
 .life-rule-data {
     font-size: 16px;
 }
@@ -76,29 +36,6 @@
 .current-life-rule {
     color: green;
 }
-
-
-.life-rule-string-input {
-    text-align: center;
-    background-color: rgb(10, 10, 10);
-    color: white;
-    border: 2px solid black;
-}
-
-.life-rule-string-input:hover {
-    border-bottom: 1px solid white;
-}
-
-.life-rule-string-input.valid {
-    transition: background-color 0.1s;
-    background-color: green;
-}
-
-.life-rule-string-input.invalid {
-    transition: background-color 0.1s;
-    background-color: red;
-}
-
 
 .select-button {
     color: white;
@@ -120,24 +57,7 @@
     border-bottom: 1px solid green;
 }
 
-.raw-change-button, .assisted-change-submit {
-    padding: 5px;
-    color: white;
-    background-color: rgb(10, 10, 10);
-    border-radius: 5px;
-    border: none;
-    margin: 10px;
-}
 
-.raw-change-button:hover, .assisted-change-submit:hover {
-    border-bottom: 1px solid white;
-    background-color: rgb(40, 40, 40);
-}
-
-.raw-change-button:active, .assisted-change-submit:active {
-    border-bottom: 1px solid blue;
-    background-color: rgb(80, 80, 80);
-}
 
 .raw-change-area, .assisted-change-area {
     padding: 10px;

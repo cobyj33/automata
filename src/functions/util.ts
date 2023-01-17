@@ -239,6 +239,15 @@ export function isSimilarNumberArray(first: number[], second: number[]) {
     return areEqualNumberFrequencyMaps(firstFreqMap, secondFreqMap);
 }
 
+export function capitalized(word: string) {
+    if (word.length === 0) {
+        return word;
+    }
+    const firstLetter = word.charAt(0)
+    return firstLetter.toUpperCase().concat( word.slice(1).toLowerCase() )
+}
+
+
 // /**
 //  * Checks if two arrays are 
 //  * 

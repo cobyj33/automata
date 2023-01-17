@@ -293,8 +293,8 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
         gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
         gl.uniform2f(offsetLocation, view.offset().col, view.offset().row);
         
-
-        gl.drawArrays(gl.LINES, 0, gridVertices.length);
+        const lineRenderCount = Math.floor(gridVertices.length / 2) % 2 === 0 ? Math.floor(gridVertices.length / 2) : Math.ceil(gridVertices.length / 2)
+        gl.drawArrays(gl.LINES, 0, lineRenderCount);
 }
 
 
