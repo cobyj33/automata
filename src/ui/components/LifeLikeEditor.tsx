@@ -26,7 +26,6 @@ import { BsCircle } from "react-icons/bs"
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
 import { Dimension2D } from "interfaces/Dimension";
-import { e } from "vitest/dist/index-761e769b";
 import TextAreaInput from "./reuse/TextAreaInput";
 import ActionButton from "./reuse/ActionButton";
 import ToggleButton from "./reuse/ToggleButton";

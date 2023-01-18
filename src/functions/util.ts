@@ -1,4 +1,3 @@
-import { T } from "vitest/dist/types-bae746aa";
 
 type IComparer<T> = (first: T, second: T) => boolean;
 

@@ -5,7 +5,6 @@ import { CellMatrix } from "interfaces/CellMatrix";
 import { getNextElementaryGeneration } from "functions/generationFunctions";
 import { Vector2 } from "interfaces/Vector2";
 import { concatUint8ClampedArrays } from "functions/util";
-import { E } from "vitest/dist/types-bae746aa";
 
 interface ElementaryRenderData {
     cellMatrix: CellMatrix,
