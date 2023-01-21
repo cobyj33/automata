@@ -83,7 +83,7 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
 export function renderBoard(gl: WebGL2RenderingContext, view: View, board: IVector2[], opacity: number = 1) {
     const viewArea: Box = getViewArea(gl.canvas, view);
     const shownCells = board.filter(cell => viewArea.pointInside(cell));
-    const lastClearColor: Float32Array = gl.getParameter(gl.COLOR_CLEAR_VALUE);
+    const lastClearColor: Float32Array | null | undefined = gl.getParameter(gl.COLOR_CLEAR_VALUE);
     
     gl.enable(gl.SCISSOR_TEST);
     gl.clearColor(1, 1, 1, opacity);
@@ -92,7 +92,9 @@ export function renderBoard(gl: WebGL2RenderingContext, view: View, board: IVect
         gl.clear(gl.COLOR_BUFFER_BIT);
     })
     gl.disable(gl.SCISSOR_TEST);
-    gl.clearColor(lastClearColor[0], lastClearColor[1], lastClearColor[2], lastClearColor[3]);
+    if (lastClearColor !== null && lastClearColor !== undefined) {
+        gl.clearColor(lastClearColor[0], lastClearColor[1], lastClearColor[2], lastClearColor[3]);
+    }
   }
 
   // export function renderBoardFromMatrix(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, cellMatrix: CellMatrix) {
