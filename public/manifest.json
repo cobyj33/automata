@@ -1,11 +1,16 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "JJ Automata",
+  "name": "JJ Automata",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicon-dark-mode.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+        "src": "favicon.ico",
+        "sizes": "64x64 32x32 24x24 16x16",
+        "type": "image/x-icon"
     },
     {
       "src": "logo192.png",
@@ -18,7 +23,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/automata",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
