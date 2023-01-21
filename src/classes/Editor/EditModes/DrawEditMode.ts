@@ -13,18 +13,19 @@ export class DrawEditMode extends EditMode<LifeLikeEditorData> {
             return;
         }
 
-        const [, setBoard] = this.data.boardData;
+        const setBoard = this.data.boardData[1];
+        const bounds = this.data.boundsData[0]
         const hoveredCell = this.data.currentHoveredCell;
-
-        setBoard(board => filterVector2ListDuplicates(board.concat(hoveredCell)));
+        setBoard(board => filterVector2ListDuplicates(board.concat(hoveredCell)).filter(cell => bounds.pointInside(cell))  );
     }
 
     onPointerMove(event: PointerEvent<Element>) {
-        const [, setBoard] = this.data.boardData;
+        const setBoard = this.data.boardData[1];
+        const bounds = this.data.boundsData[0]
         const hoveredCell = this.data.currentHoveredCell;
         const lastHoveredCell = this.data.lastHoveredCell;
         if (this.data.isPointerDown && !this.data.isRendering) {
-            setBoard(board => filterVector2ListDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )) )
+            setBoard(board => filterVector2ListDuplicates(board.concat( getLine(lastHoveredCell, hoveredCell) )).filter(cell => bounds.pointInside(cell)) )
         }
     }
 }

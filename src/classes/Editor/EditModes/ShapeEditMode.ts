@@ -45,7 +45,7 @@ export class ShapeEditMode {
                 const toRemove = this.getShape()
                 this.line = this.line.withEnd(end)
                 const [, setGhostTilePositions] = data.ghostTilePositions;
-                setGhostTilePositions(positions => removeVector2ListMatches(positions, toRemove).concat(this.getShape()) )
+                setGhostTilePositions(positions => filterVector2ListDuplicates(  removeVector2ListMatches(positions, toRemove).concat(this.getShape()) ) )
             }
         }
     }
@@ -61,12 +61,13 @@ export class ShapeEditMode {
             const setBoard = data.boardData[1];
             const bounds = data.boundsData[0];
             const newCells: IVector2[] = this.getShape().filter(cell => bounds.pointInside(cell));
-            
-            setBoard(board =>  filterVector2ListDuplicates(board.concat(newCells)))
-            const [, setGhostTilePositions] = data.ghostTilePositions;
-            setGhostTilePositions( positions => removeVector2ListMatches(positions, this.getShape()) )
+            setBoard(board =>  filterVector2ListDuplicates(board.concat(newCells)).filter(cell => bounds.pointInside(cell))  )
         }
 
+        const [, setGhostTilePositions] = data.ghostTilePositions;
+        const toRemove = this.getShape()
+        setGhostTilePositions( positions => removeVector2ListMatches(positions, toRemove) )
+        
         this.reset()
     }
 
