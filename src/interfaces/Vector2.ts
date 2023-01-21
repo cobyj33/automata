@@ -296,10 +296,25 @@ function getVector2ListDuplicatesSet(list: IVector2[]): Set2D {
     return duplicates
 }
 
+/**
+ * Returns all Vector2s which are duplicates in the inputted list
+ * Note that the outputted list will still be unique. If a value appears multiple times in the inputted list, it will appear once in the outputted list
+ * 
+ * @param list The list to be filtered
+ * @returns A list of all Vector2 values found to be duplicates
+ */
 export function getVector2ListDuplicates(list: IVector2[]): IVector2[] {
     return getVector2ListDuplicatesSet(list).getPairs()
 }
 
+/**
+ * Takes any Vector2 values that are duplicates from the list array and makes them appear only once
+ * Note this means that if a value appears twice in the inputted list, it will appear ONCE in the outputted list
+ * Does not edit in place
+ * 
+ * @param list The list to be filtered
+ * @returns A new list, which is the original list with only unique values
+ */
 export function filterVector2ListDuplicates(list: IVector2[]): IVector2[] {
     const set2D: Set2D = new Set2D()
     return list.filter(vec => {
@@ -311,12 +326,41 @@ export function filterVector2ListDuplicates(list: IVector2[]): IVector2[] {
     })
 }
 
+/**
+ * Completely removes any Vector2 values that are duplicates from the list array
+ * Note this means that if a value appears twice in the inputted list, it will NOT be present in the outputted list
+ * Does not edit in place
+ * 
+ * @param list The list to be filtered
+ * @returns A new list, which is the original list with only ORIGINALLY unique values
+ */
 export function removeVector2ListDuplicates(list: IVector2[]): IVector2[] {
     const duplicates: Set2D = getVector2ListDuplicatesSet(list)
     return list.filter(vec => !duplicates.has(vec.row, vec.col))
 }
 
+/**
+ * Keep any Vector2 values from the list array that match any values in the matches array
+ * Does not edit in place
+ * 
+ * @param list The list to be filtered
+ * @param matches The values that will be tested as matches against the list
+ * @returns A new list, which is the original list with only values that match any of the Vector2s in the matches parameter
+ */
 export function filterVector2ListMatches(list: IVector2[], matches: IVector2[]) {
     const set2D = Set2D.fromVector2DArray(matches)
     return list.filter(vec => set2D.has(vec.row, vec.col))
+}
+
+/**
+ * Remove any Vector2 values from the list array that match any values in the matches array
+ * Does not edit in place
+ * 
+ * @param list The list to be filtered
+ * @param matches The values that will be tested as matches against the list
+ * @returns A **new** list, which is the original list without any values that match the Vector2s in the matches parameter
+ */
+export function removeVector2ListMatches(list: IVector2[], matches: IVector2[]): IVector2[] {
+    const set2D = Set2D.fromVector2DArray(matches)
+    return list.filter(vec => set2D.has(vec.row, vec.col) === false)
 }

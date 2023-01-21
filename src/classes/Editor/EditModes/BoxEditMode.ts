@@ -29,6 +29,10 @@ export class BoxEditMode extends EditMode<LifeLikeEditorData> {
         this.shapemode.onPointerUp(event, this.data)
     }
 
+    onPointerLeave(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerLeave(event, this.data)
+    }
+
     onKeyDown(event: KeyboardEvent<Element>): void {
         this.shapemode.onKeyDown(event, this.data)
     }

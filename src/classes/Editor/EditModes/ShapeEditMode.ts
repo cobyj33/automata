@@ -1,6 +1,6 @@
 import { LifeLikeEditorData } from "interfaces/EditorData";
 import { LineSegment } from "interfaces/LineSegment";
-import { filterVector2ListDuplicates, filterVector2ListMatches, IVector2 } from "interfaces/Vector2";
+import { filterVector2ListDuplicates, IVector2, removeVector2ListMatches } from "interfaces/Vector2";
 import EditMode from "./EditMode";
 
 
@@ -29,6 +29,7 @@ export class ShapeEditMode {
     }
 
     onPointerMove(event: React.PointerEvent<Element>, data: LifeLikeEditorData) {
+        console.log("pointer moved")
         if (data.isPointerDown && !data.isRendering) {
             const hoveredCell = data.currentHoveredCell;
             let end = hoveredCell
@@ -44,13 +45,15 @@ export class ShapeEditMode {
                 const toRemove = this.getShape()
                 this.line = this.line.withEnd(end)
                 const [, setGhostTilePositions] = data.ghostTilePositions;
-                setGhostTilePositions(positions => filterVector2ListMatches(positions, toRemove).concat(this.getShape()) )
+                setGhostTilePositions(positions => removeVector2ListMatches(positions, toRemove).concat(this.getShape()) )
             }
         }
     }
 
     onPointerLeave(event: React.PointerEvent<Element>, data: LifeLikeEditorData) {
-        
+        const toRemove = this.getShape()
+        const [, setGhostTilePositions] = data.ghostTilePositions;
+        setGhostTilePositions(positions => removeVector2ListMatches(positions, toRemove))
     }
 
     onPointerUp(event: React.PointerEvent<Element>, data: LifeLikeEditorData) {
@@ -61,7 +64,7 @@ export class ShapeEditMode {
             
             setBoard(board =>  filterVector2ListDuplicates(board.concat(newCells)))
             const [, setGhostTilePositions] = data.ghostTilePositions;
-            setGhostTilePositions( positions => filterVector2ListMatches(positions, this.getShape()) )
+            setGhostTilePositions( positions => removeVector2ListMatches(positions, this.getShape()) )
         }
 
         this.reset()

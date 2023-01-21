@@ -15,7 +15,10 @@ export class LineEditMode extends EditMode<LifeLikeEditorData> {
 
     onPointerDown(event: PointerEvent<Element>): void {
         this.shapemode.onPointerDown(event, this.data)
-        
+    }
+
+    onPointerLeave(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerLeave(event, this.data)
     }
 
     onPointerMove(event: PointerEvent<Element>): void {
