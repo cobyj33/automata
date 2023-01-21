@@ -2,7 +2,7 @@ import { Reducer, useEffect, useRef, useState } from 'react'
 import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View';
 import { Box } from 'interfaces/Box';
-import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
+import BoardDrawing from 'ui/components/BoardDrawing';
 import { CellMatrix } from 'interfaces/CellMatrix';
 import {getNextLifeGeneration} from 'functions/generationFunctions';
 
@@ -26,7 +26,7 @@ export const LifeLikeGameRender = ({ start, view, bounds, automata, getData }: {
     }, [currentRender])
 
 
-    return <BoundedBoardDrawing bounds={bounds} board={currentRender} view={view} />
+    return <BoardDrawing bounds={bounds} board={currentRender} view={view} />
 }
 
 export default LifeLikeGameRender

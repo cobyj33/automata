@@ -13,8 +13,7 @@ import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeS
 import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
 import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
 
-import LayeredCanvas from 'ui/components/LayeredCanvas';
-import { BoundedBoardDrawing } from 'ui/components/BoundedBoardDrawing';
+import { BoardDrawing } from 'ui/components/BoardDrawing';
 import { LifeLikeGameRender, RenderData } from 'ui/components/LifeLikeGameRender';
 import LifeRuleEditor from "ui/components/LifeRuleEditor"
 
@@ -40,7 +39,6 @@ import { LifeLikeEditorEditMode } from "state/lifelike";
 
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
   const boardHolderRef = React.useRef<HTMLDivElement>(null);
-  const ghostCanvas = React.useRef<HTMLCanvasElement>(null);
   const [cursor, setCursor] = React.useState<string>('');
   
     const [view, setView] = React.useState<View>(View.from(0, 0, 10));
@@ -62,15 +60,6 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
         }
     }, [rendering] )
 
-    function renderGhostCanvas() {
-        withCanvasAndContextWebGL2(ghostCanvas, ({ gl }) => {
-            gl.clearColor(0, 0, 0, 0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-            renderBoard(gl, view, ghostTilePositions.concat(lastHoveredCell), 0.5);
-        })
-    }
-
-  React.useEffect(renderGhostCanvas, [ghostTilePositions, lastHoveredCell])
 
   function getCurrentHoveredCell(event: React.PointerEvent<Element>): Vector2 {
     return getHoveredCell(pointerPositionInElement(event), view).trunc()
@@ -192,18 +181,14 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
     }
   }
 
-  useCanvasHolderUpdater(ghostCanvas, ghostCanvas, renderGhostCanvas)
 
   return (
     <div className={gameBoardStyles["editor"]}>
 
       <div style={{cursor: cursor}} ref={boardHolderRef} className={gameBoardStyles["board-holder"]} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0} >
-        <LayeredCanvas>
           {rendering ? 
                 <LifeLikeGameRender automata={automata} start={board} view={view} bounds={bounds} getData={(data) => setRenderData(data)} /> 
-           : <BoundedBoardDrawing bounds={bounds} view={view} board={board} />}
-          <canvas className={gameBoardStyles["board-drawing"]} ref={ghostCanvas} />
-        </LayeredCanvas>
+           : <BoardDrawing bounds={bounds} view={view} board={board.concat(ghostTilePositions).concat(currentHoveredCell.current)} />}
       </div>
 
       <aside className={gameBoardStyles["left-side-bar"]}>

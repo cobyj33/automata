@@ -1,3 +1,4 @@
+import { splitVendorChunk } from "vite";
 
 type IComparer<T> = (first: T, second: T) => boolean;
 
@@ -354,4 +355,8 @@ export function concatUint8ClampedArrays(...arrays: Uint8ClampedArray[]): Uint8C
  */
 export function switchKeysAndValues<T extends Object>(obj: T) {
     return Object.fromEntries(Object.entries(obj).map(([k, v]) => [v, k]))
+}
+
+export function isEqualDOMRect(first: DOMRect, second: DOMRect) {
+    return first.x === second.x && first.y === second.y && first.width === second.width && first.height === second.height
 }

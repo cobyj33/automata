@@ -1,7 +1,7 @@
 import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent, useReducer } from "react";
 import { View } from "interfaces/View"
 import { IVector2, Vector2 } from "interfaces/Vector2"
-import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
+import { BoardDrawing } from "ui/components/BoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
 import { ElementaryDrawEditMode } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
 import { ElementaryLineEditMode  } from "classes/Editor/EditModes/Elementary/ElementaryLineEditMode";
@@ -32,6 +32,7 @@ import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { getRefBoundingClientRect } from "functions/reactUtil";
 import Description from "./reuse/Description";
 import { ElementaryEditorEditMode } from "state/elementary";
+import ElementaryRuleEditor from "./ElementaryRuleEditor";
 
 
 
@@ -171,7 +172,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     <div className={elementaryStyles["editor"]}  >
       <div className={elementaryStyles["board-holder"]} ref={boardHolderRef} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
           { rendering ? <ElementaryBoardRender view={view} start={board} rule={rule} /> : 
-              <BoundedBoardDrawing board={CellMatrix.fromNumberMatrix([board], Vector2.ZERO)} view={view} bounds={Box.from(0, 0, board.length, 1)} />
+              <BoardDrawing board={CellMatrix.fromNumberMatrix([board], Vector2.ZERO)} view={view} bounds={Box.from(0, 0, board.length, 1)} />
           }
       </div>
 
@@ -217,13 +218,6 @@ function EditModeButton({ children = "", target, current, setter }: { children?:
   return <ToggleButton selected={current === target} onClick={() => setter(target)}>{children}</ToggleButton>
 }
 
-const DEFAULT_ELEMENTARY_PREVIEW_MAX_GENERATIONS = 100;
-const DEFAULT_ELEMENTARY_PREVIEW_START_SIZE = 150;
-function ruleEditorPreviewStart(length: number = DEFAULT_ELEMENTARY_PREVIEW_START_SIZE): number[] {
-    const arr = new Array(length).fill(length)
-    arr[Math.trunc(length / 2)] = 1
-    return arr
-}
 
 interface ElementaryRuleEditorData {
     previewStart: number[],
@@ -233,66 +227,5 @@ interface ElementaryRuleEditorData {
 
 
 
-function ElementaryRuleEditor({ rule, onRuleRequest }: { rule: number, onRuleRequest: (num: number) => void }) {
-    const [ruleInput, setRuleInput] = useState<number>(30)
-    const [requestedRule, setRequestedRule] = useState<number>(30)
-    const renderController = useRef<RenderController>(new RenderController())
-    const previewHolderRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
-
-    function restartPreview() {
-        renderController.current.fire("restart")
-    }
-
-    useEffect( () => {
-        restartPreview()
-    }, [requestedRule])
-
-    function onRuleInputChanged(event: ChangeEvent<Element>) {
-        const inputElement = event.target as HTMLInputElement
-        const input = Number(inputElement.value)
-        if (!isNaN(input)) {
-            setRuleInput(input)
-            if (isValidElementaryRule(input)) {
-                setRequestedRule(input);
-            }
-        }
-    }
-
-    function sendRule() {
-        onRuleRequest(requestedRule)
-    }
-
-    function getPreviewMaxGeneration(): number {
-        const rect = getRefBoundingClientRect(previewHolderRef)
-        return rect !== null && rect !== undefined ? Math.trunc(rect.height) : DEFAULT_ELEMENTARY_PREVIEW_MAX_GENERATIONS
-    }
-
-    function getPreviewStartCount(): number {
-        const rect = getRefBoundingClientRect(previewHolderRef)
-        return rect !== null && rect !== undefined ? Math.trunc(rect.width) : DEFAULT_ELEMENTARY_PREVIEW_START_SIZE
-    }
-
-    return (
-        <SideBarEditorTool>
-            <SideBarToolTitle>Rule Editor</SideBarToolTitle>
-            <Description> Current Rule: <span className="text-green-400">{rule}</span> </Description>
-            <Description> Rule must be between 0 and 255 </Description>
-
-            <section className="grid grid-cols-2 gap-2 p-3 bg-neutral-900 rounded-lg">
-                <div className="flex flex-col">
-                    <TextInput valid={isValidElementaryRule(Number(ruleInput))} onChange={onRuleInputChanged} value={ruleInput}  />
-                    <ActionButton onClick={restartPreview}>Restart Preview</ActionButton>
-                </div>
-
-                <div ref={previewHolderRef}>
-                    <ElementaryBoardRender start={ruleEditorPreviewStart(getPreviewStartCount())} view={new View(Vector2.ZERO, 1)} rule={requestedRule} maxGeneration={getPreviewMaxGeneration()} controller={renderController} />
-                </div>
-            </section>
-
-            <SubmitButton onClick={sendRule}> Set Rule {requestedRule} </SubmitButton>
-
-        </SideBarEditorTool>  
-    )
-}
 
 export default ElementaryBoard

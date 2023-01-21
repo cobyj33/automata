@@ -1,6 +1,8 @@
 import { MutableRefObject, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { HistoryStack } from "classes/Structures/HistoryStack";
 import { StatefulData } from "interfaces/StatefulData";
+import { isEqualDOMRect } from "./util";
+import { getRefBoundingClientRect } from "./reactUtil";
 
 type Action = () => void;
 type IComparer<T> = (first: T, second: T) => boolean;
@@ -149,11 +151,22 @@ export function useCanvas2DUpdater(canvasRef: RefObject<HTMLCanvasElement>) {
 }
 
 export function useResizeObserver(toObserve: RefObject<HTMLElement>, ...actions: Action[]) {
-    const observer = useRef(new ResizeObserver(() => { actions.forEach(action => action())} ));
+    const lastBoundingBox = useRef<DOMRect>( new DOMRect(0, 0, 0, 0) )
+    const onDetect = () => {
+        const rect = getRefBoundingClientRect(toObserve)
+        if (rect !== null && rect !== undefined) {
+            if (!isEqualDOMRect(lastBoundingBox.current, rect)) {
+                actions.forEach(action => action())
+            }
+            lastBoundingBox.current = rect
+        }
+    }
+
+    const observer = useRef(new ResizeObserver(onDetect));
     useEffect(() => {
         if (toObserve.current !== null && toObserve.current !== undefined) {
             observer.current.disconnect()
-            observer.current = new ResizeObserver(() => { actions.forEach(action => action())} )
+            observer.current = new ResizeObserver(onDetect)
             observer.current.observe(toObserve.current)
         }
     })

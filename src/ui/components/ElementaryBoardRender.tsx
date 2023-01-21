@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef, MutableRefObject, Reducer, useReducer } from "react";
+import React from "react";
 import { View } from "interfaces/View"
-import {BoundedBoardDrawing} from "ui/components/BoundedBoardDrawing";
 import { CellMatrix } from "interfaces/CellMatrix";
 import { getNextElementaryGeneration } from "functions/generationFunctions";
 import { Vector2 } from "interfaces/Vector2";
 import { concatUint8ClampedArrays } from "functions/util";
+import BoardDrawing from "ui/components/BoardDrawing";
 
 interface ElementaryRenderData {
     cellMatrix: CellMatrix,
@@ -75,7 +75,7 @@ function restartElementaryBoard(state: ElementaryRenderData, action: ElementaryR
     return getStartingElementaryBoardData(startData)
 }
 
-type ElementaryRenderDataReducerFunction = Reducer<ElementaryRenderData, ElementaryRenderDataActions>
+type ElementaryRenderDataReducerFunction = React.Reducer<ElementaryRenderData, ElementaryRenderDataActions>
 const renderStateReducer: ElementaryRenderDataReducerFunction = (state, action) => {
     const { type } = action
     switch (type) {
@@ -84,11 +84,11 @@ const renderStateReducer: ElementaryRenderDataReducerFunction = (state, action) 
     }
 }
 
-export const ElementaryBoardRender = ({ start, view,  rule, maxGeneration = Number.MAX_VALUE, controller: controllerRef }: { start: number[], view: View, rule: number, maxGeneration?: number, controller?: MutableRefObject<RenderController> }) => {
-    const [renderData, renderDataDispatch] = useReducer<ElementaryRenderDataReducerFunction>(renderStateReducer, getStartingElementaryBoardData(start));
-    const { cellMatrix, currentLine } = renderData
+export const ElementaryBoardRender = ({ start, view,  rule, maxGeneration = Number.MAX_VALUE, controller: controllerRef }: { start: number[], view: View, rule: number, maxGeneration?: number, controller?: React.MutableRefObject<RenderController> }) => {
+    const [renderData, renderDataDispatch] = React.useReducer<ElementaryRenderDataReducerFunction>(renderStateReducer, getStartingElementaryBoardData(start));
+    const { cellMatrix } = renderData
 
-    useEffect( () => {
+    React.useEffect( () => {
         if (controllerRef !== null && controllerRef !== undefined) {
             const controller = controllerRef.current
             controller.addEvent("restart", () => {
@@ -97,18 +97,20 @@ export const ElementaryBoardRender = ({ start, view,  rule, maxGeneration = Numb
         }
     }, [])
 
-    useEffect( () => {
-        const currentGeneration = cellMatrix.height
+    React.useEffect(() => {
+        renderDataDispatch({ type: "restart", startData: start })
+    }, [start, rule])
 
+    React.useEffect( () => {
+        const currentGeneration = cellMatrix.height
         if (cellMatrix.area > 0 && currentGeneration < maxGeneration) {
             requestAnimationFrame(() => {
                 renderDataDispatch({ type: "next", rule: rule })
             })
         }
-
     }, [renderData, rule])
 
-    return <BoundedBoardDrawing board={cellMatrix} view={view} bounds={cellMatrix.box} />
+    return <BoardDrawing board={cellMatrix} view={view} bounds={cellMatrix.box} />
 }
 
 export default ElementaryBoardRender

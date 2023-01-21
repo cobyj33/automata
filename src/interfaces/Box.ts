@@ -13,6 +13,7 @@ export class Box implements IBox {
     readonly topleft: Vector2
     readonly size: Dimension2D
     static readonly ZERO: Box = Box.from(0, 0, 0, 0)
+    static readonly INFINITE: Box = Box.from(Number.MIN_VALUE / 2 - 1, Number.MIN_VALUE / 2 - 1, Number.MAX_VALUE / 2 - 1, Number.MAX_VALUE / 2 - 1)
 
     constructor(topleft: IVector2, size: IDimension2D) {
         this.topleft = Vector2.fromData(topleft)

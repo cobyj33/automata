@@ -1,132 +1,79 @@
 import React from 'react'
 import { IVector2 } from 'interfaces/Vector2';
 import { View } from 'interfaces/View'
-import { RGBA, Color } from 'interfaces/Color';
-import { getBoardMatrixShaderProgram, getGridShaderProgram, renderBoard, renderBoardFromMatrix, renderGrid, withCanvasAndContextWebGL2 } from 'functions/drawing';
+import { getBoardMatrixShaderProgram, getGridShaderProgram, getViewArea, renderBoard, renderBoardFromMatrix, renderGrid, withCanvasAndContextWebGL2 } from 'functions/drawing';
 import { useCanvasHolderUpdater, useWebGL2CanvasUpdater } from 'functions/hooks';
 import { CellMatrix } from 'interfaces/CellMatrix';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
-import LayeredCanvas from 'ui/components/LayeredCanvas';
-import { visitIterationBody } from 'typescript';
+import { IBox, Box } from 'interfaces/Box';
+import HeldCanvas from './reuse/HeldCanvas';
 
-interface DrawingSettings {
-    showGrid: boolean;
-    backgroundColor: RGBA;
-    cellColor: RGBA;
+
+interface GridHideConfig {
+    show: false
+}
+interface GridShowConfig {
+    show: true
+    minGridSize: number
+}
+type GridConfig = GridHideConfig | GridShowConfig
+
+interface BoardDrawingProps {
+    board: IVector2[] | CellMatrix
+    view: View
+    grid?: GridConfig
+    bounds?: IBox
 }
 
-const defaultBoardSettings = {
-    showGrid: true,
-    backgroundColor: {
-        red: 60,
-        blue: 60,
-        green: 60,
-        alpha: 255
-    },
-
-    cellColor: {
-        red: 255,
-        blue: 255,
-        green: 255,
-        alpha: 255
-    }
-} as const;
-
-interface BoardDrawingConfig {
-  grid?: boolean,
-  minGridSize?: number
-}
-
-export const BoardDrawing = ({ board, view, config = { grid: true, minGridSize: 4 }  }: { board: IVector2[] | CellMatrix, view: View, config?: BoardDrawingConfig }) => {
-  const boardCanvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
-  const gridCanvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
-  const boardMatrixShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);
-  const gridShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);
-
-  const lastView = React.useRef<View>(view);
-
-  function renderBoardCanvas() {
-    withCanvasAndContextWebGL2(boardCanvasRef, ({ gl }) => {
-      gl.clearColor(0.15, 0.15, 0.15, 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      if (Array.isArray(board)) {
-        renderBoard(gl, view, board as IVector2[]);
-      } else {
-        renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
-      }
-    })
-  }
-
-  function clearGLCanvas(ref: React.RefObject<HTMLCanvasElement>, color: Color = new Color(0, 0, 0, 0)) {
-    withCanvasAndContextWebGL2(ref, ({ gl }) => {
-      gl.clearColor(...color.tuple());
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    })
-  }
-
-  function renderGridCanvas() {
-    clearGLCanvas(gridCanvasRef)
-    withCanvasAndContextWebGL2(gridCanvasRef, ({ gl }) => {
-      renderGrid(gl, view, gridShaderProgram.current);
-    })
-  }
-
-    function shouldRenderGrid() {
-      if (config?.grid) {
-        if ("minGridSize" in config === true) {
-          if (config.minGridSize as number <= view.cellSize) {
-            return true;
-          }
-        } else {
-          return true;
-        }
-      }
-      return false;
-    }
-    
-    function requestRenderGridCanvas() {
-        if (shouldRenderGrid()) {
-            renderGridCanvas();
-        } else {
-            clearGLCanvas(gridCanvasRef)
-        }
-    }
-
-    function renderAll() {
-        renderBoardCanvas();
-        requestRenderGridCanvas()
-    }
-
-    React.useEffect(renderBoardCanvas, [board]);
+export const BoardDrawing = ({ board, view, grid: gridConfig = { show: true, minGridSize: 4 }, bounds: inputBounds = Box.INFINITE }: BoardDrawingProps) => {
+    const canvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
+    const boardMatrixShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);
+    const gridShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);
+    const bounds = Box.fromData(inputBounds)
 
     React.useEffect(() => {
-        if (!view.equals(lastView.current)) {
-            lastView.current = view;
-            renderAll();
-        }
-    }, [view]);
-
-    const canvasHolder = React.useRef<HTMLDivElement>(null)
-
-    useCanvasHolderUpdater(boardCanvasRef, canvasHolder, renderBoardCanvas)
-    useCanvasHolderUpdater(gridCanvasRef, canvasHolder, requestRenderGridCanvas)
-
-    React.useEffect(() => {
-      withCanvasAndContextWebGL2(boardCanvasRef, ({ gl }) => {
-        boardMatrixShaderProgram.current = getBoardMatrixShaderProgram(gl);
-      })
-
-      withCanvasAndContextWebGL2(gridCanvasRef, ({ gl }) => {
-        gridShaderProgram.current = getGridShaderProgram(gl);
-      })
-
-      renderAll();
+        withCanvasAndContextWebGL2(canvasRef, ({ gl }) => {
+            boardMatrixShaderProgram.current = getBoardMatrixShaderProgram(gl);
+            gridShaderProgram.current = getGridShaderProgram(gl);
+        })
+        render();
     }, [])
-  
-  return <LayeredCanvas ref={canvasHolder}>
-          <canvas className={boardDrawingStyles["board-drawing"]} ref={boardCanvasRef}></canvas>
-          <canvas className={boardDrawingStyles["board-drawing"]} ref={gridCanvasRef}></canvas> 
-        </LayeredCanvas> 
+
+    const shouldRenderGrid = () => gridConfig.show && gridConfig.minGridSize <= view.cellSize
+
+    function blockOutBounds(gl: WebGL2RenderingContext) {
+        const viewArea: Box = getViewArea(gl.canvas, view);
+        gl.enable(gl.SCISSOR_TEST);
+        gl.scissor((bounds.col - viewArea.col) * view.cellSize, gl.canvas.height - (bounds.row - viewArea.row) * view.cellSize - bounds.height * view.cellSize, bounds.width * view.cellSize, bounds.height * view.cellSize);
+        gl.clearColor(0.15, 0.15, 0.15, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.disable(gl.SCISSOR_TEST);
+    }
+
+    function render() {
+        withCanvasAndContextWebGL2(canvasRef, ({ gl }) => {
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            blockOutBounds(gl)
+
+            if (Array.isArray(board)) {
+                renderBoard(gl, view, board as IVector2[]);
+            } else {
+                renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
+            }
+
+            if (shouldRenderGrid()) {
+                renderGrid(gl, view, gridShaderProgram.current);
+            }
+            
+        })
+    }
+
+    React.useEffect(render);
+    React.useEffect(render, [board, view]);
+
+
+  return <HeldCanvas canvasRef={canvasRef} onUpdate={render} />
 }
 
 export default BoardDrawing
