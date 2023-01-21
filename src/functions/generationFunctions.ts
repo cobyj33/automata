@@ -200,13 +200,11 @@ const patternTextFilterRegex = /[^*.\n\rOo]/g
 
 export function isValidPatternText(text: string): boolean {
     const filteredText = text.replace(patternTextFilterRegex, "")
-    console.log(filteredText)
     if (filteredText.length === 0) {
         return false;
     }
 
     const lines = filteredText.split(/[\n\r]/g)
-    console.log(lines)
     if (lines.length === 0) {
         return false;
     }
@@ -227,8 +225,6 @@ export function parsePatternText(text: string): IVector2[] {
     const offValues = ["."] 
 
     const lines = filteredText.split(/[\n\r]/g)
-    console.log(lines)
-    console.log(filteredText)
     lines.forEach((line, row) => {
         line.split("").forEach((char, col) => {
                 if (onValues.some(val => val === char)) {

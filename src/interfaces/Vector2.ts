@@ -313,7 +313,6 @@ export function filterVector2ListDuplicates(list: IVector2[]): IVector2[] {
 
 export function removeVector2ListDuplicates(list: IVector2[]): IVector2[] {
     const duplicates: Set2D = getVector2ListDuplicatesSet(list)
-    console.log(duplicates.getPairs())
     return list.filter(vec => !duplicates.has(vec.row, vec.col))
 }
 

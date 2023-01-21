@@ -85,7 +85,6 @@ const assistedLifeRuleReducer: AssistedLifeRuleStateReducerFunction = (draft, ac
             }
             break;
     }
-    console.log(draft)
     return draft
 }
 
@@ -98,7 +97,6 @@ const AssistedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRu
     }
 
     function onSubmit() {
-        console.log(getLifeString())
         onLifeRuleSelect(getLifeString());
     }
     

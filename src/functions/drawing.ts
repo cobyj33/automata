@@ -371,7 +371,6 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
 //     gl.uniform1f(gridLineWidthLocation, 1)
 //     gl.uniform4f(gridColorLocation, 0.0, 0.0, 0.0, 1)
 
-//     console.log(view, getViewOffset(view))
 
 //     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 // }
@@ -401,7 +400,6 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
 //     const sideLength = hexagonRadius * sqrt3 / 2;
 //     const centerToSide = hexagonRadius * Math.sin(Math.PI / 3);
     
-//     console.log(hexagonDiameter, hexagonRadius, sideLength, centerToSide);
     
 //     const viewOffset = getViewOffset(view);
 //     let y = -viewOffset.row;
