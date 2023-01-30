@@ -1,5 +1,5 @@
 import { filterVector2ListDuplicates } from "interfaces/Vector2";
-import { IVector2, addVector2, scaleVector2, subtractVector2, rotateVector2, distanceBetweenVector2, dotProductVector2, vector2Normalized, vector2ToLength, getVectorLength } from "interfaces/Vector2"
+import { Vector2, IVector2, addVector2, scaleVector2, subtractVector2, rotateVector2, distanceBetweenVector2, dotProductVector2, vector2Normalized, vector2ToLength, getVectorLength } from "interfaces/Vector2"
 
 test('vector2 addition', () => {
     const first = { row: 10, col: 5 };
@@ -132,4 +132,12 @@ test("IVector2 list remove duplicates", () => {
     ]
 
     expect(filterVector2ListDuplicates(list).length).toBe(10)
+})
+
+test("Chaning", () => {
+    expect(Vector2.ZERO.withRow(5).withCol(5).equals(new Vector2(5, 5)) ).toBe(true);
+})
+
+test("Chaning Functions", () => {
+    expect(Vector2.ZERO.withRow(curr => curr + 5).withCol(curr => curr + 5).equals(new Vector2(5, 5)) ).toBe(true);
 })

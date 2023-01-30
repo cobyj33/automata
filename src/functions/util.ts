@@ -100,14 +100,13 @@ export function hasDuplicates<T>(list: T[]): boolean {
  * @example clamp(4, 5, 10) => 5; clamp(20, 5, 10) => 10; clamp(7, 5, 10) => 7
  * 
  * @param value {number} The number value to be clamped
- * @param lower {number} The amount that the value will be clamped to if the value is underneath this number
- * @param higher {number} The amount that the value will be clamped to if the value is above this number
+ * @param bounds1 {number} One of the bounds for the number being clamped
+ * @param bounds2 {number} One of the bounds for the number being clamped
  * @returns The number clamped
  */
-export function clamp(value: number, lower: number, higher: number) {
-    if (higher < lower) {
-        throw new Error("Cannot clamp values, \"higher\" input " + higher + " is lower than \"lower\" input " + lower)
-    }
+export function clamp(value: number, bounds1: number, bounds2: number) {
+    const higher = Math.max(bounds1, bounds2)
+    const lower = Math.min(bounds1, bounds2);
     
     return Math.min(higher, Math.max(lower, value))
 }

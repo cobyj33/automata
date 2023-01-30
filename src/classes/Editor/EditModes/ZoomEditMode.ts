@@ -1,6 +1,6 @@
 import { PointerEvent, WheelEvent } from "react";
 import {StatefulData} from "interfaces/StatefulData";
-import { Vector2 } from "interfaces/Vector2";
+import { IVector2, Vector2 } from "interfaces/Vector2";
 import {View} from "interfaces/View";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
@@ -15,31 +15,39 @@ export class ZoomEditMode extends EditMode<EditorData> {
     anchor: Vector2 = Vector2.ZERO
     anchorPercentage: Vector2 = Vector2.ZERO
 
-    onPointerDown(event: PointerEvent<Element>) {
-        this.anchor = Vector2.fromData(this.data.currentHoveredCell)
+    setAnchors(pos: IVector2) {
+        this.anchor = Vector2.fromData(pos)
         const view = this.data.viewData[0]
         const viewport = this.data.viewportSize
         const worldViewport = viewport.scale(1/view.cellSize)
         this.anchorPercentage = new Vector2( (this.anchor.row - view.row) / worldViewport.height, (this.anchor.col - view.col) / worldViewport.width)
     }
 
-    onPointerMove(event: PointerEvent<Element>) {
+    zoomBy(zoomVector: Vector2) {
         const [, setView] = this.data.viewData;
+        if (!zoomVector.isZero()) {
+            setView(view =>  {
+                const zoomAmount = Math.trunc(ZOOM_DIRECTION.dot(zoomVector.normalize()))
+                const newCellSize = clamp(view.cellSize + zoomAmount, MIN_CELL_SIZE, MAX_CELL_SIZE)
+                const viewportWorldSize = this.data.viewportSize.scale(1/view.cellSize)
+                const newViewportWorldSize = this.data.viewportSize.scale(1/newCellSize)
+                const changeInViewportWorldSize = viewportWorldSize.subtract(newViewportWorldSize)
+
+                const panAmount = new Vector2(changeInViewportWorldSize.scale( this.anchorPercentage.row ).height, changeInViewportWorldSize.scale( this.anchorPercentage.col ).width)
+
+                return view.withCellSize(newCellSize).withPosition(pos => pos.add(panAmount))
+            })
+        }
+    }
+
+    onPointerDown(event: PointerEvent<Element>) {
+        this.setAnchors(this.data.currentHoveredCell)
+    }
+
+    onPointerMove(event: PointerEvent<Element>) {
         if (this.data.isPointerDown === true) {
             const movementVector: Vector2 = new Vector2(event.movementY, event.movementX)
-            if (!movementVector.isZero()) {
-                setView(view =>  {
-                    const zoomAmount = Math.trunc(ZOOM_DIRECTION.dot(movementVector.normalize()))
-                    const newCellSize = clamp(view.cellSize + zoomAmount, MIN_CELL_SIZE, MAX_CELL_SIZE)
-                    const viewportWorldSize = this.data.viewportSize.scale(1/view.cellSize)
-                    const newViewportWorldSize = this.data.viewportSize.scale(1/newCellSize)
-                    const changeInViewportWorldSize = viewportWorldSize.subtract(newViewportWorldSize)
-
-                    const panAmount = new Vector2(changeInViewportWorldSize.scale( this.anchorPercentage.row ).height, changeInViewportWorldSize.scale( this.anchorPercentage.col ).width)
-
-                    return view.withCellSize(newCellSize).withPosition(pos => pos.add(panAmount))
-                })
-            }
+            this.zoomBy(movementVector);
         }
     }
 

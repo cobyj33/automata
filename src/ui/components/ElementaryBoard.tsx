@@ -11,8 +11,8 @@ import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUp
 import { ElementaryBoardRender, RenderController } from "ui/components/ElementaryBoardRender";
 import { StatefulData } from "interfaces/StatefulData"
 import { pointerPositionInElement, getHoveredCell } from 'functions/editorFunctions';
-import { ZoomEditMode } from 'classes/Editor/EditModes/ZoomEditMode';
-import { MoveEditMode } from 'classes/Editor/EditModes/MoveEditMode';
+import { ElementaryZoomEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryZoomEditMode';
+import { ElementaryMoveEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryMoveEditMode';
 import { EditMode } from 'classes/Editor/EditModes/EditMode';
 import { ElementaryEraseEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
@@ -83,13 +83,21 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       viewportSize: getViewportSize()
     }
   }
+
+  useEffect(() => {
+    if (rendering === false) {
+        const viewportSize = getViewportSize()
+        const verticalCells = viewportSize.height / view.cellSize;
+        setView(view => view.withPosition(new Vector2(-verticalCells / 2, view.col)));
+    }
+  }, [rendering])
   
   const [editMode, setEditMode] = useState<ElementaryEditorEditMode>("MOVE");
 
   const editorModes: MutableRefObject<{[key in ElementaryEditorEditMode]: EditMode<ElementaryEditorData> | EditMode<EditorData>}> = useRef({ 
     "DRAW": new ElementaryDrawEditMode(getElementaryEditorData()),
-    "ZOOM": new ZoomEditMode(getElementaryEditorData()),
-    "MOVE": new MoveEditMode(getElementaryEditorData()),
+    "ZOOM": new ElementaryZoomEditMode(getElementaryEditorData()),
+    "MOVE": new ElementaryMoveEditMode(getElementaryEditorData()),
     "ERASE": new ElementaryEraseEditMode(getElementaryEditorData()),
     "LINE": new ElementaryLineEditMode(getElementaryEditorData()),
   });
@@ -186,6 +194,16 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       </aside>
 
       <aside className={elementaryStyles["right-side-bar"]}>
+
+      <SideBarEditorTool>
+            <SideBarToolTitle>Editor Data</SideBarToolTitle> 
+            <div className={elementaryStyles["view-data"]}>
+                <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
+                <Description>{` View CellSize: ${view.cellSize} `}</Description> 
+                <Description>{` Hovering: ( Row: ${currentHoveredCell.current.row} Col: ${currentHoveredCell.current.col} ) `}</Description>
+            </div>
+        </SideBarEditorTool>
+
         <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
             <SideBarEditorTool>
                 <SideBarToolTitle>W.I.P...</SideBarToolTitle>

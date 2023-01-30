@@ -23,6 +23,20 @@ export class Vector2 implements IVector2 {
         return new Vector2(height, width)
     }
 
+    withRow(row: number | ((currentRow: number) => number)): Vector2 {
+        if (typeof(row) === "function") {
+            return new Vector2(row(this.row), this.col);
+        }
+        return new Vector2(row, this.col);
+    }
+    
+    withCol(col: number | ((currentCol: number) => number)): Vector2 {
+        if (typeof(col) === "function") {
+            return new Vector2(this.row, col(this.col));
+        }
+        return new Vector2(this.row, col);
+    }
+
     rowcomp() {
         return new Vector2(this.row, 0)
     }
