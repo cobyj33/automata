@@ -22,7 +22,9 @@ export class MoveEditMode extends EditMode<EditorData>{
             const view = this.data.viewData[0];
             const movementDirection: Vector2 = new Vector2(event.movementY, event.movementX)
             const MOVEMENT_LIMIT = 20 / view.cellSize
-            this.moveBy(movementDirection.toLength(MOVEMENT_LIMIT));
+            if (movementDirection.isZero() == false) {
+                this.moveBy(movementDirection.toLength(MOVEMENT_LIMIT));
+            }
         }
     }
 }
