@@ -176,7 +176,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
         const translatedCells = cells.map(cell => Vector2.fromData(cell)).map(cell => cell.add(box.topleft).trunc())
         setBoard(translatedCells.filter(cell => bounds.pointInside(cell)))
     } else {
-        console.error("Invalid pattern text: " + pattern)
+        throw new Error("Invalid pattern text: " + pattern)
     }
   }
 

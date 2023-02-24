@@ -3,8 +3,8 @@ import { View } from "interfaces/View";
 import { Box } from "interfaces/Box";
 import { CellMatrix } from "interfaces/CellMatrix";
 
-import gridVertexShader from "shaders/grid.vert?raw"
-import gridFragmentShader from "shaders/grid.frag?raw"
+import gridVertexShader from "functions/grid.vert?raw"
+import gridFragmentShader from "functions/grid.frag?raw"
 import { compileProgramFromFiles, fetchTextFile } from "./webgl";
 import { Dimension2D } from "interfaces/Dimension";
 
