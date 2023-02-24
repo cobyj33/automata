@@ -196,7 +196,7 @@ export function rotateVector2(vector: IVector2, angleInRadians: number): IVector
 
 export function vector2ToLength(vector: IVector2, length: number): IVector2 {
     if (vector.row === 0 && vector.col === 0) {
-        console.error('cannot change length of 0 length vector');
+        throw new Error('cannot change length of 0 length vector');
     }
 
     return scaleVector2(vector,  length /  getVectorLength(vector));

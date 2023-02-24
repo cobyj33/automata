@@ -25,7 +25,7 @@ export function quadIndices() {
     return [ 0, 1, 3, 1, 3, 2 ]
 }
 
-function createShader(gl: WebGL2RenderingContext, shaderType: number, shaderSource: string): WebGLShader | null {
+function createShader(gl: WebGL2RenderingContext, shaderType: number, shaderSource: string): WebGLShader {
     let shader = gl.createShader(shaderType);
     if (shader !== null && shader !== undefined) {
         gl.shaderSource(shader, shaderSource);
@@ -33,19 +33,17 @@ function createShader(gl: WebGL2RenderingContext, shaderType: number, shaderSour
 
         const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
         if (!success) {
-           console.error(gl.getShaderInfoLog(shader));
-           gl.deleteShader(shader);
-            return null;
+            gl.deleteShader(shader);
+            throw new Error(gl.getShaderInfoLog(shader) || "");
         }
         
         return shader;
     }
 
-    console.error("Could not create shader");
-    return null;
+    throw new Error("Could not create shader");
 }
 
-function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram | null {
+function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram {
     const program = gl.createProgram();
     if (program !== null && program !== undefined) {
         let success: any;
@@ -54,16 +52,14 @@ function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLShader, fr
         gl.linkProgram(program);
         success = gl.getProgramParameter(program, gl.LINK_STATUS);
         if (!success) {
-            console.error(gl.getProgramInfoLog(program));
             gl.deleteProgram(program);
-            return null;
+            throw new Error(gl.getProgramInfoLog(program) || "");
         }
 
         return program;
     }
 
-    console.error("Could not create webgl program");
-    return null;
+    throw new Error("Could not create webgl program");
 }
 
 // export function renderBoard(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D, view: View, board: IVector2[]) {
@@ -195,7 +191,6 @@ export function renderBoardFromMatrix(gl: WebGL2RenderingContext, view: View, ce
         if (validationSuccess) {
             matrixProgram = inputtedMatrixRenderProgram;
         } else {
-            console.error(gl.getProgramInfoLog(inputtedMatrixRenderProgram));
             matrixProgram = getBoardMatrixShaderProgram(gl);
         }
     } else {
@@ -274,7 +269,6 @@ export function renderGrid(gl: WebGL2RenderingContext, view: View, gridProgram: 
             if (validationSuccess) {
                 gridGraphicProgram = gridProgram;
             } else {
-                console.error(gl.getProgramInfoLog(gridProgram));
                 gridGraphicProgram = getGridShaderProgram(gl);
             }
 

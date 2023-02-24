@@ -44,8 +44,7 @@ function canMakeLifeString(survivalNums: number[], birthNums: number[]): boolean
 
 export function createLifeString(birthNums: number[], survivalNums: number[]): string {
     if (!canMakeLifeString(survivalNums, birthNums)) {
-        console.error("CANNOT MAKE LIFE STRING FROM ", survivalNums, " AND ", birthNums);
-        return "B3/S23";
+        throw new Error(`Cannot make new life string from ${survivalNums} and ${birthNums}`);
     }
     
     return "B".concat( birthNums.join("")  ).concat('/S').concat( survivalNums.join("") );
@@ -115,9 +114,7 @@ export function getNextLifeGeneration(cellMatrix: CellMatrix, ruleString: string
 export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleString: string): Promise<Uint8ClampedArray>  {
     const output: Uint8ClampedArray = new Uint8ClampedArray(cellMatrix.cellData.length);
     if (!isValidLifeString(ruleString)) {
-        console.error("Cannot parse invalid life string: ", ruleString);
-        output.set(cellMatrix.cellData, 0);
-        return output;
+        throw new Error(`Cannot parse invalid life string: ${ruleString}`);
     }
 
     const ruleData = parseLifeLikeString(ruleString);
@@ -182,11 +179,7 @@ function getNextElementaryGenerationFunction(line: Uint8ClampedArray, index: num
 export function getNextElementaryGeneration(currentGeneration: Uint8ClampedArray, numberRule: number): Uint8ClampedArray {
     const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
     if (!isValidElementaryRule(numberRule)) {
-        console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
-        for (let i = 0; i < output.length; i++) {
-            output[i] = currentGeneration[i];
-        }
-        return output;
+        throw new Error(`CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", ${numberRule}`);
     }
 
     const rules: Uint8ClampedArray = getElementaryRules(numberRule);
