@@ -5,8 +5,8 @@ import { IVector2, Vector2 } from 'common/Vector2';
 import { View } from 'common/View';
 import { StatefulData } from 'common/StatefulData';
 
-import { EditMode } from "EditModes/EditMode"
-import { BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "EditModes/LifeLike/LifeLikeEditModes";
+import { EditMode } from "editModes/EditMode"
+import { BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "editModes/lifeLike/LifeLikeEditModes";
 
 import { renderBoard, withCanvasAndContextWebGL2 } from 'common/drawing';
 import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeString, parsePatternText } from 'common/generationFunctions';

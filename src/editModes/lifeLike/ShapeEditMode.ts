@@ -1,7 +1,7 @@
 import { LifeLikeEditorData } from "common/EditorData";
 import { LineSegment } from "common/LineSegment";
 import { filterVector2ListDuplicates, IVector2, removeVector2ListMatches } from "common/Vector2";
-import EditMode from "./EditMode";
+import EditMode from "editModes/EditMode";
 
 
 type ShapeCreatorFunction = (corner1: IVector2, corner2: IVector2) => IVector2[]

@@ -1,5 +1,5 @@
 import { PointerEvent } from "react";
-import { EditMode } from "EditModes/EditMode";
+import { EditMode } from "editModes/EditMode";
 import { getLine } from "common/shapes";
 import { StatefulData } from "common/StatefulData"
 import { IVector2 } from "common/Vector2"

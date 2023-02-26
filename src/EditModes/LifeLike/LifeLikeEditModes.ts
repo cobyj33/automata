@@ -1,7 +1,0 @@
-export * from "EditModes/LifeLike/BoxEditMode"
-export * from "EditModes/LifeLike/DrawEditMode"
-export * from "EditModes/LifeLike/EllipseEditMode"
-export * from "EditModes/LifeLike/LineEditMode"
-export * from "EditModes/LifeLike/MoveEditMode"
-export * from "EditModes/LifeLike/ZoomEditMode"
-export * from "EditModes/LifeLike/EraseEditMode"
