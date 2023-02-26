@@ -1,6 +1,6 @@
 import { MutableRefObject, RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { HistoryStack } from "classes/Structures/HistoryStack";
-import { StatefulData } from "interfaces/StatefulData";
+import { StatefulData } from "common/StatefulData";
 import { isEqualDOMRect } from "./util";
 import { getRefBoundingClientRect } from "./reactUtil";
 

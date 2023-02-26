@@ -1,9 +1,9 @@
 import React, { useEffect } from "react"
 
-import {Box } from 'interfaces/Box';
-import { IVector2, Vector2 } from 'interfaces/Vector2';
-import { View } from 'interfaces/View';
-import { StatefulData } from 'interfaces/StatefulData';
+import {Box } from 'common/Box';
+import { IVector2, Vector2 } from 'common/Vector2';
+import { View } from 'common/View';
+import { StatefulData } from 'common/StatefulData';
 
 import { EditMode, BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "classes/Editor/EditModes/LifeLikeEditModes";
 
@@ -22,8 +22,8 @@ import { AiOutlineClear } from "react-icons/ai"
 import { BsCircle } from "react-icons/bs"
 
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
-import { EditorData, LifeLikeEditorData } from "interfaces/EditorData";
-import { Dimension2D } from "interfaces/Dimension";
+import { EditorData, LifeLikeEditorData } from "common/EditorData";
+import { Dimension2D } from "common/Dimension";
 import TextAreaInput from "./reuse/TextAreaInput";
 import ActionButton from "./reuse/ActionButton";
 import ToggleButton from "./reuse/ToggleButton";

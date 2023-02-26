@@ -1,5 +1,5 @@
 import { getLine } from "functions/shapes";
-import { IVector2, Vector2 } from "interfaces/Vector2"
+import { IVector2, Vector2 } from "common/Vector2"
 
 export class LineSegment implements ILineSegment {
     readonly start: Vector2;

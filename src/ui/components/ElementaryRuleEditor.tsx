@@ -1,8 +1,8 @@
 import { isValidElementaryRule } from "functions/generationFunctions"
 import { useResizeObserver } from "functions/hooks";
 import { getRefBoundingClientRect } from "functions/reactUtil"
-import { Vector2 } from "interfaces/Vector2";
-import { View } from "interfaces/View";
+import { Vector2 } from "common/Vector2";
+import { View } from "common/View";
 import React from "react"
 import ElementaryBoardRender, { RenderController } from "./ElementaryBoardRender"
 import ActionButton from "./reuse/ActionButton";

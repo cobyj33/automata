@@ -1,7 +1,7 @@
 export {}
 // import {MutableRefObject, useEffect, RefObject, useRef} from "react";
 // import { getNextLifeGeneration } from "functions/generationFunctions"
-// import { CellMatrix } from "interfaces/CellMatrix";
+// import { CellMatrix } from "common/CellMatrix";
 // import { withCanvasAndContext2D } from "functions/drawing";
 
 // const LifeLikeText = ({ children }: { children: string }) => {

@@ -1,5 +1,5 @@
-import { Box } from "interfaces/Box";
-import { IVector2, filterVector2ListDuplicates, subtractVector2, Vector2, addVector2, translateVector2 } from "interfaces/Vector2"
+import { Box } from "common/Box";
+import { IVector2, filterVector2ListDuplicates, subtractVector2, Vector2, addVector2, translateVector2 } from "common/Vector2"
 
 export const Supported2DShapes = ["LINE", "ELLIPSE", "CIRCLE", "BOX", "SQUARE"] as const;
 export type LifeLikeAvailableShapes = typeof Supported2DShapes[number]

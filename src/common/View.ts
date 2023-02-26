@@ -1,4 +1,4 @@
-import { IVector2, Vector2 } from "interfaces/Vector2";
+import { IVector2, Vector2 } from "common/Vector2";
 
 export interface IView {
     readonly position: IVector2

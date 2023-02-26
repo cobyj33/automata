@@ -2,11 +2,11 @@ import { clear } from "console";
 import { MAX_CELL_SIZE, MIN_CELL_SIZE } from "data";
 import { getShapeFunction, LifeLikeAvailableShapes, ShapeFunction } from "functions/shapes";
 import { clamp } from "functions/util";
-import { Box, IBox } from "interfaces/Box"
-import { CellMatrix, ICellMatrix } from "interfaces/CellMatrix";
-import { Dimension2D, IDimension2D } from "interfaces/Dimension";
-import { addVector2, IVector2, Vector2, vector2AlterToCol, vector2Equals, vector2IsInteger } from "interfaces/Vector2"
-import { View, IView } from "interfaces/View"
+import { Box, IBox } from "common/Box"
+import { CellMatrix, ICellMatrix } from "common/CellMatrix";
+import { Dimension2D, IDimension2D } from "common/Dimension";
+import { addVector2, IVector2, Vector2, vector2AlterToCol, vector2Equals, vector2IsInteger } from "common/Vector2"
+import { View, IView } from "common/View"
 import { ImmerReducer, useImmer } from "use-immer";
 
 export type LifeLikeEditorEditMode = "MOVE" | "ZOOM" | "DRAW" | "ERASE" | "BOX" | "LINE" | "ELLIPSE";

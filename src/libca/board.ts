@@ -1,6 +1,6 @@
-import { IVector2 } from "interfaces/Vector2";
-import { Box } from "./Box";
-import { CellMatrix } from "./CellMatrix";
+import { IVector2 } from "common/Vector2";
+import { Box } from "common/Box";
+import { CellMatrix } from "common/CellMatrix";
 
 
 export class CellBoard {

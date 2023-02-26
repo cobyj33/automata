@@ -1,12 +1,12 @@
-import { IVector2 } from "interfaces/Vector2";
-import { View } from "interfaces/View";
-import { Box } from "interfaces/Box";
-import { CellMatrix } from "interfaces/CellMatrix";
+import { IVector2 } from "common/Vector2";
+import { View } from "common/View";
+import { Box } from "common/Box";
+import { CellMatrix } from "common/CellMatrix";
 
 import gridVertexShader from "functions/grid.vert?raw"
 import gridFragmentShader from "functions/grid.frag?raw"
 import { compileProgramFromFiles, fetchTextFile } from "./webgl";
-import { Dimension2D } from "interfaces/Dimension";
+import { Dimension2D } from "common/Dimension";
 
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
     return new Box(view.position, Dimension2D.fromData(canvas).scale(1/view.cellSize).ceil())

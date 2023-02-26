@@ -1,6 +1,6 @@
-import { StatefulData } from "interfaces/StatefulData";
-import { IVector2 } from "interfaces/Vector2";
-import { View } from "interfaces/View";
+import { StatefulData } from "common/StatefulData";
+import { IVector2 } from "common/Vector2";
+import { View } from "common/View";
 import { PointerEvent } from "react";
 import { Box } from "./Box";
 import { Dimension2D } from "./Dimension";

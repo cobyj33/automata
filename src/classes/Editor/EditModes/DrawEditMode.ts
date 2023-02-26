@@ -1,9 +1,9 @@
 import { PointerEvent } from "react";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { getLine } from "functions/shapes";
-import { StatefulData } from "interfaces/StatefulData"
-import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2"
-import { LifeLikeEditorData } from "interfaces/EditorData";
+import { StatefulData } from "common/StatefulData"
+import { IVector2, filterVector2ListDuplicates } from "common/Vector2"
+import { LifeLikeEditorData } from "common/EditorData";
 
 export class DrawEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }

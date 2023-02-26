@@ -1,9 +1,9 @@
 import { Reducer, useEffect, useRef, useState } from 'react'
-import { IVector2 } from 'interfaces/Vector2';
-import { View } from 'interfaces/View';
-import { Box } from 'interfaces/Box';
+import { IVector2 } from 'common/Vector2';
+import { View } from 'common/View';
+import { Box } from 'common/Box';
 import BoardDrawing from 'ui/components/BoardDrawing';
-import { CellMatrix } from 'interfaces/CellMatrix';
+import { CellMatrix } from 'common/CellMatrix';
 import {getNextLifeGeneration} from 'functions/generationFunctions';
 
 

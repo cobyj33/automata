@@ -1,8 +1,8 @@
 import { PointerEvent } from "react";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
-import { StatefulData } from "interfaces/StatefulData"
-import { CellMatrix } from "interfaces/CellMatrix"
-import { ElementaryEditorData } from "interfaces/EditorData";
+import { StatefulData } from "common/StatefulData"
+import { CellMatrix } from "common/CellMatrix"
+import { ElementaryEditorData } from "common/EditorData";
 import { range } from "functions/util";
 
 export function elementaryPlaceDown(data: ElementaryEditorData, toPlace: number)  {

@@ -1,7 +1,7 @@
-import { filterVector2ListDuplicates, IVector2, Vector2 } from "interfaces/Vector2";
-import { Dimension2D, IDimension2D } from "interfaces/Dimension";
-import { LineSegment } from "interfaces/LineSegment";
-import { Range, rangeIntersect } from "interfaces/Range";
+import { filterVector2ListDuplicates, IVector2, Vector2 } from "common/Vector2";
+import { Dimension2D, IDimension2D } from "common/Dimension";
+import { LineSegment } from "common/LineSegment";
+import { Range, rangeIntersect } from "common/Range";
 
 
 export interface IBox {

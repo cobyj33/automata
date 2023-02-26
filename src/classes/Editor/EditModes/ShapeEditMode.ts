@@ -1,6 +1,6 @@
-import { LifeLikeEditorData } from "interfaces/EditorData";
-import { LineSegment } from "interfaces/LineSegment";
-import { filterVector2ListDuplicates, IVector2, removeVector2ListMatches } from "interfaces/Vector2";
+import { LifeLikeEditorData } from "common/EditorData";
+import { LineSegment } from "common/LineSegment";
+import { filterVector2ListDuplicates, IVector2, removeVector2ListMatches } from "common/Vector2";
 import EditMode from "./EditMode";
 
 

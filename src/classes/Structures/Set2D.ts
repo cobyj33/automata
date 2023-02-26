@@ -1,4 +1,4 @@
-import { IVector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'common/Vector2';
 
 
 export class Set2D {

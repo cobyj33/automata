@@ -1,7 +1,7 @@
-import { IVector2, vector2Equals } from "interfaces/Vector2"
-import { CellMatrix } from "interfaces/CellMatrix"
+import { IVector2, vector2Equals } from "common/Vector2"
+import { CellMatrix } from "common/Matrix"
 import { isEqualNumberArray, isSimilarNumberArray } from "functions/util";
-import { Box } from "interfaces/Box";
+import { Box } from "common/Box";
 
 
 test('cells To Matrix', () => {

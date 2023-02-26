@@ -1,8 +1,8 @@
 import { isEqualNumberArray, isEqualNumberMatrix, isSimilarNumberArray } from "functions/util";
-import { CellMatrix } from "interfaces/CellMatrix";
+import { CellMatrix } from "common/CellMatrix";
 import { getNextLifeGeneration } from "functions/generationFunctions"
-import { Vector2 } from "interfaces/Vector2";
-import { Box } from "interfaces/Box";
+import { Vector2 } from "common/Vector2";
+import { Box } from "common/Box";
 
 /**
  * Get a Acorn Conway's Game Of Life Pattern

@@ -1,5 +1,5 @@
-import { Box } from "interfaces/Box";
-import { IVector2 } from "interfaces/Vector2"
+import { Box } from "common/Box";
+import { IVector2 } from "common/Vector2"
 
 test("Equal Boxes", () => {
     const first: Box = Box.from(0, 2, 5, 4);

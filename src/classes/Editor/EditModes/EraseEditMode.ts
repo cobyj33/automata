@@ -1,9 +1,9 @@
 import { PointerEvent } from "react";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
 import { getLine } from "functions/shapes";
-import { StatefulData } from "interfaces/StatefulData"
-import { IVector2 } from "interfaces/Vector2"
-import { LifeLikeEditorData } from "interfaces/EditorData";
+import { StatefulData } from "common/StatefulData"
+import { IVector2 } from "common/Vector2"
+import { LifeLikeEditorData } from "common/EditorData";
 
 export class EraseEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/material-rounded/24/00000/eraser.png"), crosshair' }

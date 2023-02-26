@@ -1,6 +1,6 @@
 import { PointerEvent } from "react";
-import { IVector2, Vector2 } from "interfaces/Vector2";
-import { View } from "interfaces/View";
+import { IVector2, Vector2 } from "common/Vector2";
+import { View } from "common/View";
 
 // export function pointerPositionInElement(event: PointerEvent<Element>, element: Element): Vector2 {
 //     const canvasBounds: DOMRect = element.getBoundingClientRect();

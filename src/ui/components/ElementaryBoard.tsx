@@ -1,26 +1,26 @@
 import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent, useReducer } from "react";
-import { View } from "interfaces/View"
-import { IVector2, Vector2 } from "interfaces/Vector2"
+import { View } from "common/View"
+import { IVector2, Vector2 } from "common/Vector2"
 import { BoardDrawing } from "ui/components/BoardDrawing";
-import { CellMatrix } from "interfaces/CellMatrix";
+import { CellMatrix } from "common/CellMatrix";
 import { ElementaryDrawEditMode } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
 import { ElementaryLineEditMode  } from "classes/Editor/EditModes/Elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
 import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "functions/hooks";
 import { ElementaryBoardRender, RenderController } from "ui/components/ElementaryBoardRender";
-import { StatefulData } from "interfaces/StatefulData"
+import { StatefulData } from "common/StatefulData"
 import { pointerPositionInElement, getHoveredCell } from 'functions/editorFunctions';
 import { ElementaryZoomEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryZoomEditMode';
 import { ElementaryMoveEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryMoveEditMode';
 import { EditMode } from 'classes/Editor/EditModes/EditMode';
 import { ElementaryEraseEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
-import { Box } from "interfaces/Box";
+import { Box } from "common/Box";
 import { isEqualNumberArray } from "functions/util";
-import { EditorData, ElementaryEditorData } from "interfaces/EditorData";
+import { EditorData, ElementaryEditorData } from "common/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
-import { Dimension2D } from "interfaces/Dimension";
+import { Dimension2D } from "common/Dimension";
 import { isValidElementaryRule } from "functions/generationFunctions";
 import { preview } from "vite";
 import SubmitButton from "./reuse/SubmitButton";

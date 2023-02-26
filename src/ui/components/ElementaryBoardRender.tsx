@@ -1,8 +1,8 @@
 import React from "react";
-import { View } from "interfaces/View"
-import { CellMatrix } from "interfaces/CellMatrix";
+import { View } from "common/View"
+import { CellMatrix } from "common/CellMatrix";
 import { getNextElementaryGeneration } from "functions/generationFunctions";
-import { Vector2 } from "interfaces/Vector2";
+import { Vector2 } from "common/Vector2";
 import { concatUint8ClampedArrays } from "functions/util";
 import BoardDrawing from "ui/components/BoardDrawing";
 

@@ -1,12 +1,12 @@
 import { KeyboardEvent, PointerEvent } from "react";
 import {getLine} from "functions/shapes";
-import { IVector2, filterVector2ListDuplicates } from "interfaces/Vector2";
-import { StatefulData } from "interfaces/StatefulData";
+import { IVector2, filterVector2ListDuplicates } from "common/Vector2";
+import { StatefulData } from "common/StatefulData";
 import { EditMode } from "classes/Editor/EditModes/EditMode";
-import { LifeLikeEditorData } from "interfaces/EditorData";
+import { LifeLikeEditorData } from "common/EditorData";
 import { ShapeEditMode } from "./ShapeEditMode";
-import { LineSegment } from "interfaces/LineSegment";
-import { Box } from "interfaces/Box";
+import { LineSegment } from "common/LineSegment";
+import { Box } from "common/Box";
 
 function boxCells(start: IVector2, end: IVector2): IVector2[] {
     const lines = Box.enclosed([start, end]).lines()

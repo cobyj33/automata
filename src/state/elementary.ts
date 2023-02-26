@@ -1,6 +1,6 @@
-import { Dimension2D, IDimension2D } from "interfaces/Dimension";
-import { IVector2 } from "interfaces/Vector2";
-import { IView } from "interfaces/View";
+import { Dimension2D, IDimension2D } from "common/Dimension";
+import { IVector2 } from "common/Vector2";
+import { IView } from "common/View";
 
 export interface ElementaryEditorState {
     readonly board: number[],

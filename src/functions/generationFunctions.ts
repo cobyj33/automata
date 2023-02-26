@@ -1,5 +1,5 @@
-import { CellMatrix } from 'interfaces/CellMatrix';
-import { IVector2 } from 'interfaces/Vector2';
+import { CellMatrix } from 'common/CellMatrix';
+import { IVector2 } from 'common/Vector2';
 import { FaLeaf } from 'react-icons/fa';
 
 export type LifeRuleData = { birth: number[], survival: number[] }

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { IVector2 } from 'interfaces/Vector2';
+import { IVector2 } from 'common/Vector2';
 import editorPageStyles from 'ui/pages/styles/EditorPage.module.css';
 
 import { Menu, MenuItem, MenuButton, SubMenu } from "@szhsin/react-menu"
-import { CellMatrix } from 'interfaces/CellMatrix';
+import { CellMatrix } from 'common/CellMatrix';
 import LifeLikeEditor from 'ui/components/LifeLikeEditor';
 import ElementaryBoard from 'ui/components/ElementaryBoard';
-import { Box } from 'interfaces/Box';
+import { Box } from 'common/Box';
 
 export type BoardType = "LIFELIKE" | "ELEMENTARY"
 const DEFAULT_ELEMENTARY_EDITOR_DATA_WIDTH = 1000;
