@@ -49,10 +49,9 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   const [cursor, setCursor] = useState<string>('');
   const [ghostTilePositions, setGhostTilePositions] = useState<number[]>([]);
   const [rule, setRule] = useState<number>(30);
-  // const [lastHoveredCell, setLastHoveredCell] = useState<number>(0);
+  const [lastHoveredCell, setLastHoveredCell] = useState<Vector2>(Vector2.ZERO);
   
   const currentHoveredCell = useRef<Vector2>(Vector2.ZERO)
-  const lastHoveredCell = useRef<Vector2>(Vector2.ZERO)
 
   const isPointerDown: MutableRefObject<boolean> = useIsPointerDown(boardHolderRef);
   const [rendering, setRendering] = useState<boolean>(false);  
@@ -75,9 +74,9 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       boardData: [board, setBoard],
       viewData: [view, setView],
       ghostTilePositions: [ghostTilePositions, setGhostTilePositions],
-      lastHoveredCell: lastHoveredCell.current,
+      lastHoveredCell: lastHoveredCell,
       currentHoveredCell: currentHoveredCell.current,
-      lastHoveredColumn: lastHoveredCell.current.col,
+      lastHoveredColumn: lastHoveredCell.col,
       currentHoveredColumn: currentHoveredCell.current.col,
       isPointerDown: isPointerDown.current,
       isRendering: rendering,
@@ -108,7 +107,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
   }, [editMode])
 
   function updateHoveredCellData(event: PointerEvent<Element>) {
-    lastHoveredCell.current = currentHoveredCell.current
+    setLastHoveredCell(currentHoveredCell.current)
     currentHoveredCell.current = getCurrentHoveredCell(event)
   }
 
@@ -181,7 +180,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
     <div className={elementaryStyles["editor"]}  >
       <div className={elementaryStyles["board-holder"]} ref={boardHolderRef} style={{cursor: cursor}} onWheel={onWheel} onPointerMove={onPointerMove} onPointerDown={onPointerDown} onPointerUp={onPointerUp} onPointerLeave={onPointerLeave} onKeyDown={onKeyDown} onKeyUp={onKeyUp} tabIndex={0}>       
           { rendering ? <ElementaryBoardRender view={view} start={board} rule={rule} /> : 
-              <BoardDrawing board={CellMatrix.fromNumberMatrix([board], Vector2.ZERO)} view={view} bounds={Box.from(0, 0, board.length, 1)} />
+              <BoardDrawing board={CellMatrix.fromNumberMatrix([board], Vector2.ZERO).toVector2List().concat(...CellMatrix.fromNumberMatrix([ghostTilePositions], Vector2.ZERO).toVector2List().concat(lastHoveredCell.colcomp()))} view={view} bounds={Box.from(0, 0, board.length, 1)} />
           }
       </div>
 
