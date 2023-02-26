@@ -33,6 +33,7 @@ import { getRefBoundingClientRect } from "common/reactUtil";
 import Description from "./reuse/Description";
 import { ElementaryEditorEditMode } from "state/elementary";
 import ElementaryRuleEditor from "./ElementaryRuleEditor";
+import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
 
 
 
@@ -185,14 +186,14 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       </div>
 
       <aside className={elementaryStyles["left-side-bar"]}>
-        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
+        <SideBarToolContainer>
             <ElementaryRuleEditor rule={rule} onRuleRequest={(newRule) => setRule(newRule)} />
             <SideBarEditorTool title={`W.I.P...`} />
-        </div>
+        </SideBarToolContainer>
       </aside>
 
       <aside className={elementaryStyles["right-side-bar"]}>
-        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
+        <SideBarToolContainer>
             <SideBarEditorTool title={`Editor Data`}>
                 <div className={elementaryStyles["view-data"]}>
                     <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
@@ -201,7 +202,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
                 </div>
             </SideBarEditorTool>
             <SideBarEditorTool title={`W.I.P...`} />
-        </div>
+        </SideBarToolContainer>
       </aside>
 
 

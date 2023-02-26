@@ -33,6 +33,7 @@ import Description from "./reuse/Description";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { DIAGRAM_NAMES, getDiagram } from "data";
 import { LifeLikeEditorEditMode } from "state/lifelike";
+import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
 
 
 
@@ -192,14 +193,14 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
       </div>
 
       <aside className={gameBoardStyles["left-side-bar"]}>
-        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
+        <SideBarToolContainer>
             <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} />
             <SideBarEditorTool title={`W.I.P...`} />
-        </div>
+        </SideBarToolContainer>
       </aside>
 
       <aside className={gameBoardStyles["right-side-bar"]}>
-        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
+        <SideBarToolContainer>
             <SideBarEditorTool title={`Editor Data`}>
                 <div className={gameBoardStyles["view-data"]}>
                     <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
@@ -230,7 +231,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             </SideBarEditorTool>
 
             <SideBarEditorTool title={`W.I.P...`} />
-          </div>
+          </SideBarToolContainer>
       </aside>
 
       <div className={gameBoardStyles["tool-bar"]}>
