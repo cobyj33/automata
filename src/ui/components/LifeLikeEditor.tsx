@@ -235,18 +235,18 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
       </aside>
 
       <div className={gameBoardStyles["tool-bar"]}>
-          <div className="flex flex-row justify-center gap-1 items-center"> 
-            <ToggleButton selected={editMode === "DRAW"} onClick={() => setEditMode("DRAW")}> <FaBrush /> </ToggleButton>
-            <ToggleButton selected={editMode === "MOVE"} onClick={() => setEditMode("MOVE")}>  <FaArrowsAlt /> </ToggleButton>
-            <ToggleButton selected={editMode === "ZOOM"} onClick={() => setEditMode("ZOOM")}>  <FaSearch /> </ToggleButton>
-            <ToggleButton selected={editMode === "ERASE"} onClick={() => setEditMode("ERASE")}>  <FaEraser /> </ToggleButton>
-            <ToggleButton selected={editMode === "LINE"} onClick={() => setEditMode("LINE")}>  <GiStraightPipe /> </ToggleButton>
-            <ToggleButton selected={editMode === "BOX"} onClick={() => setEditMode("BOX")}>  <FaBox /> </ToggleButton>
-            <ToggleButton selected={editMode === "ELLIPSE"} onClick={() => setEditMode("ELLIPSE")}>  <BsCircle /> </ToggleButton>
-            <ToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
-            <ActionButton onClick={clear}> <AiOutlineClear /> </ActionButton>
-            <ActionButton onClick={undo}> <FaUndo /> </ActionButton>
-            <ActionButton onClick={redo}> <FaRedo /> </ActionButton>
+          <div className="flex flex-row flex-grow justify-center gap-1 items-stretch"> 
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "DRAW"} onClick={() => setEditMode("DRAW")}> <FaBrush /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "MOVE"} onClick={() => setEditMode("MOVE")}>  <FaArrowsAlt /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "ZOOM"} onClick={() => setEditMode("ZOOM")}>  <FaSearch /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "ERASE"} onClick={() => setEditMode("ERASE")}>  <FaEraser /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "LINE"} onClick={() => setEditMode("LINE")}>  <GiStraightPipe /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "BOX"} onClick={() => setEditMode("BOX")}>  <FaBox /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "ELLIPSE"} onClick={() => setEditMode("ELLIPSE")}>  <BsCircle /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
+            <ActionButton className="flex-grow flex items-center justify-center" onClick={clear}> <AiOutlineClear /> </ActionButton>
+            <ActionButton className="flex-grow flex items-center justify-center" onClick={undo}> <FaUndo /> </ActionButton>
+            <ActionButton className="flex-grow flex items-center justify-center" onClick={redo}> <FaRedo /> </ActionButton>
           </div>
       </div>
 

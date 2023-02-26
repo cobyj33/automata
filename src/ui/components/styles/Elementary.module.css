@@ -49,4 +49,8 @@
     grid-row: 7 / 8;
     grid-column: 4 / 10;
     background-color: rgb(20, 20, 20);
+
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
 }

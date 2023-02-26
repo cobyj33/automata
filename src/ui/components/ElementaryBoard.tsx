@@ -208,15 +208,15 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
       <div className={elementaryStyles["tool-bar"]}>
 
-        <div className="flex flex-row justify-center gap-1 items-center"> 
-            <ToggleButton selected={editMode === "DRAW"} onClick={() => setEditMode("DRAW")}> <FaBrush /> </ToggleButton>
-            <ToggleButton selected={editMode === "MOVE"} onClick={() => setEditMode("MOVE")}>  <FaArrowsAlt /> </ToggleButton>
-            <ToggleButton selected={editMode === "ZOOM"} onClick={() => setEditMode("ZOOM")}>  <FaSearch /> </ToggleButton>
-            <ToggleButton selected={editMode === "ERASE"} onClick={() => setEditMode("ERASE")}>  <FaEraser /> </ToggleButton>
-            <ToggleButton selected={editMode === "LINE"} onClick={() => setEditMode("LINE")}>  <GiStraightPipe /> </ToggleButton>
-            <ToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
-            <ActionButton onClick={undo}> <FaUndo /> </ActionButton>
-            <ActionButton onClick={redo}> <FaRedo /> </ActionButton>
+        <div className="flex flex-row flex-grow justify-center gap-1 items-stretch "> 
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "DRAW"} onClick={() => setEditMode("DRAW")}> <FaBrush /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "MOVE"} onClick={() => setEditMode("MOVE")}>  <FaArrowsAlt /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "ZOOM"} onClick={() => setEditMode("ZOOM")}>  <FaSearch /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "ERASE"} onClick={() => setEditMode("ERASE")}>  <FaEraser /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "LINE"} onClick={() => setEditMode("LINE")}>  <GiStraightPipe /> </ToggleButton>
+            <ToggleButton className="flex-grow flex items-center justify-center" selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
+            <ActionButton className="flex-grow flex items-center justify-center" onClick={undo}> <FaUndo /> </ActionButton>
+            <ActionButton className="flex-grow flex items-center justify-center" onClick={redo}> <FaRedo /> </ActionButton>
         </div>
 
       </div>
