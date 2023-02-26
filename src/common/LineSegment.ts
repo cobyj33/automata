@@ -1,4 +1,4 @@
-import { getLine } from "functions/shapes";
+import { getLine } from "common/shapes";
 import { IVector2, Vector2 } from "common/Vector2"
 
 export class LineSegment implements ILineSegment {

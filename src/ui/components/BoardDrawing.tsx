@@ -1,8 +1,8 @@
 import React from 'react'
 import { IVector2 } from 'common/Vector2';
 import { View } from 'common/View'
-import { getBoardMatrixShaderProgram, getGridShaderProgram, getViewArea, renderBoard, renderBoardFromMatrix, renderGrid, withCanvasAndContextWebGL2 } from 'functions/drawing';
-import { useCanvasHolderUpdater, useWebGL2CanvasUpdater } from 'functions/hooks';
+import { getBoardMatrixShaderProgram, getGridShaderProgram, getViewArea, renderBoard, renderBoardFromMatrix, renderGrid, withCanvasAndContextWebGL2 } from 'common/drawing';
+import { useCanvasHolderUpdater, useWebGL2CanvasUpdater } from 'common/hooks';
 import { CellMatrix } from 'common/CellMatrix';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 import { IBox, Box } from 'common/Box';

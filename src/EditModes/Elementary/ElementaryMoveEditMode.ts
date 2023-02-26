@@ -1,12 +1,12 @@
 import { PointerEvent } from "react";
 import { IVector2, Vector2, vector2ToLength } from "common/Vector2";
-import { EditMode } from "classes/Editor/EditModes/EditMode";
+import { EditMode } from "EditModes/EditMode";
 import {addVector2} from "common/Vector2";
 import { StatefulData } from 'common/StatefulData';
 import { View } from 'common/View';
 import { EditorData, ElementaryEditorData, LifeLikeEditorData } from "common/EditorData";
 import MoveEditMode from "../MoveEditMode";
-import { clamp } from "functions/util";
+import { clamp } from "common/util";
 
 
 export class ElementaryMoveEditMode extends EditMode<ElementaryEditorData>{

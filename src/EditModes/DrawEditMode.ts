@@ -1,6 +1,6 @@
 import { PointerEvent } from "react";
-import { EditMode } from "classes/Editor/EditModes/EditMode";
-import { getLine } from "functions/shapes";
+import { EditMode } from "EditModes/EditMode";
+import { getLine } from "common/shapes";
 import { StatefulData } from "common/StatefulData"
 import { IVector2, filterVector2ListDuplicates } from "common/Vector2"
 import { LifeLikeEditorData } from "common/EditorData";

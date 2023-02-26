@@ -1,18 +1,24 @@
-import { PointerEvent, KeyboardEvent } from "react";
-import { IVector2, filterVector2ListDuplicates } from "common/Vector2";
-import { getEllipse } from "functions/shapes";
-import { EditMode } from "classes/Editor/EditModes/EditMode";
-import { StatefulData } from "common/StatefulData";
+import { KeyboardEvent, PointerEvent } from "react";
+import { IVector2, filterVector2ListDuplicates, filterVector2ListMatches } from "common/Vector2";
+import { EditMode } from "EditModes/EditMode";
+import {getLine} from 'common/shapes';
+import {StatefulData} from "common/StatefulData";
+import { Box } from "common/Box";
+import { LineSegment } from "common/LineSegment";
+import { hover } from "@testing-library/user-event/dist/hover";
 import { LifeLikeEditorData } from "common/EditorData";
 import { ShapeEditMode } from "./ShapeEditMode";
 
-
-export class EllipseEditMode extends EditMode<LifeLikeEditorData> {
+export class LineEditMode extends EditMode<LifeLikeEditorData> {
     cursor() { return 'url("https://img.icons8.com/ios-glyphs/30/000000/pencil-tip.png"), crosshair' }
-    shapemode: ShapeEditMode = new ShapeEditMode(getEllipse)
+    shapemode: ShapeEditMode = new ShapeEditMode(getLine)
 
     onPointerDown(event: PointerEvent<Element>): void {
         this.shapemode.onPointerDown(event, this.data)
+    }
+
+    onPointerLeave(event: PointerEvent<Element>): void {
+        this.shapemode.onPointerLeave(event, this.data)
     }
 
     onPointerMove(event: PointerEvent<Element>): void {
@@ -21,10 +27,6 @@ export class EllipseEditMode extends EditMode<LifeLikeEditorData> {
 
     onPointerUp(event: PointerEvent<Element>): void {
         this.shapemode.onPointerUp(event, this.data)
-    }
-
-    onPointerLeave(event: PointerEvent<Element>): void {
-        this.shapemode.onPointerLeave(event, this.data)
     }
 
     onKeyDown(event: KeyboardEvent<Element>): void {
@@ -36,4 +38,4 @@ export class EllipseEditMode extends EditMode<LifeLikeEditorData> {
     }
 }
 
-export default EllipseEditMode
+export default LineEditMode

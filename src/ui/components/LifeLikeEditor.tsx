@@ -5,12 +5,12 @@ import { IVector2, Vector2 } from 'common/Vector2';
 import { View } from 'common/View';
 import { StatefulData } from 'common/StatefulData';
 
-import { EditMode, BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "classes/Editor/EditModes/LifeLikeEditModes";
+import { EditMode, BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "EditModes/LifeLikeEditModes";
 
-import { renderBoard, withCanvasAndContextWebGL2 } from 'functions/drawing';
-import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeString, parsePatternText } from 'functions/generationFunctions';
-import { getHoveredCell, pointerPositionInElement } from 'functions/editorFunctions';
-import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'functions/hooks';
+import { renderBoard, withCanvasAndContextWebGL2 } from 'common/drawing';
+import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeString, parsePatternText } from 'common/generationFunctions';
+import { getHoveredCell, pointerPositionInElement } from 'common/editorFunctions';
+import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'common/hooks';
 
 import { BoardDrawing } from 'ui/components/BoardDrawing';
 import { LifeLikeGameRender, RenderData } from 'ui/components/LifeLikeGameRender';

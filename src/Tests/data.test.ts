@@ -1,5 +1,5 @@
 import { NAMED_LIFE_RULES_TO_RULE_STRINGS } from "data";
-import { isValidLifeString } from "functions/generationFunctions";
+import { isValidLifeString } from "common/generationFunctions";
 
 test("Life Rules Data Test - All Life Strings Valid", () => {
     const ruleStrings = Object.values(NAMED_LIFE_RULES_TO_RULE_STRINGS)

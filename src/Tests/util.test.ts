@@ -1,5 +1,5 @@
 export {}
-import { isEqualNumberArray, isSimilarNumberArray, range } from "functions/util"
+import { isEqualNumberArray, isSimilarNumberArray, range } from "common/util"
 
 test("Is Equal Number Array - Exact", () => {
     const arr1 = [0, 2, 6, 3, 4]

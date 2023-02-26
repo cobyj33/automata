@@ -1,7 +1,7 @@
 import { clear } from "console";
 import { MAX_CELL_SIZE, MIN_CELL_SIZE } from "data";
-import { getShapeFunction, LifeLikeAvailableShapes, ShapeFunction } from "functions/shapes";
-import { clamp } from "functions/util";
+import { getShapeFunction, LifeLikeAvailableShapes, ShapeFunction } from "common/shapes";
+import { clamp } from "common/util";
 import { Box, IBox } from "common/Box"
 import { CellMatrix, ICellMatrix } from "common/CellMatrix";
 import { Dimension2D, IDimension2D } from "common/Dimension";

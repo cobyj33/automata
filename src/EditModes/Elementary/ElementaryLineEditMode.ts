@@ -1,5 +1,5 @@
 import { PointerEvent } from "react";
-import { EditMode } from "classes/Editor/EditModes/EditMode";
+import { EditMode } from "EditModes/EditMode";
 import { StatefulData } from "common/StatefulData"
 import { CellMatrix } from "common/CellMatrix"
 import { ElementaryEditorData } from "common/EditorData";

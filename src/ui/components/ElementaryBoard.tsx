@@ -3,25 +3,25 @@ import { View } from "common/View"
 import { IVector2, Vector2 } from "common/Vector2"
 import { BoardDrawing } from "ui/components/BoardDrawing";
 import { CellMatrix } from "common/CellMatrix";
-import { ElementaryDrawEditMode } from "classes/Editor/EditModes/Elementary/ElementaryDrawEditMode";
-import { ElementaryLineEditMode  } from "classes/Editor/EditModes/Elementary/ElementaryLineEditMode";
+import { ElementaryDrawEditMode } from "EditModes/Elementary/ElementaryDrawEditMode";
+import { ElementaryLineEditMode  } from "EditModes/Elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
-import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "functions/hooks";
+import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "common/;
 import { ElementaryBoardRender, RenderController } from "ui/components/ElementaryBoardRender";
 import { StatefulData } from "common/StatefulData"
-import { pointerPositionInElement, getHoveredCell } from 'functions/editorFunctions';
-import { ElementaryZoomEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryZoomEditMode';
-import { ElementaryMoveEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryMoveEditMode';
-import { EditMode } from 'classes/Editor/EditModes/EditMode';
-import { ElementaryEraseEditMode } from 'classes/Editor/EditModes/Elementary/ElementaryEraseEditMode';
+import { pointerPositionInElement, getHoveredCell } from 'common/editorFunctions';
+import { ElementaryZoomEditMode } from 'EditModes/Elementary/ElementaryZoomEditMode';
+import { ElementaryMoveEditMode } from 'EditModes/Elementary/ElementaryMoveEditMode';
+import { EditMode } from 'EditModes/EditMode';
+import { ElementaryEraseEditMode } from 'EditModes/Elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
 import { Box } from "common/Box";
-import { isEqualNumberArray } from "functions/util";
+import { isEqualNumberArray } from "common/util";
 import { EditorData, ElementaryEditorData } from "common/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
 import { Dimension2D } from "common/Dimension";
-import { isValidElementaryRule } from "functions/generationFunctions";
+import { isValidElementaryRule } from "common/generationFunctions";
 import { preview } from "vite";
 import SubmitButton from "./reuse/SubmitButton";
 import ActionButton from "./reuse/ActionButton";
@@ -29,7 +29,7 @@ import TextInput from "./reuse/TextInput";
 import ToggleButton from "./reuse/ToggleButton";
 import SideBarEditorTool from "./reuse/editor/SideBarTool";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
-import { getRefBoundingClientRect } from "functions/reactUtil";
+import { getRefBoundingClientRect } from "common/reactUtil";
 import Description from "./reuse/Description";
 import { ElementaryEditorEditMode } from "state/elementary";
 import ElementaryRuleEditor from "./ElementaryRuleEditor";

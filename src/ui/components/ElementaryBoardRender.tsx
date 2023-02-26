@@ -1,9 +1,9 @@
 import React from "react";
 import { View } from "common/View"
 import { CellMatrix } from "common/CellMatrix";
-import { getNextElementaryGeneration } from "functions/generationFunctions";
+import { getNextElementaryGeneration } from "common/generationFunctions";
 import { Vector2 } from "common/Vector2";
-import { concatUint8ClampedArrays } from "functions/util";
+import { concatUint8ClampedArrays } from "common/util";
 import BoardDrawing from "ui/components/BoardDrawing";
 
 interface ElementaryRenderData {

@@ -1,4 +1,4 @@
-import { useCanvasHolderUpdater } from 'functions/hooks'
+import { useCanvasHolderUpdater } from 'common/ks'
 import React from 'react'
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 

@@ -1,8 +1,8 @@
 import { KeyboardEvent, PointerEvent } from "react";
-import {getLine} from "functions/shapes";
+import {getLine} from "common/shapes";
 import { IVector2, filterVector2ListDuplicates } from "common/Vector2";
 import { StatefulData } from "common/StatefulData";
-import { EditMode } from "classes/Editor/EditModes/EditMode";
+import { EditMode } from "EditModes/EditMode";
 import { LifeLikeEditorData } from "common/EditorData";
 import { ShapeEditMode } from "./ShapeEditMode";
 import { LineSegment } from "common/LineSegment";

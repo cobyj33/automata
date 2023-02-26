@@ -1,4 +1,4 @@
-import { isRectangularMatrix } from "functions/util";
+import { isRectangularMatrix } from "common/util";
 import {Box, IBox} from "common/Box";
 import { Dimension2D, IDimension2D } from "./Dimension";
 import { IVector2, Vector2 } from "./Vector2";

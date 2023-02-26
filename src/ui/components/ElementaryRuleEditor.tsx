@@ -1,6 +1,6 @@
-import { isValidElementaryRule } from "functions/generationFunctions"
-import { useResizeObserver } from "functions/hooks";
-import { getRefBoundingClientRect } from "functions/reactUtil"
+import { isValidElementaryRule } from "common/generationFunctions"
+import { useResizeObserver } from "common/hooks";
+import { getRefBoundingClientRect } from "common/reactUtil"
 import { Vector2 } from "common/Vector2";
 import { View } from "common/View";
 import React from "react"

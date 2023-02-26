@@ -1,6 +1,6 @@
 import { IVector2, vector2Equals } from "common/Vector2"
 import { CellMatrix } from "common/Matrix"
-import { isEqualNumberArray, isSimilarNumberArray } from "functions/util";
+import { isEqualNumberArray, isSimilarNumberArray } from "common/util";
 import { Box } from "common/Box";
 
 

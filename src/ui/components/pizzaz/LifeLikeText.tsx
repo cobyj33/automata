@@ -1,8 +1,8 @@
 export {}
 // import {MutableRefObject, useEffect, RefObject, useRef} from "react";
-// import { getNextLifeGeneration } from "functions/generationFunctions"
+// import { getNextLifeGeneration } from "common/generationFunctions"
 // import { CellMatrix } from "common/CellMatrix";
-// import { withCanvasAndContext2D } from "functions/drawing";
+// import { withCanvasAndContext2D } from "common/wing";
 
 // const LifeLikeText = ({ children }: { children: string }) => {
 //     const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);

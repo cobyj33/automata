@@ -1,10 +1,10 @@
 import lifeRuleEditorStyles from "ui/components/styles/LifeRuleEditor.module.css"
 import { useImmerReducer, ImmerReducer, useImmer } from "use-immer";
 import { useState, useRef, useCallback, useEffect, RefObject } from "react";
-import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData, getLifeStringErrors } from "functions/generationFunctions"
+import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData, getLifeStringErrors } from "common/generationFunctions"
 import { getLifeRuleName, getNamedLifeRuleString, isNamedLifeRuleString, NamedLifeRule, NAMED_LIFE_RULES_LIST } from "data";
 import ToggleButton from "./reuse/ToggleButton";
-import { capitalized } from "functions/util";
+import { capitalized } from "common/util";
 import { SubmitButton } from "./reuse/SubmitButton";
 import TextInput from "./reuse/TextInput";
 import ErrorText from "./reuse/ErrorText";
