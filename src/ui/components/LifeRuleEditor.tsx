@@ -52,7 +52,7 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
                 <Description> Neighbors to Survive: { Array.from(parsedRule().survival.keys()).sort((a, b) => a - b).join(", ") } </Description>
             </div>
 
-            <div className="flex flex-row justify-between items-center p-1 m-1 bg-neutral-800 rounded-lg">
+            <div className="flex flex-row justify-between items-center p-1 m-1 bg-neutral-900 rounded-lg">
                 { RULE_EDIT_MODES.map(mode => <ToggleButton selected={ruleEditMode === mode} onClick={() => setRuleEditMode(mode)} key={mode}>{capitalized(mode)}</ToggleButton>)}
             </div>
 
