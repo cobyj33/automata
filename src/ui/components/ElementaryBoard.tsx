@@ -185,29 +185,22 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       </div>
 
       <aside className={elementaryStyles["left-side-bar"]}>
-        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
             <ElementaryRuleEditor rule={rule} onRuleRequest={(newRule) => setRule(newRule)} />
-            <SideBarEditorTool>
-                <SideBarToolTitle>W.I.P...</SideBarToolTitle>
-            </SideBarEditorTool>
+            <SideBarEditorTool title={`W.I.P...`} />
         </div>
       </aside>
 
       <aside className={elementaryStyles["right-side-bar"]}>
-
-      <SideBarEditorTool>
-            <SideBarToolTitle>Editor Data</SideBarToolTitle> 
-            <div className={elementaryStyles["view-data"]}>
-                <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
-                <Description>{` View CellSize: ${view.cellSize} `}</Description> 
-                <Description>{` Hovering: ( Row: ${currentHoveredCell.current.row} Col: ${currentHoveredCell.current.col} ) `}</Description>
-            </div>
-        </SideBarEditorTool>
-
-        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
-            <SideBarEditorTool>
-                <SideBarToolTitle>W.I.P...</SideBarToolTitle>
+        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
+            <SideBarEditorTool title={`Editor Data`}>
+                <div className={elementaryStyles["view-data"]}>
+                    <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
+                    <Description>{` View CellSize: ${view.cellSize} `}</Description> 
+                    <Description>{` Hovering: ( Row: ${currentHoveredCell.current.row} Col: ${currentHoveredCell.current.col} ) `}</Description>
+                </div>
             </SideBarEditorTool>
+            <SideBarEditorTool title={`W.I.P...`} />
         </div>
       </aside>
 

@@ -97,8 +97,7 @@ export function ElementaryRuleEditor({ rule, onRuleRequest }: { rule: number, on
     })
 
     return (
-        <SideBarEditorTool>
-            <SideBarToolTitle>Rule Editor</SideBarToolTitle>
+        <SideBarEditorTool title={`Rule Editor`}>
             <Description> Current Rule: <span className="text-green-400">{rule}</span> </Description>
             <Description> Rule must be between 0 and 255 </Description>
 

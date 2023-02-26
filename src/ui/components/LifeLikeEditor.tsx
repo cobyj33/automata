@@ -192,52 +192,44 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
       </div>
 
       <aside className={gameBoardStyles["left-side-bar"]}>
-        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
             <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} />
-            <SideBarEditorTool>
-                    <SideBarToolTitle>W.I.P...</SideBarToolTitle>
-            </SideBarEditorTool>
+            <SideBarEditorTool title={`W.I.P...`} />
         </div>
       </aside>
 
       <aside className={gameBoardStyles["right-side-bar"]}>
-        <div className="flex flex-col absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
-
-
-        <SideBarEditorTool>
-            <SideBarToolTitle>Editor Data</SideBarToolTitle> 
-            <div className={gameBoardStyles["view-data"]}>
-                <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
-                <Description>{` View CellSize: ${view.cellSize} `}</Description> 
-                <Description>{` Hovering: ( Row: ${currentHoveredCell.current.row} Col: ${currentHoveredCell.current.col} ) `}</Description>
-            </div>
-        </SideBarEditorTool>
-
-        <SideBarEditorTool>
-            <SideBarToolTitle>Render Data</SideBarToolTitle>
-            <div className="flex flex-col">
-                <Description> Current Generation: {rendering ? String(renderData.generation) : "0"} </Description>
-            </div>
-        </SideBarEditorTool>
-
-            
-        <SideBarEditorTool>
-            <div className="flex flex-col">
-                <TextAreaInput valid={isValidPatternText(pattern)} onChange={(e) => setPattern(e.target.value)} value={pattern}></TextAreaInput>
-                <ActionButton onClick={loadPattern}>Load Pattern</ActionButton>
-                <div className="relative overflow-auto border border-black" style={{minHeight: 150}}>
-                    <div className="flex-grow grid grid-cols-3 absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
-                        { DIAGRAM_NAMES.map(namedDiagram => <ToggleButton selected={pattern === getDiagram(namedDiagram)} key={namedDiagram} onClick={() => setPattern(getDiagram(namedDiagram))}><span className="text-xs">{namedDiagram}</span></ToggleButton>)  }
-                    </div>
+        <div className="flex flex-col gap-5 absolute right-0 top-0 bottom-0 left-0 max-w-full max-h-full h-full w-full p-2 g-5">
+            <SideBarEditorTool title={`Editor Data`}>
+                <div className={gameBoardStyles["view-data"]}>
+                    <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
+                    <Description>{` View CellSize: ${view.cellSize} `}</Description> 
+                    <Description>{` Hovering: ( Row: ${currentHoveredCell.current.row} Col: ${currentHoveredCell.current.col} ) `}</Description>
                 </div>
-                
-                <ActionButton onClick={() => setPattern("")}>Clear Pattern</ActionButton>
-            </div>
-        </SideBarEditorTool>
-
-            <SideBarEditorTool>
-                <SideBarToolTitle>W.I.P...</SideBarToolTitle>
             </SideBarEditorTool>
+
+            <SideBarEditorTool title={`Render Data`}>
+                <div className="flex flex-col">
+                    <Description> Current Generation: {rendering ? String(renderData.generation) : "0"} </Description>
+                </div>
+            </SideBarEditorTool>
+
+                
+            <SideBarEditorTool title={`Text Pattern Reader`}>
+                <div className="flex flex-col">
+                    <TextAreaInput valid={isValidPatternText(pattern)} onChange={(e) => setPattern(e.target.value)} value={pattern}></TextAreaInput>
+                    <ActionButton onClick={loadPattern}>Load Pattern</ActionButton>
+                    <div className="relative overflow-auto border border-black" style={{minHeight: 150}}>
+                        <div className="flex-grow grid grid-cols-3 absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+                            { DIAGRAM_NAMES.map(namedDiagram => <ToggleButton selected={pattern === getDiagram(namedDiagram)} key={namedDiagram} onClick={() => setPattern(getDiagram(namedDiagram))}><span className="text-xs">{namedDiagram}</span></ToggleButton>)  }
+                        </div>
+                    </div>
+                    
+                    <ActionButton onClick={() => setPattern("")}>Clear Pattern</ActionButton>
+                </div>
+            </SideBarEditorTool>
+
+            <SideBarEditorTool title={`W.I.P...`} />
           </div>
       </aside>
 
