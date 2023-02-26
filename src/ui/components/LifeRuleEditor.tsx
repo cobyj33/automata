@@ -1,6 +1,6 @@
 import lifeRuleEditorStyles from "ui/components/styles/LifeRuleEditor.module.css"
 import { useImmerReducer, ImmerReducer, useImmer } from "use-immer";
-import { useState, useRef, useCallback, useEffect, RefObject } from "react";
+import React from "react";
 import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData, getLifeStringErrors } from "common/generationFunctions"
 import { getLifeRuleName, getNamedLifeRuleString, isNamedLifeRuleString, NamedLifeRule, NAMED_LIFE_RULES_LIST } from "data";
 import ToggleButton from "./reuse/ToggleButton";
@@ -38,7 +38,8 @@ interface LifeRuleEditorProps {
 
 export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
     const { currentRule, onLifeRuleSelect, initiallyOpened } = props
-    const [ruleEditMode, setRuleEditMode] = useState<RuleEditMode>("ASSISTED");
+    const [ruleEditMode, setRuleEditMode] = React.useState<RuleEditMode>("ASSISTED");
+    const [showParsedRuleDescription, setShowParsedRuleDescription] = React.useState<boolean>(false);
 
     function parsedRule(): LifeRuleData {
         return parseLifeLikeString(currentRule)
@@ -47,9 +48,12 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
     return (
         <SideBarEditorTool title={`Life-Like Rule Data`} initiallyOpened={initiallyOpened !== null && initiallyOpened !== undefined ? initiallyOpened : false}>
             <div className="relative flex flex-col gap-1 m-2">
-                <Description> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRuleString(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
-                <Description> Neighbors to be Born: { [...parsedRule().birth].sort((a, b) => a - b).join(", ") } </Description>
-                <Description> Neighbors to Survive: { [...parsedRule().survival].sort((a, b) => a - b).join(", ") } </Description>
+                <Description onClick={() => setShowParsedRuleDescription(!showParsedRuleDescription)}> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRuleString(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
+
+                { showParsedRuleDescription ? <section>
+                    <Description> # of Neighbors to be Born: { [...parsedRule().birth].sort((a, b) => a - b).join(", ") } </Description>
+                    <Description> # of Neighbors to Survive: { [...parsedRule().survival].sort((a, b) => a - b).join(", ") } </Description>
+                </section> : "" }
             </div>
 
             <div className="flex flex-row justify-between items-center p-1 m-1 bg-neutral-900 rounded-lg">
@@ -126,7 +130,7 @@ const AssistedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRu
 
 
 const NamedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleSelect }: LifeRuleEditorProps) => {
-    const [selectedNamedRule, setSelectedNamedRule] = useState<NamedLifeRule>(isNamedLifeRuleString(currentRule) ? getLifeRuleName(currentRule) : "Conway's Game Of Life")
+    const [selectedNamedRule, setSelectedNamedRule] = React.useState<NamedLifeRule>(isNamedLifeRuleString(currentRule) ? getLifeRuleName(currentRule) : "Conway's Game Of Life")
 
     function submit() {
         onLifeRuleSelect(getNamedLifeRuleString(selectedNamedRule))
