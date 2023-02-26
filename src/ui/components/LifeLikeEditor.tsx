@@ -194,14 +194,14 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
       <aside className={gameBoardStyles["left-side-bar"]}>
         <SideBarToolContainer>
-            <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} />
+            <LifeRuleEditor currentRule={automata} onLifeRuleSelect={(rule) => setAutomata(rule)} initiallyOpened={true} />
             <SideBarEditorTool title={`W.I.P...`} />
         </SideBarToolContainer>
       </aside>
 
       <aside className={gameBoardStyles["right-side-bar"]}>
         <SideBarToolContainer>
-            <SideBarEditorTool title={`Editor Data`}>
+            <SideBarEditorTool title={`Editor Data`} initiallyOpened={true}>
                 <div className={gameBoardStyles["view-data"]}>
                     <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
                     <Description>{` View CellSize: ${view.cellSize} `}</Description> 
@@ -209,7 +209,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
                 </div>
             </SideBarEditorTool>
 
-            <SideBarEditorTool title={`Render Data`}>
+            <SideBarEditorTool title={`Render Data`} initiallyOpened={true}>
                 <div className="flex flex-col">
                     <Description> Current Generation: {rendering ? String(renderData.generation) : "0"} </Description>
                 </div>

@@ -54,7 +54,13 @@ const startingPreviewStateReducer: StartingPreviewStateReducer = (state, action)
     }
 }
 
-export function ElementaryRuleEditor({ rule, onRuleRequest }: { rule: number, onRuleRequest: (num: number) => void }) {
+interface ElementaryRuleEditorProps {
+    rule: number
+    onRuleRequest: (num: number) => void
+    initiallyOpened?: boolean
+}
+
+export function ElementaryRuleEditor({ rule, onRuleRequest, initiallyOpened }: ElementaryRuleEditorProps) {
     const [ruleInput, setRuleInput] = React.useState<number>(30)
     const [requestedRule, setRequestedRule] = React.useState<number>(30)
     const renderController = React.useRef<RenderController>(new RenderController())
@@ -97,7 +103,7 @@ export function ElementaryRuleEditor({ rule, onRuleRequest }: { rule: number, on
     })
 
     return (
-        <SideBarEditorTool title={`Rule Editor`}>
+        <SideBarEditorTool title={`Rule Editor`} initiallyOpened={initiallyOpened !== null && initiallyOpened !== undefined ? initiallyOpened : false}>
             <Description> Current Rule: <span className="text-green-400">{rule}</span> </Description>
             <Description> Rule must be between 0 and 255 </Description>
 

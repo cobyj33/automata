@@ -18,6 +18,7 @@ type RuleEditMode = typeof RULE_EDIT_MODES[number];
 interface LifeRuleEditorProps {
     currentRule: string,
     onLifeRuleSelect: (rule: string) => void
+    initiallyOpened?: boolean
 }
 type LifeRuleEditorComponent = (props: LifeRuleEditorProps) => JSX.Element
 
@@ -36,7 +37,7 @@ interface LifeRuleEditorProps {
 
 
 export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
-    const { currentRule, onLifeRuleSelect } = props
+    const { currentRule, onLifeRuleSelect, initiallyOpened } = props
     const [ruleEditMode, setRuleEditMode] = useState<RuleEditMode>("ASSISTED");
 
     function parsedRule() {
@@ -44,7 +45,7 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
     }
 
     return (
-        <SideBarEditorTool title={`Life-Like Rule Data`}>
+        <SideBarEditorTool title={`Life-Like Rule Data`} initiallyOpened={initiallyOpened !== null && initiallyOpened !== undefined ? initiallyOpened : false}>
             <div className="flex flex-col gap-1 m-2">
                 <Description> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRuleString(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
                 <Description> Neighbors to be Born: { Array.from(parsedRule().birth.keys()).sort((a, b) => a - b).join(", ") } </Description>

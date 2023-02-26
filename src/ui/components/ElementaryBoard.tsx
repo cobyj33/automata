@@ -186,14 +186,14 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
       <aside className={elementaryStyles["left-side-bar"]}>
         <SideBarToolContainer>
-            <ElementaryRuleEditor rule={rule} onRuleRequest={(newRule) => setRule(newRule)} />
+            <ElementaryRuleEditor rule={rule} onRuleRequest={(newRule) => setRule(newRule)} initiallyOpened={true} />
             <SideBarEditorTool title={`W.I.P...`} />
         </SideBarToolContainer>
       </aside>
 
       <aside className={elementaryStyles["right-side-bar"]}>
         <SideBarToolContainer>
-            <SideBarEditorTool title={`Editor Data`}>
+            <SideBarEditorTool title={`Editor Data`} initiallyOpened={true}>
                 <div className={elementaryStyles["view-data"]}>
                     <Description>{` View ( Row: ${view.position.row.toFixed(1)} Col: ${view.position.col.toFixed(1)} ) `}</Description>
                     <Description>{` View CellSize: ${view.cellSize} `}</Description> 

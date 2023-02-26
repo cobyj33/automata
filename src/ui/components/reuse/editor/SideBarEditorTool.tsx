@@ -4,10 +4,11 @@ import { FaArrowDown, FaArrowUp } from 'react-icons/fa'
 
 interface SideBarEditorToolProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "className"> {
     title: string
+    initiallyOpened?: boolean
 }
 
-export const SideBarEditorTool = ({ title, ...props}: SideBarEditorToolProps) => {
-    const [opened, setOpened] = React.useState<boolean>(false);
+export const SideBarEditorTool = ({ title, initiallyOpened = false, ...props}: SideBarEditorToolProps) => {
+    const [opened, setOpened] = React.useState<boolean>(initiallyOpened !== null && initiallyOpened !== undefined ? initiallyOpened : false);
     
     return (
         <div className={"bg-zinc-900 w-full rounded-lg text-center px-3 py-2 hover:border-b-2 hover:border-b-white flex flex-col justify-center align-center"} > 
