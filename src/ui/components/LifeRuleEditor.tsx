@@ -40,7 +40,7 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
     const { currentRule, onLifeRuleSelect, initiallyOpened } = props
     const [ruleEditMode, setRuleEditMode] = useState<RuleEditMode>("ASSISTED");
 
-    function parsedRule() {
+    function parsedRule(): LifeRuleData {
         return parseLifeLikeString(currentRule)
     }
 
@@ -48,8 +48,8 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
         <SideBarEditorTool title={`Life-Like Rule Data`} initiallyOpened={initiallyOpened !== null && initiallyOpened !== undefined ? initiallyOpened : false}>
             <div className="relative flex flex-col gap-1 m-2">
                 <Description> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRuleString(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
-                <Description> Neighbors to be Born: { Array.from(parsedRule().birth.keys()).sort((a, b) => a - b).join(", ") } </Description>
-                <Description> Neighbors to Survive: { Array.from(parsedRule().survival.keys()).sort((a, b) => a - b).join(", ") } </Description>
+                <Description> Neighbors to be Born: { [...parsedRule().birth].sort((a, b) => a - b).join(", ") } </Description>
+                <Description> Neighbors to Survive: { [...parsedRule().survival].sort((a, b) => a - b).join(", ") } </Description>
             </div>
 
             <div className="flex flex-row justify-between items-center p-1 m-1 bg-neutral-900 rounded-lg">
