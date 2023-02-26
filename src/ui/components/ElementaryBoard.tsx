@@ -27,7 +27,7 @@ import SubmitButton from "./reuse/SubmitButton";
 import ActionButton from "./reuse/ActionButton";
 import TextInput from "./reuse/TextInput";
 import ToggleButton from "./reuse/ToggleButton";
-import SideBarEditorTool from "./reuse/editor/SideBarTool";
+import SideBarEditorTool from "./reuse/editor/SideBarEditorTool";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { getRefBoundingClientRect } from "common/reactUtil";
 import Description from "./reuse/Description";

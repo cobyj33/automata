@@ -7,7 +7,7 @@ import React from "react"
 import ElementaryBoardRender, { RenderController } from "./ElementaryBoardRender"
 import ActionButton from "./reuse/ActionButton";
 import Description from "./reuse/Description";
-import SideBarEditorTool from "./reuse/editor/SideBarTool";
+import SideBarEditorTool from "./reuse/editor/SideBarEditorTool";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import SubmitButton from "./reuse/SubmitButton";
 import TextInput from "./reuse/TextInput";

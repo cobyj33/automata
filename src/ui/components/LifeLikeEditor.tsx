@@ -28,7 +28,7 @@ import { Dimension2D } from "common/Dimension";
 import TextAreaInput from "./reuse/TextAreaInput";
 import ActionButton from "./reuse/ActionButton";
 import ToggleButton from "./reuse/ToggleButton";
-import SideBarEditorTool from "./reuse/editor/SideBarTool";
+import SideBarEditorTool from "./reuse/editor/SideBarEditorTool";
 import Description from "./reuse/Description";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { DIAGRAM_NAMES, getDiagram } from "data";

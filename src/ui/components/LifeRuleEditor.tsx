@@ -8,7 +8,7 @@ import { capitalized } from "common/util";
 import { SubmitButton } from "./reuse/SubmitButton";
 import TextInput from "./reuse/TextInput";
 import ErrorText from "./reuse/ErrorText";
-import SideBarEditorTool from "./reuse/editor/SideBarTool";
+import SideBarEditorTool from "./reuse/editor/SideBarEditorTool";
 import Description from "./reuse/Description";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import SideBarToolSection from "./reuse/editor/SideBarToolSection";
