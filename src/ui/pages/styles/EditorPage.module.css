@@ -23,11 +23,6 @@
 }
 
 .menu-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    width: 100%;
     display: flex;
     flex-direction: center;
     justify-content: center;
@@ -36,22 +31,4 @@
     padding: 5px;
     background-color: rgb(24, 24, 27);
     border-bottom: 2px solid white;
-    transform: translateY(-80%);
-    transition: transform 0.25s;
-}
-
-.menu-bar:hover {
-    transform: translateY(0);
-}
-
-.action-menu-bar {
-    flex-grow: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 100%;
-    min-width: 100%;
-    position: relative;
-    background-color: rgb(24, 24, 27);
-    border: 1px solid black;
 }
