@@ -6,7 +6,7 @@ import { EditMode } from "EditModes/EditMode";
 import { EditorData, LifeLikeEditorData } from "common/EditorData";
 import { clamp } from "common/util";
 import { MIN_CELL_SIZE, MAX_CELL_SIZE } from "data";
-import ZoomEditMode from "../ZoomEditMode";
+import ZoomEditMode from "EditModes/LifeLike/ZoomEditMode";
 
 const ZOOM_DIRECTION: Vector2 = new Vector2(-1, -1)
 
