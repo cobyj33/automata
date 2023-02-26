@@ -221,8 +221,8 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
                     <TextAreaInput valid={isValidPatternText(pattern)} onChange={(e) => setPattern(e.target.value)} value={pattern}></TextAreaInput>
                     <ActionButton onClick={loadPattern}>Load Pattern</ActionButton>
                     <div className="relative overflow-auto border border-black" style={{minHeight: 150}}>
-                        <div className="flex-grow grid grid-cols-3 absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
-                            { DIAGRAM_NAMES.map(namedDiagram => <ToggleButton selected={pattern === getDiagram(namedDiagram)} key={namedDiagram} onClick={() => setPattern(getDiagram(namedDiagram))}><span className="text-xs">{namedDiagram}</span></ToggleButton>)  }
+                        <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+                            { DIAGRAM_NAMES.map(namedDiagram => <ToggleButton className="text-xs xl:text-base" selected={pattern === getDiagram(namedDiagram)} key={namedDiagram} onClick={() => setPattern(getDiagram(namedDiagram))}><span className="text-xs">{namedDiagram}</span></ToggleButton>)  }
                         </div>
                     </div>
                     
