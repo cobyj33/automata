@@ -208,7 +208,7 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
       <div className={elementaryStyles["tool-bar"]}>
 
-        <div className="flex flex-row flex-grow justify-center gap-1 items-stretch "> 
+        <div className="absolute left-0 top-0 overflow-auto max-w-full max-h-full w-full h-full py-2 px-1 flex flex-row flex-start gap-1 items-stretch"> 
             <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "DRAW"} onClick={() => setEditMode("DRAW")}> <FaBrush /> </ToggleButton>
             <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "MOVE"} onClick={() => setEditMode("MOVE")}>  <FaArrowsAlt /> </ToggleButton>
             <ToggleButton className="flex-grow flex items-center justify-center" selected={editMode === "ZOOM"} onClick={() => setEditMode("ZOOM")}>  <FaSearch /> </ToggleButton>
