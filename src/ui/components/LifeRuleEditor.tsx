@@ -57,7 +57,9 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
             </div>
 
             <div className="flex flex-row justify-between items-center p-1 m-1 bg-neutral-900 rounded-lg">
-                { RULE_EDIT_MODES.map(mode => <ToggleButton selected={ruleEditMode === mode} onClick={() => setRuleEditMode(mode)} key={mode}>{capitalized(mode)}</ToggleButton>)}
+                <div className="relative overflow-auto left-0 top-0 w-full h-full min-w-full min-h-full max-w-full max-h-full flex flex-col sm:flex-row gap-1 flex-start">
+                    { RULE_EDIT_MODES.map(mode => <ToggleButton className="flex-grow" selected={ruleEditMode === mode} onClick={() => setRuleEditMode(mode)} key={mode}>{capitalized(mode)}</ToggleButton>)}
+                </div>
             </div>
 
             { getRuleEditor(ruleEditMode, props) } 
@@ -108,19 +110,23 @@ const AssistedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRu
         <SideBarToolSection>
             <section className="flex flex-col gap-2">
                 <Description> Neighbors needed to be Born </Description>
-                <div className="flex flex-row justify-evenly">
-                    { new Array(9).fill(0).map(( num, index ) => (
-                    <ToggleButton selected={birth.some(val => val === index)} onClick={() => inputDispatch({ type: "toggle birth", num: index })} key={`rule editor birth ${index}`}>{index}</ToggleButton>
-                        )) }
+                <div className="relative flex-grow">
+                    <div className="relative left-0 top-0 w-full h-full overflow-auto max-w-full max-h-full min-w-full min-h-full flex flex-row flex-start gap-1">
+                        { new Array(9).fill(0).map(( num, index ) => (
+                        <ToggleButton className={'flex-grow'} selected={birth.some(val => val === index)} onClick={() => inputDispatch({ type: "toggle birth", num: index })} key={`rule editor birth ${index}`}>{index}</ToggleButton>
+                            )) }
+                    </div>
                 </div>
             </section>
 
             <section className="flex flex-col gap-2">
                 <Description> Neighbors needed to Survive </Description>
-                <div className="flex flex-row justify-evenly">
-                    { new Array(9).fill(0).map(( num, index ) => (
-                        <ToggleButton selected={survival.some(val => val === index)} onClick={() => inputDispatch({ type: "toggle survival", num: index })} key={`rule editor birth ${index}`}>{index}</ToggleButton>
-                    )) }
+                <div className="relative flex-grow">
+                    <div className="relative left-0 top-0 w-full h-full overflow-auto max-w-full max-h-full min-w-full min-h-full flex flex-row flex-start gap-1">
+                        { new Array(9).fill(0).map(( num, index ) => (
+                            <ToggleButton className={'flex-grow'} selected={survival.some(val => val === index)} onClick={() => inputDispatch({ type: "toggle survival", num: index })} key={`rule editor birth ${index}`}>{index}</ToggleButton>
+                        )) }
+                    </div>
                 </div>
             </section>
 
@@ -145,7 +151,7 @@ const NamedLifeRuleEditor: LifeRuleEditorComponent = ({ currentRule, onLifeRuleS
                 </section>
 
                 <section className="relative overflow-auto border border-black" style={{minHeight: 150}}>
-                    <div className="flex-grow grid grid-cols-3 absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
+                    <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  absolute insets-0 overflow-auto max-w-100 max-h-100 gap-1">
                         { NAMED_LIFE_RULES_LIST.map(namedRule => <ToggleButton selected={selectedNamedRule === namedRule} key={namedRule} onClick={() => setSelectedNamedRule(namedRule)}><span className="text-xs">{namedRule}</span></ToggleButton>)  }
                     </div>
                 </section>
