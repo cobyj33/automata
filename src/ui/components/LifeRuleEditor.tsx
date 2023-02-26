@@ -48,7 +48,7 @@ export const LifeRuleEditor = (props: LifeRuleEditorProps) => {
     return (
         <SideBarEditorTool title={`Life-Like Rule Data`} initiallyOpened={initiallyOpened !== null && initiallyOpened !== undefined ? initiallyOpened : false}>
             <div className="relative flex flex-col gap-1 m-2">
-                <Description onClick={() => setShowParsedRuleDescription(!showParsedRuleDescription)}> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRuleString(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
+                <Description onClick={() => setShowParsedRuleDescription(!showParsedRuleDescription)} className={`hover:after:content-["?"] hover:after:text-green-500 hover:after:p-2 `}> Current Rule: <span className="text-green-400">{currentRule} {isNamedLifeRuleString(currentRule) ? `(${getLifeRuleName(currentRule)})` : ""}</span> </Description>
 
                 { showParsedRuleDescription ? <section>
                     <Description> # of Neighbors to be Born: { [...parsedRule().birth].sort((a, b) => a - b).join(", ") } </Description>
