@@ -287,7 +287,7 @@ export function vector2Abs(vec: IVector2): IVector2 {
 
 
 // Program Specific
-import { Set2D } from "classes/Structures/Set2D";
+import { Set2D } from "common/Set2D";
 
 function vector2ListToSet2D(list: IVector2[]): Set2D {
     const set2D: Set2D = new Set2D()
