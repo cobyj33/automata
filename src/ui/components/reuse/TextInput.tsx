@@ -5,7 +5,7 @@ interface TextEntryProps extends Omit<Omit<React.InputHTMLAttributes<HTMLInputEl
     valid: boolean
 }
 
-const baseStyles = "text-center bg-zinc-900 text-white border-2 border-black hover:border-b-white inset-0 relative min-w-0 w-0"
+const baseStyles = "text-center bg-zinc-900 text-white border-2 border-black hover:border-b-white inset-0 relative min-w-0 text-xs sm:text-sm md:text-base"
 const validStyles = baseStyles.concat("transition-colors border-green-500")
 const invalidStyles = baseStyles.concat("transition-colors border-red-500")
 

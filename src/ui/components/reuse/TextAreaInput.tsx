@@ -5,7 +5,7 @@ interface TextAreaInputProps extends Omit<React.InputHTMLAttributes<HTMLTextArea
     valid: boolean
 }
 
-const baseStyles = "bg-zinc-900 text-white border-2 border-black hover:border-b-white"
+const baseStyles = "bg-zinc-900 text-white border-2 border-black hover:border-b-white text-xs "
 const validStyles = baseStyles.concat("transition-colors border-green-500")
 const invalidStyles = baseStyles.concat("transition-colors border-red-500")
 
