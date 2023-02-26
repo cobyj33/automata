@@ -209,11 +209,11 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
       <div className={elementaryStyles["tool-bar"]}>
 
         <div className="flex flex-row justify-center gap-1 items-center"> 
-            <EditModeButton target="DRAW" current={editMode} setter={setEditMode}> <FaBrush /> </EditModeButton>
-            <EditModeButton target="MOVE" current={editMode} setter={setEditMode}> <FaArrowsAlt /> </EditModeButton>
-            <EditModeButton target="ZOOM" current={editMode} setter={setEditMode}> <FaSearch /> </EditModeButton>
-            <EditModeButton target="ERASE" current={editMode} setter={setEditMode}> <FaEraser /> </EditModeButton>
-            <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
+            <ToggleButton selected={editMode === "DRAW"} onClick={() => setEditMode("DRAW")}> <FaBrush /> </ToggleButton>
+            <ToggleButton selected={editMode === "MOVE"} onClick={() => setEditMode("MOVE")}>  <FaArrowsAlt /> </ToggleButton>
+            <ToggleButton selected={editMode === "ZOOM"} onClick={() => setEditMode("ZOOM")}>  <FaSearch /> </ToggleButton>
+            <ToggleButton selected={editMode === "ERASE"} onClick={() => setEditMode("ERASE")}>  <FaEraser /> </ToggleButton>
+            <ToggleButton selected={editMode === "LINE"} onClick={() => setEditMode("LINE")}>  <GiStraightPipe /> </ToggleButton>
             <ToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
             <ActionButton onClick={undo}> <FaUndo /> </ActionButton>
             <ActionButton onClick={redo}> <FaRedo /> </ActionButton>
@@ -224,10 +224,6 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
 
       </div>
     )
-}
-
-function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: ElementaryEditorEditMode, current: ElementaryEditorEditMode, setter: React.Dispatch<ElementaryEditorEditMode> }) {
-  return <ToggleButton selected={current === target} onClick={() => setter(target)}>{children}</ToggleButton>
 }
 
 

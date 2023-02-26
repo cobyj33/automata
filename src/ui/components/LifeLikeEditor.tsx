@@ -236,13 +236,13 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
       <div className={gameBoardStyles["tool-bar"]}>
           <div className="flex flex-row justify-center gap-1 items-center"> 
-            <EditModeButton target="DRAW" current={editMode} setter={setEditMode}> <FaBrush /> </EditModeButton>
-            <EditModeButton target="MOVE" current={editMode} setter={setEditMode}> <FaArrowsAlt /> </EditModeButton>
-            <EditModeButton target="ZOOM" current={editMode} setter={setEditMode}> <FaSearch /> </EditModeButton>
-            <EditModeButton target="ERASE" current={editMode} setter={setEditMode}> <FaEraser /> </EditModeButton>
-            <EditModeButton target="LINE" current={editMode} setter={setEditMode}> <GiStraightPipe /> </EditModeButton>
-            <EditModeButton target="BOX" current={editMode} setter={setEditMode}> <FaBox /> </EditModeButton>
-            <EditModeButton target="ELLIPSE" current={editMode} setter={setEditMode}> <BsCircle /> </EditModeButton>
+            <ToggleButton selected={editMode === "DRAW"} onClick={() => setEditMode("DRAW")}> <FaBrush /> </ToggleButton>
+            <ToggleButton selected={editMode === "MOVE"} onClick={() => setEditMode("MOVE")}>  <FaArrowsAlt /> </ToggleButton>
+            <ToggleButton selected={editMode === "ZOOM"} onClick={() => setEditMode("ZOOM")}>  <FaSearch /> </ToggleButton>
+            <ToggleButton selected={editMode === "ERASE"} onClick={() => setEditMode("ERASE")}>  <FaEraser /> </ToggleButton>
+            <ToggleButton selected={editMode === "LINE"} onClick={() => setEditMode("LINE")}>  <GiStraightPipe /> </ToggleButton>
+            <ToggleButton selected={editMode === "BOX"} onClick={() => setEditMode("BOX")}>  <FaBox /> </ToggleButton>
+            <ToggleButton selected={editMode === "ELLIPSE"} onClick={() => setEditMode("ELLIPSE")}>  <BsCircle /> </ToggleButton>
             <ToggleButton selected={rendering} onClick={() => setRendering(!rendering)}> <FaPlay /> </ToggleButton>
             <ActionButton onClick={clear}> <AiOutlineClear /> </ActionButton>
             <ActionButton onClick={undo}> <FaUndo /> </ActionButton>
@@ -259,10 +259,6 @@ function RenderDataDisplay({ label, value }: { label: string, value: string }) {
         <p className={gameBoardStyles["render-data-label"]}>{label}</p>
         <p className={gameBoardStyles["render-data-value"]}>{value}</p>
     </div>
-}
-
-function EditModeButton({ children = "", target, current, setter }: { children?: React.ReactNode, target: LifeLikeEditorEditMode, current: LifeLikeEditorEditMode, setter: React.Dispatch<LifeLikeEditorEditMode> }) {
-  return <ToggleButton selected={current === target} onClick={() => setter(target)}>{children}</ToggleButton>
 }
 
 
