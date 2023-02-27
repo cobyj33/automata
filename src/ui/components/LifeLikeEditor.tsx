@@ -34,6 +34,7 @@ import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { DIAGRAM_NAMES, getDiagram } from "data";
 import { LifeLikeEditorEditMode } from "state/lifelike";
 import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
+import { runBenchmarks } from "benchmark";
 
 
 
@@ -231,6 +232,9 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             </SideBarEditorTool>
 
             <SideBarEditorTool title={`W.I.P...`} />
+            <SideBarEditorTool title="Temporary Benchmark">
+                <ActionButton onClick={runBenchmarks}>Run Benchmark</ActionButton>
+            </SideBarEditorTool>
           </SideBarToolContainer>
       </aside>
 
