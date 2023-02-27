@@ -1,7 +1,7 @@
 import { FreqMap2D } from "common/FreqMap2D";
 import { Set2D, } from "common/Set2D";
 import { IVector2 } from "common/Vector2";
-import { parseLifeLikeString } from "./generationFunctions";
+import { parseLifeLikeString } from "libca/liferule";
 
 
 type LifeRuleData = { birth: Set<number>, survival: Set<number> }

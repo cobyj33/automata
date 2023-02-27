@@ -1,76 +1,8 @@
 import { CellMatrix } from 'common/CellMatrix';
 import { IVector2 } from 'common/Vector2';
 import { FaLeaf } from 'react-icons/fa';
+import { isValidLifeString, LifeRuleData, parseLifeLikeString } from 'libca/liferule';
 
-export type LifeRuleData = { birth: number[], survival: number[] }
-export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {
-    const error = getLifeStringError(lifeString);
-    if (error.length > 0) {
-        errorOutput?.(error)
-        return false;
-    }
-    return true;
-}
-
-export function getLifeStringError(lifeString: string): string {
-    const sides = lifeString.split("/");
-    if (sides.length !== 2) {
-        return "Error: Not able to split string into birth and survival counts, format must include a forward slash B<NUMS>/S<NUMS> "
-    } else if (sides[0].charAt(0) !== "B" || sides[1].charAt(0) !== "S") {
-       return "Error: B and S are backwards, please switch to B<NUMS>/S<NUMS> "
-    } else if (sides[0].substring(1).split('').some((char: string) => isNaN(Number.parseInt(char))) || sides[1].substring(1).split('').some((char: string) => isNaN(Number.parseInt(char)))) {
-       return "Error: Must include numbers after B and after /S B<NUMS>/S<NUMS> "
-    } else if (new Set<string>(sides[0].substring(1).split('')).size !== sides[0].length - 1 || new Set<string>(sides[1].substring(1).split('')).size !== sides[1].length - 1) {
-       return "Error: Replicate number on one side of B<NUMS>/S<NUMS> "
-    }
-
-    return "";
-}
-
-function canMakeLifeString(survivalNums: number[], birthNums: number[]): boolean {
-    if (survivalNums.some(num => num < 0 || num > 8) || birthNums.some(num => num < 0 || num > 8)) {
-        return false;
-    }
-    if (survivalNums.length > 8 || birthNums.length > 8) {
-        return false;
-    }
-    if (survivalNums.length !== new Set<number>(survivalNums).size || birthNums.length !== new Set<number>(birthNums).size ) {
-        return false;
-    }
-    
-
-    return true;
-}
-
-export function createLifeString(birthNums: number[], survivalNums: number[]): string {
-    if (!canMakeLifeString(survivalNums, birthNums)) {
-        throw new Error(`Cannot make new life string from ${survivalNums} and ${birthNums}`);
-    }
-    
-    return "B".concat( birthNums.join("")  ).concat('/S').concat( survivalNums.join("") );
-}
-
-export function parseLifeLikeString(lifeString: string): LifeRuleData {
-    let lifeData: LifeRuleData = {birth: [], survival: []};
-    if (!isValidLifeString(lifeString)) {
-        return lifeData;
-    } 
-
-   const [ birth, survival ] = lifeString.split("/");
-    
-    for (let i = 1; i < birth.length; i++) {
-        const num: number = Number.parseInt(birth.charAt(i));
-        lifeData.birth.push(num);
-    }
-
-
-    for (let i = 1; i < survival.length; i++) {
-        const num: number = Number.parseInt(survival.charAt(i));
-        lifeData.survival.push(num);
-    }
-
-    return lifeData;
-}
 
 export function getNextLifeLikeGenerationFunction(matrix: Uint8ClampedArray, index: number, lineSize: number, ruleData: LifeRuleData): number {
     let neighbors = 0;
