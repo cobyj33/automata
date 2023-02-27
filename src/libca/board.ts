@@ -1,12 +1,7 @@
-import { DelayedFreqMap2D, FreqMap2D, LifeLikeFreqMap2D } from "common/FreqMap2D";
+import { DelayedFreqMap2D, FreqMap2D } from "common/FreqMap2D";
 import { Set2D, } from "common/Set2D";
 import { IVector2 } from "common/Vector2";
 import { createLifeString, getLifeStringError, isValidLifeString, LifeRuleData, parseLifeLikeString } from "libca/liferule";
-
-
-
-
-
 
 export class LifeLikeBoardRenderer {
     private start: Set2D;
@@ -15,8 +10,8 @@ export class LifeLikeBoardRenderer {
     private _currentGeneration: number;
     private rule: LifeRuleData = { birth: [3], survival: [2, 3] }
 
-    private cachedLiveWithLiveNeighborsMap: DelayedFreqMap2D = new DelayedFreqMap2D();
-    private cachedDeadToCheck: DelayedFreqMap2D = new DelayedFreqMap2D();
+    // private cachedLiveWithLiveNeighborsMap: DelayedFreqMap2D = new DelayedFreqMap2D();
+    // private cachedDeadToCheck: DelayedFreqMap2D = new DelayedFreqMap2D();
     private lifeLikeFreqMap2D: LifeLikeFreqMap2D;
 
    
@@ -60,12 +55,11 @@ export class LifeLikeBoardRenderer {
     }
 
     setStart(start: Set2D) {
-        this.cachedDeadToCheck.full_clear();
+        // this.cachedDeadToCheck.full_clear();
     }
 
     next() {
-        this.cachedLiveWithLiveNeighborsMap.clear();
-        this.cachedDeadToCheck.clear();
+        this.lifeLikeFreqMap2D.clear();
 
         this.current.forEach(([row, col]) => {
             let neighbors = 0;
@@ -78,21 +72,16 @@ export class LifeLikeBoardRenderer {
                     if (this.current.has(neighborRow, neighborCol)) { // neighbor is alive
                         neighbors++;
                     } else {
-                        if (this.cachedDeadToCheck.get_freq(row, col) < 8) {
-                            this.cachedDeadToCheck.add(neighborRow, neighborCol)
-                        }
+                        this.lifeLikeFreqMap2D.add(neighborRow, neighborCol, 1, 0)
                     }
                     
                 }
             }
-            this.cachedLiveWithLiveNeighborsMap.add(row, col, neighbors);
+            this.lifeLikeFreqMap2D.add(row, col, neighbors, 1);
         })
 
 
-        const surviving = this.cachedLiveWithLiveNeighborsMap.get_with_freqs_set_direct(...this.rule.survival);
-        const birthed = this.cachedDeadToCheck.get_with_freqs_set_direct(...this.rule.birth)
-
-        this.current = surviving.combine(birthed);
+        this.current = this.lifeLikeFreqMap2D.getFinal();
         this._currentGeneration += 1;
     }
 
@@ -112,4 +101,94 @@ export class LifeLikeBoardRenderer {
         this._currentGeneration = 0;
         this.current = new Set2D(this.start)
     }
+}
+
+export class LifeLikeFreqMap2D {
+    private survival_value_lookup: Map<number, Map<number, number>> = new Map()
+    private born_value_lookup: Map<number, Map<number, number>> = new Map()
+
+    // private survival_set: Set2D = new Set2D();
+    // private born_set: Set2D = new Set2D();
+
+    private rule: LifeRuleData;
+
+    constructor(rule: LifeRuleData) {
+        this.rule = {...rule};
+    }
+
+    clear() {
+        [...this.survival_value_lookup.values()].forEach(secondMap => secondMap.clear());
+        [...this.born_value_lookup.values()].forEach(secondMap => secondMap.clear());
+    }
+
+    setRule(rule: LifeRuleData) {
+        this.rule = {...rule}
+    }
+
+    getFinal(): Set2D {
+        const set = new Set2D();
+        for (const pair of this.survival_value_lookup) {
+            for (const secondPair of pair[1]) {
+                const freq = secondPair[1]
+                if (this.rule.survival.some(inputFreq => inputFreq === freq)) {
+                    set.add(pair[0], secondPair[0]);
+                }
+            }
+        }
+
+        for (const pair of this.born_value_lookup) {
+            for (const secondPair of pair[1]) {
+                const freq = secondPair[1]
+                if (this.rule.birth.some(inputFreq => inputFreq === freq)) {
+                    set.add(pair[0], secondPair[0]);
+                }
+            }
+        }
+
+        return set;
+    }
+
+    add(row: number, col: number, freqToAdd: number, state: 0 | 1) {
+        if (Number.isInteger(freqToAdd) === false) {
+            throw new Error("Frequencies must be integers in FreqMap2D");
+        }
+        if (freqToAdd < 0) {
+            throw new Error("Frequencies must be positive in FreqMap2D");
+        }
+        if (freqToAdd === 0) {
+            return;
+        }
+
+        if (state === 0) {
+            
+            let secondMap: Map<number, number> | undefined;
+            if (secondMap = this.born_value_lookup.get(row)) {
+                let freq: number | undefined
+                if (freq = secondMap.get(col)) {
+                    secondMap.set(col, freq + freqToAdd);
+                } else {
+                    secondMap.set(col, freqToAdd)
+                }
+            } else {
+                this.born_value_lookup.set(row, new Map<number, number>([[col, freqToAdd]]))
+            }
+
+        } else {
+
+            let secondMap: Map<number, number> | undefined;
+            if (secondMap = this.survival_value_lookup.get(row)) {
+                let freq: number | undefined
+                if (freq = secondMap.get(col)) {
+                    secondMap.set(col, freq + freqToAdd);
+                } else {
+                    secondMap.set(col, freqToAdd)
+                }
+            } else {
+                this.survival_value_lookup.set(row, new Map<number, number>([[col, freqToAdd]]))
+            }
+
+        }
+
+    }
+
 }

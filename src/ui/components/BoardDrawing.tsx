@@ -54,18 +54,19 @@ export const BoardDrawing = ({ board, view, grid: gridConfig = { show: true, min
         withCanvasAndContextWebGL2(canvasRef, ({ gl }) => {
             gl.clearColor(0, 0, 0, 1);
             gl.clear(gl.COLOR_BUFFER_BIT);
+            
             blockOutBounds(gl)
-
+            
             if (Array.isArray(board)) {
                 renderBoard(gl, view, board as IVector2[]);
             } else {
                 renderBoardFromMatrix(gl, view, board as CellMatrix, boardMatrixShaderProgram.current);
             }
-
+            
+            
             if (shouldRenderGrid()) {
                 renderGrid(gl, view, gridShaderProgram.current);
             }
-            
         })
     }
 

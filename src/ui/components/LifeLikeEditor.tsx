@@ -39,8 +39,8 @@ import { runBenchmarks } from "benchmark";
 
 
 
-const INITIAL_BOUNDS_WIDTH = 500
-const INITIAL_BOUNDS_HEIGHT = 500
+const INITIAL_BOUNDS_WIDTH = 200
+const INITIAL_BOUNDS_HEIGHT = 200
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
   const boardHolderRef = React.useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = React.useState<string>('');
