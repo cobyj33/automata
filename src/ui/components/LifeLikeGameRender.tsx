@@ -4,29 +4,59 @@ import { View } from 'common/View';
 import { Box } from 'common/Box';
 import BoardDrawing from 'ui/components/BoardDrawing';
 import { CellMatrix } from 'common/CellMatrix';
-import {getNextLifeGeneration} from 'libca/generationFunctions';
+import {getNextLifeGeneration, getNextLifeGeneration2D} from 'libca/generationFunctions';
+import { Set2D } from 'common/Set2D';
 
 
 export interface RenderData {
     readonly generation: number
 }
 
+interface LifeLikeRenderState {
+    currentRender: Set2D
+    currentRenderIVec2: IVector2[],
+    currentGeneration: number
+}
+
 export const LifeLikeGameRender = ({ start, view, bounds, automata, getData }: { start: IVector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
-    const [currentRender, setCurrentRender] = useState<CellMatrix>(CellMatrix.fromBoundedIVector2List(start, bounds));
-    const [currentGeneration, setCurrentGeneration] = useState<number>(0);
+    // const [currentRender, setCurrentRender] = useState<CellMatrix>(CellMatrix.fromBoundedIVector2List(start, bounds));
+    // const [currentGeneration, setCurrentGeneration] = useState<number>(0);
+
+    // useEffect( () => {
+    //     if (currentRender.area > 0) {
+    //         requestAnimationFrame(() => {
+    //             setCurrentRender(currentRender =>  currentRender.withCellData(getNextLifeGeneration(currentRender, automata)));
+    //             setCurrentGeneration(currentGeneration => currentGeneration + 1);
+    //             getData?.({ generation: currentGeneration });
+    //         })
+    //     }
+    // }, [currentRender])
+
+    const [renderState, setRenderState] = useState<LifeLikeRenderState>({
+        currentRender: Set2D.fromVector2DArray(start),
+        currentRenderIVec2: [...start],
+        currentGeneration: 0
+    });
+
 
     useEffect( () => {
-        if (currentRender.area > 0) {
+        if (renderState.currentRender.length > 0) {
             requestAnimationFrame(() => {
-                setCurrentRender(currentRender =>  currentRender.withCellData(getNextLifeGeneration(currentRender, automata)));
-                setCurrentGeneration(currentGeneration => currentGeneration + 1);
-                getData?.({ generation: currentGeneration });
+                setRenderState( currentState => {
+                    const next = getNextLifeGeneration2D(currentState.currentRender, automata)
+                    getData?.({ generation: currentState.currentGeneration });
+                    return {
+                        currentRender: next,
+                        currentRenderIVec2: next.getPairs(),
+                        currentGeneration: currentState.currentGeneration + 1
+                    }
+                })
             })
         }
-    }, [currentRender])
+    }, [renderState])
 
 
-    return <BoardDrawing bounds={bounds} board={currentRender} view={view} />
+    return <BoardDrawing bounds={bounds} board={renderState.currentRenderIVec2} view={view} />
 }
 
 export default LifeLikeGameRender
