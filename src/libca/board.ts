@@ -12,34 +12,7 @@ function getConwayRule(): LifeRuleData {
     }
 }
 
-// export function getNextLifeGeneration(current: Set2D, ruleString: string) {
-//     const liveWithLiveNeighborsMap: FreqMap2D = new FreqMap2D();
-//     const rule = parseLifeLikeString(ruleString);
-//     const deadToCheck: FreqMap2D = new FreqMap2D();
 
-//     this.current.forEach(([row, col]) => {
-//         for (let neighborRow = row - 1; neighborRow <= row + 1; neighborRow++) {
-//             for (let neighborCol = col - 1; neighborCol <= col + 1; neighborCol++) {
-//                 if (neighborRow === row && neighborCol === col) {
-//                     continue;
-//                 }
-
-//                 if (this.current.has(neighborRow, neighborCol)) { // neighbor is alive
-//                     liveWithLiveNeighborsMap.add(row, col);
-//                 } else {
-//                     deadToCheck.add(neighborRow, neighborCol)
-//                 }
-
-//             }
-//         }
-//     })
-
-//     const surviving = liveWithLiveNeighborsMap.get_with_freqs_set(...this.rule.survival);
-//     const birthed = deadToCheck.get_with_freqs_set(...this.rule.birth)
-//     // surviving.push(birthed);
-
-//     return surviving.combine(birthed);
-// }
 
 export class LifeLikeBoardRenderer {
     private start: Set2D;
