@@ -1,6 +1,8 @@
 import { CellMatrix } from 'common/CellMatrix';
+import { FreqMap2D } from 'common/FreqMap2D';
+import { Set2D } from 'common/Set2D';
 import { IVector2 } from 'common/Vector2';
-import { isValidLifeString, LifeRuleData, parseLifeLikeString } from 'libca/liferule';
+import { getLifeStringError, isValidLifeString, LifeRuleData, parseLifeLikeString } from 'libca/liferule';
 
 export function getNextLifeLikeGenerationFunction(matrix: Uint8ClampedArray, index: number, lineSize: number, ruleData: LifeRuleData): number {
     let neighbors = 0;
@@ -39,6 +41,42 @@ export function getNextLifeGeneration(cellMatrix: CellMatrix, ruleString: string
     }
 
     return output;
+}
+
+export function getNextLifeGeneration2D(current: Set2D, rule: string | LifeRuleData) {
+    const liveWithLiveNeighborsMap: FreqMap2D = new FreqMap2D();
+    const deadToCheck: FreqMap2D = new FreqMap2D();
+
+    if (typeof(rule) === "string") {
+        if (isValidLifeString(rule)) {
+            rule = parseLifeLikeString(rule);
+        } else {
+            throw new Error(`Passed invalid Life Rule String ${rule} to getNextLifeGeneration2D: ${getLifeStringError(rule)}`);
+        }
+    }
+    rule = rule as LifeRuleData;
+
+    current.forEach(([row, col]) => {
+        for (let neighborRow = row - 1; neighborRow <= row + 1; neighborRow++) {
+            for (let neighborCol = col - 1; neighborCol <= col + 1; neighborCol++) {
+                if (neighborRow === row && neighborCol === col) {
+                    continue;
+                }
+
+                if (current.has(neighborRow, neighborCol)) { // neighbor is alive
+                    liveWithLiveNeighborsMap.add(row, col);
+                } else {
+                    deadToCheck.add(neighborRow, neighborCol)
+                }
+
+            }
+        }
+    })
+
+    const surviving = liveWithLiveNeighborsMap.get_with_freqs_set(...rule.survival);
+    const birthed = deadToCheck.get_with_freqs_set(...rule.birth)
+
+    return surviving.combine(birthed);
 }
 
 export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleString: string): Promise<Uint8ClampedArray>  {
