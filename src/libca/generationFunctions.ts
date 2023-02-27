@@ -1,8 +1,6 @@
 import { CellMatrix } from 'common/CellMatrix';
 import { IVector2 } from 'common/Vector2';
-import { FaLeaf } from 'react-icons/fa';
 import { isValidLifeString, LifeRuleData, parseLifeLikeString } from 'libca/liferule';
-
 
 export function getNextLifeLikeGenerationFunction(matrix: Uint8ClampedArray, index: number, lineSize: number, ruleData: LifeRuleData): number {
     let neighbors = 0;
@@ -56,16 +54,6 @@ export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleStr
 
     return output;
 }
-
-// export function getLifeKernel(lifeString: string): IKernelRunShortcut {
-//     if (isValidLifeString(lifeString)) {
-//         const lifeData = parseLifeLikeString(lifeString);
-//       return gpu.createKernel(getNextLifeLikeGenerationFunction).setConstants( { ...lifeData, birthCount: lifeData.birth.length, survivalCount: lifeData.survival.length } );
-//     } else {
-//         throw new Error("CANNOT GET KERNEL FROM INVALID LIFE STRING: " + lifeString);
-//     }
-// }
-
 
 export function isValidElementaryRule(rule: number): boolean {
     return Number.isInteger(rule) && rule >= 0 && rule <= 255;
