@@ -1,5 +1,5 @@
 import { CellMatrix } from 'common/CellMatrix';
-import { FreqMap2D } from 'common/FreqMap2D';
+import { DelayedFreqMap2D, FreqMap2D } from 'common/FreqMap2D';
 import { Set2D } from 'common/Set2D';
 import { IVector2 } from 'common/Vector2';
 import { getLifeStringError, isValidLifeString, LifeRuleData, parseLifeLikeString } from 'libca/liferule';
@@ -44,8 +44,8 @@ export function getNextLifeGeneration(cellMatrix: CellMatrix, ruleString: string
 }
 
 export function getNextLifeGeneration2D(current: Set2D, rule: string | LifeRuleData) {
-    const liveWithLiveNeighborsMap: FreqMap2D = new FreqMap2D();
-    const deadToCheck: FreqMap2D = new FreqMap2D();
+    const liveWithLiveNeighborsMap: DelayedFreqMap2D = new DelayedFreqMap2D();
+    const deadToCheck: DelayedFreqMap2D = new DelayedFreqMap2D();
 
     if (typeof(rule) === "string") {
         if (isValidLifeString(rule)) {
@@ -57,6 +57,7 @@ export function getNextLifeGeneration2D(current: Set2D, rule: string | LifeRuleD
     rule = rule as LifeRuleData;
 
     current.forEach(([row, col]) => {
+        let neighbors = 0;
         for (let neighborRow = row - 1; neighborRow <= row + 1; neighborRow++) {
             for (let neighborCol = col - 1; neighborCol <= col + 1; neighborCol++) {
                 if (neighborRow === row && neighborCol === col) {
@@ -64,17 +65,20 @@ export function getNextLifeGeneration2D(current: Set2D, rule: string | LifeRuleD
                 }
 
                 if (current.has(neighborRow, neighborCol)) { // neighbor is alive
-                    liveWithLiveNeighborsMap.add(row, col);
+                    neighbors++;
                 } else {
-                    deadToCheck.add(neighborRow, neighborCol)
+                    if (deadToCheck.get_freq(row, col) < 8) {
+                        deadToCheck.add(neighborRow, neighborCol)
+                    }
                 }
 
             }
         }
+        liveWithLiveNeighborsMap.add(row, col, neighbors);
     })
 
-    const surviving = liveWithLiveNeighborsMap.get_with_freqs_set(...rule.survival);
-    const birthed = deadToCheck.get_with_freqs_set(...rule.birth)
+    const surviving = liveWithLiveNeighborsMap.get_with_freqs_set_direct(...rule.survival);
+    const birthed = deadToCheck.get_with_freqs_set_direct(...rule.birth)
 
     return surviving.combine(birthed);
 }

@@ -106,7 +106,7 @@ export function runBenchmark(name: string, width: number, height: number, patter
         }
     }
 
-    const renderer: LifeLikeBoardRenderer = LifeLikeBoardRenderer.fromNumberMatrix(mockBoard)
+    const renderer: LifeLikeBoardRenderer = LifeLikeBoardRenderer.fromNumberMatrix(mockBoard, "B3/S23")
 
     console.log(`Running Benchmark ${name} boardWidth: ${width} boardHeight: ${height} generations: ${generations}`)
     console.time("libca")

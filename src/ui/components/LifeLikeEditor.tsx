@@ -39,7 +39,8 @@ import { runBenchmarks } from "benchmark";
 
 
 
-
+const INITIAL_BOUNDS_WIDTH = 500
+const INITIAL_BOUNDS_HEIGHT = 500
 export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2[]> }) => {
   const boardHolderRef = React.useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = React.useState<string>('');
@@ -49,7 +50,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
   const [board, setBoard] = boardData;
   const [rendering, setRendering] = React.useState<boolean>(false);
-  const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, 150, 150));
+  const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, INITIAL_BOUNDS_WIDTH, INITIAL_BOUNDS_HEIGHT));
   const [ghostTilePositions, setGhostTilePositions] = React.useState<IVector2[]>([]);
   const [lastHoveredCell, setLastHoveredCell] = React.useState<IVector2>({ row: 0, col: 0 });
   const currentHoveredCell = React.useRef<Vector2>(Vector2.ZERO)

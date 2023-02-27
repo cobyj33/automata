@@ -14,6 +14,16 @@ export class Set2D {
         }
     }
 
+    fullClear() {
+        this.map = new Map();
+        this._length = 0;
+    }
+
+    clear() {
+        [...this.map.values()].forEach(set => set.clear())
+        this._length = 0;
+    }
+
     get length(): number { return this._length } 
 
     static fromVector2DArray(values: IVector2[]): Set2D {
@@ -55,13 +65,10 @@ export class Set2D {
     
 
     add(first: number, second: number): void {
-        let set: Set<number> | undefined
-        if (set = this.map.get(first)) {
-            if (set.has(second) === false) {
-                set.add(second); 
-                this._length += 1;
-            }
-        } else {
+        if (this.map.get(first)?.has(second) === false) {
+            this.map.get(first)?.add(second); 
+            this._length += 1;
+        } else if (this.map.has(first) === false) {
             this.map.set(first, new Set<number>([second]))
             this._length += 1;
         }
@@ -74,19 +81,15 @@ export class Set2D {
             if (set.has(second)) {
                 set.delete(second)
                 this._length -= 1;
-                if (set.size === 0) {
-                    this.map.delete(first)
-                }
+                // if (set.size === 0) { 
+                //     this.map.delete(first)
+                // }
             }
         }
     }
 
     has(first: number, second: number): boolean {
-        let set: Set<number> | undefined
-        if (set = this.map.get(first)) {
-            return set.has(second)
-        }
-        return false;
+        return this.map.get(first)?.has(second) || false;
     }
 
     hasAll(tuples: Array<[number, number]>): boolean {

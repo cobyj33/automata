@@ -53,7 +53,7 @@ test("length - unique", () => {
     set.add(10, 10);
     set.add(12, 10);
     set.add(10, 12)
-    expect(set.length === 5).toBe(true);
+    expect(set.length).toBe(5);
 })
 
 test("length - remove and add", () => {
@@ -65,7 +65,7 @@ test("length - remove and add", () => {
     set.add(12, 10);
     set.add(10, 12);
     set.remove(10, 10);
-    expect(set.length === 3).toBe(true);
+    expect(set.length).toBe(3);
 })
 
 
@@ -77,7 +77,7 @@ test("length - double", () => {
     set.add(3, 6);
     set.add(12, 10);
     set.add(10, 10)
-    expect(set.length === 4).toBe(true);
+    expect(set.length).toBe(4);
 })
 
 test("clone", () => {

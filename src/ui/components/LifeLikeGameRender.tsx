@@ -6,6 +6,8 @@ import BoardDrawing from 'ui/components/BoardDrawing';
 import { CellMatrix } from 'common/CellMatrix';
 import {getNextLifeGeneration, getNextLifeGeneration2D} from 'libca/generationFunctions';
 import { Set2D } from 'common/Set2D';
+import { isError } from 'common/util';
+import { LifeLikeBoardRenderer } from 'libca/board';
 
 
 export interface RenderData {
@@ -13,44 +15,37 @@ export interface RenderData {
 }
 
 interface LifeLikeRenderState {
-    currentRender: Set2D
     currentRenderIVec2: IVector2[],
     currentGeneration: number
 }
 
 export const LifeLikeGameRender = ({ start, view, bounds, automata, getData }: { start: IVector2[], view: View, bounds: Box, automata: string, getData?: (data: RenderData) => any }) => {
-    // const [currentRender, setCurrentRender] = useState<CellMatrix>(CellMatrix.fromBoundedIVector2List(start, bounds));
-    // const [currentGeneration, setCurrentGeneration] = useState<number>(0);
-
-    // useEffect( () => {
-    //     if (currentRender.area > 0) {
-    //         requestAnimationFrame(() => {
-    //             setCurrentRender(currentRender =>  currentRender.withCellData(getNextLifeGeneration(currentRender, automata)));
-    //             setCurrentGeneration(currentGeneration => currentGeneration + 1);
-    //             getData?.({ generation: currentGeneration });
-    //         })
-    //     }
-    // }, [currentRender])
 
     const [renderState, setRenderState] = useState<LifeLikeRenderState>({
-        currentRender: Set2D.fromVector2DArray(start),
         currentRenderIVec2: [...start],
         currentGeneration: 0
     });
 
+    const renderer = useRef<LifeLikeBoardRenderer>(new LifeLikeBoardRenderer(Set2D.fromVector2DArray(start), automata))
+
+    useEffect(() => {
+        renderer.current.setRule(automata)
+    }, [automata])
 
     useEffect( () => {
-        if (renderState.currentRender.length > 0) {
+        if (renderState.currentRenderIVec2.length > 0) {
             requestAnimationFrame(() => {
+
                 setRenderState( currentState => {
-                    const next = getNextLifeGeneration2D(currentState.currentRender, automata)
-                    getData?.({ generation: currentState.currentGeneration });
+                    renderer.current.next();
+
                     return {
-                        currentRender: next,
-                        currentRenderIVec2: next.getPairs(),
+                        currentRenderIVec2: renderer.current.getPairs(),
                         currentGeneration: currentState.currentGeneration + 1
                     }
                 })
+                getData?.({ generation: renderState.currentGeneration });
+                    
             })
         }
     }, [renderState])
