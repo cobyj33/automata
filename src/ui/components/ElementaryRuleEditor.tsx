@@ -1,4 +1,4 @@
-import { isValidElementaryRule } from "common/generationFunctions"
+import { isValidElementaryRule } from "libca/generationFunctions"
 import { useResizeObserver } from "common/hooks";
 import { getRefBoundingClientRect } from "common/reactUtil"
 import { Vector2 } from "common/Vector2";

@@ -3,7 +3,7 @@
  * A module to hold static data of the Automata Program
  * Generally, use the provided functions or create new functions act on the data
  */
-import { isValidLifeString } from "common/generationFunctions"
+import { isValidLifeString } from "libca/generationFunctions"
 
 const _NAMED_LIFE_RULES_LIST = ["Conway's Game Of Life", "Walled Cities", "Vote 4/5", "Vote", "Star Trek", "Stains", "SnowLife", "Seeds", "Rings 'n' Slugs", "Pseudo Life", "Plow World", "Pedestrian Life without Death", "Pedestrian Life", "Pedestrian Flock", "Oscillators Rule", "Morley", "Maze", "Majority", "LowLife", "LowFlockDeath", "LowDeath", "LongLife", "Logarithmic replicator rule", "Live Free or Die", "Lifeguard 2", "Lifeguard 1", "Life without Death", "Life SkyHigh", "IronLife", "IronFlock", "Iceballs", "HoneyLife", "HoneyFlock", "Holstein", "HighLife", "HighFlock", "Geology", "Gems Minor", "Gems", "Flock", "Electrified Maze", "EightLife", "EightFlock", "DryLife without Death", "DryLife", "DryFlock", "DrighLife", "DotLife", "Diamoeba", "Day and Night", "Dance", "Corrosion of Conformity", "Coral", "Bugs", "Blinkers", "Bacteria", "Assimilation", "Amoeba", "3-4 Life", "2x2 2", "2x2"] as const;
 export type NamedLifeRule = typeof _NAMED_LIFE_RULES_LIST[number]

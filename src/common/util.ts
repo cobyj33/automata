@@ -246,6 +246,11 @@ export function capitalized(word: string) {
     return firstLetter.toUpperCase().concat( word.slice(1).toLowerCase() )
 }
 
+export function isError(e: any): e is Error {
+    return typeof(e) === "object" && e !== null && "stack" in e && typeof(e.stack) === 'string' && "message" in e && typeof(e.message) === 'string';
+}
+
+
 
 // /**
 //  * Checks if two arrays are 

@@ -4,7 +4,7 @@ import { FaLeaf } from 'react-icons/fa';
 
 export type LifeRuleData = { birth: number[], survival: number[] }
 export function isValidLifeString(lifeString: string, errorOutput?: (error: string) => any) {
-    const error = getLifeStringErrors(lifeString);
+    const error = getLifeStringError(lifeString);
     if (error.length > 0) {
         errorOutput?.(error)
         return false;
@@ -12,7 +12,7 @@ export function isValidLifeString(lifeString: string, errorOutput?: (error: stri
     return true;
 }
 
-export function getLifeStringErrors(lifeString: string): string {
+export function getLifeStringError(lifeString: string): string {
     const sides = lifeString.split("/");
     if (sides.length !== 2) {
         return "Error: Not able to split string into birth and survival counts, format must include a forward slash B<NUMS>/S<NUMS> "
@@ -136,7 +136,7 @@ export async function getNextLifeGenerationAsync(cellMatrix: CellMatrix, ruleStr
 
 
 export function isValidElementaryRule(rule: number): boolean {
-    return rule >= 0 && rule <= 255;
+    return Number.isInteger(rule) && rule >= 0 && rule <= 255;
 }
 
 function getElementaryRules(rule: number): Uint8ClampedArray {
@@ -189,6 +189,17 @@ export function getNextElementaryGeneration(currentGeneration: Uint8ClampedArray
     return output;
 }
 
+export function createElementaryGenerationMatrix(startingGeneration: Uint8ClampedArray, generations: number, rule: number): (0 | 1)[][] {
+    const generationsDataU8: (0 | 1)[][] = new Array<Array<0 | 1>>(generations);
+    let currentGeneration = new Uint8ClampedArray([...startingGeneration]);
+    for (let i = 0; i < generations; i++) {
+        generationsDataU8[i] = [...currentGeneration] as (0 | 1)[];
+        currentGeneration = getNextElementaryGeneration(currentGeneration, rule)
+    }
+
+    return generationsDataU8
+}
+
 const patternTextFilterRegex = /[^*.\n\rOo]/g
 
 export function isValidPatternText(text: string): boolean {
@@ -226,51 +237,7 @@ export function parsePatternText(text: string): IVector2[] {
             }
         )
     })
-    let row = 0;
-    let col = 0;
 
 
     return cells;
 }
-
-// export async function getNextElementaryGenerationAsync(currentGeneration: Uint8ClampedArray, numberRule: number): Promise<Uint8ClampedArray> {
-//     const output: Uint8ClampedArray = new Uint8ClampedArray(currentGeneration.length);
-//     if (!isValidElementaryRule(numberRule)) {
-//         console.error("CANNOT GET NEXT ELEMENTARY GENERATION WITH INVALID RULE: ", numberRule);
-//         for (let i = 0; i < output.length; i++) {
-//             output[i] = currentGeneration[i];
-//         }
-//         return output;
-//     }
-
-//     const rules: Uint8ClampedArray = getElementaryRules(numberRule);
-//     for (let i = 0; i < currentGeneration.length; i++) {
-//         await ( async () => output[i] = getNextElementaryGenerationFunction(currentGeneration, i, rules))();
-//     }
-
-//     return output;
-// }
-
-// export function getElementaryKernel(rule: number) {
-
-//     return gpu.createKernel(getNextElementaryGenerationKernelFunction).setConstants( { rule: rules } );
-// }
-
-
-
-// async function getNextGeneration(board: IVector2[], lifeString: string): Promise<IVector2[]> {
-//     let newBoard: IVector2[] = []
-//     const renderingKernel = getLifeKernel(lifeString).setDynamicOutput(true).setDynamicArguments(true).setOutput([10]);
-
-//     const matrices: CellMatrix[] = partition(board);
-//     matrices.map(cellMatrix => ({
-//         ...cellMatrix,
-//         matrix: [...renderingKernel.setOutput([cellMatrix.width * cellMatrix.height])(cellMatrix.matrix, cellMatrix.width, cellMatrix.height) as number[]] 
-//     }))
-
-//     matrices.forEach(cellMatrix => {
-//        newBoard.push(...cellMatrixToVector2(cellMatrix)) 
-//     })
-
-//     return newBoard;
-// }

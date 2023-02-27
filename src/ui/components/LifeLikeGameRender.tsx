@@ -4,7 +4,7 @@ import { View } from 'common/View';
 import { Box } from 'common/Box';
 import BoardDrawing from 'ui/components/BoardDrawing';
 import { CellMatrix } from 'common/CellMatrix';
-import {getNextLifeGeneration} from 'common/generationFunctions';
+import {getNextLifeGeneration} from 'libca/generationFunctions';
 
 
 export interface RenderData {

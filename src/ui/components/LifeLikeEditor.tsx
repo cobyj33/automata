@@ -9,7 +9,7 @@ import { EditMode } from "editModes/EditMode"
 import { BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "editModes/lifeLike/LifeLikeEditModes";
 
 import { renderBoard, withCanvasAndContextWebGL2 } from 'common/drawing';
-import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeString, parsePatternText } from 'common/generationFunctions';
+import { createLifeString, isValidLifeString, isValidPatternText, parseLifeLikeString, parsePatternText } from 'libca/generationFunctions';
 import { getHoveredCell, pointerPositionInElement } from 'common/editorFunctions';
 import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'common/hooks';
 

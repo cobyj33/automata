@@ -1,6 +1,6 @@
 export {}
 // import {MutableRefObject, useEffect, RefObject, useRef} from "react";
-// import { getNextLifeGeneration } from "common/generationFunctions"
+// import { getNextLifeGeneration } from "libca/generationFunctions"
 // import { CellMatrix } from "common/CellMatrix";
 // import { withCanvasAndContext2D } from "common/wing";
 

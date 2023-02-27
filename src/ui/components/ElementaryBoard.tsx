@@ -21,7 +21,7 @@ import { isEqualNumberArray } from "common/util";
 import { EditorData, ElementaryEditorData } from "common/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
 import { Dimension2D } from "common/Dimension";
-import { isValidElementaryRule } from "common/generationFunctions";
+import { isValidElementaryRule } from "libca/generationFunctions";
 import { preview } from "vite";
 import SubmitButton from "./reuse/SubmitButton";
 import ActionButton from "./reuse/ActionButton";
@@ -34,6 +34,8 @@ import Description from "./reuse/Description";
 import { ElementaryEditorEditMode } from "state/elementary";
 import ElementaryRuleEditor from "./ElementaryRuleEditor";
 import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
+import { createElementaryCAImageBlob, requestWebDownload } from "libca/fileOutput";
+import ElementaryImageDownloadTool from "./ElementaryImageDownloadTool";
 
 
 
@@ -201,6 +203,9 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
                 </div>
             </SideBarEditorTool>
             <SideBarEditorTool title={`W.I.P...`} />
+
+            <ElementaryImageDownloadTool rule={rule} board={board} />
+
         </SideBarToolContainer>
       </aside>
 

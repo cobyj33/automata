@@ -1,7 +1,7 @@
 import lifeRuleEditorStyles from "ui/components/styles/LifeRuleEditor.module.css"
 import { useImmerReducer, ImmerReducer, useImmer } from "use-immer";
 import React from "react";
-import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData, getLifeStringErrors } from "common/generationFunctions"
+import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData, getLifeStringError } from "libca/generationFunctions"
 import { getLifeRuleName, getNamedLifeRuleString, isNamedLifeRuleString, NamedLifeRule, NAMED_LIFE_RULES_LIST } from "data";
 import ToggleButton from "./reuse/ToggleButton";
 import { capitalized } from "common/util";
@@ -174,7 +174,7 @@ const rawLifeReducer: RawLifeRuleEditorStateReducer = (draft, action) => {
         case "update input":
             const { input } = action
             draft.input = input;
-            draft.error = getLifeStringErrors(input)
+            draft.error = getLifeStringError(input)
     }
     return draft;
 }

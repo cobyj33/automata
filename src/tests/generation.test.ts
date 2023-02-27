@@ -1,6 +1,6 @@
 import { isEqualNumberArray, isEqualNumberMatrix, isSimilarNumberArray } from "common/util";
 import { CellMatrix } from "common/CellMatrix";
-import { getNextLifeGeneration } from "common/generationFunctions"
+import { getNextLifeGeneration } from "libca/generationFunctions"
 import { Vector2 } from "common/Vector2";
 import { Box } from "common/Box";
 
