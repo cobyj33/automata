@@ -29,7 +29,6 @@ import TextInput from "./reuse/TextInput";
 import ToggleButton from "./reuse/ToggleButton";
 import SideBarEditorTool from "./reuse/editor/SideBarEditorTool";
 import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
-import { getRefBoundingClientRect } from "common/reactUtil";
 import Description from "./reuse/Description";
 import { ElementaryEditorEditMode } from "state/elementary";
 import ElementaryRuleEditor from "./ElementaryRuleEditor";

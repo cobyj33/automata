@@ -1,6 +1,5 @@
 import { isValidElementaryRule } from "libca/generationFunctions"
 import { useResizeObserver } from "common/hooks";
-import { getRefBoundingClientRect } from "common/reactUtil"
 import { Vector2 } from "common/Vector2";
 import { View } from "common/View";
 import React from "react"
@@ -85,8 +84,8 @@ export function ElementaryRuleEditor({ rule, onRuleRequest, initiallyOpened }: E
     }
 
     function fitPreview() {
-        const rect = getRefBoundingClientRect(previewHolderRef)
-        if (rect !== null && rect !== undefined) {
+        if (previewHolderRef.current !== null && previewHolderRef.current !== undefined) {
+            const rect = previewHolderRef.current.getBoundingClientRect()
             if (rect.width > 1 && rect.height > 1) {
                 previewDispatch({type: "fit", width: Math.trunc(rect.width), height: Math.trunc(rect.height)})
             }
@@ -98,7 +97,6 @@ export function ElementaryRuleEditor({ rule, onRuleRequest, initiallyOpened }: E
     }, [])
 
     useResizeObserver(previewHolderRef, () => {
-        console.log("size changed", getRefBoundingClientRect(previewHolderRef))
         fitPreview()
     })
 

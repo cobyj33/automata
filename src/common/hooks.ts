@@ -2,7 +2,6 @@ import { MutableRefObject, RefObject, useCallback, useEffect, useRef, useState }
 import { HistoryStack } from "common/HistoryStack";
 import { StatefulData } from "common/StatefulData";
 import { isEqualDOMRect } from "./util";
-import { getRefBoundingClientRect } from "./reactUtil";
 
 type Action = () => void;
 type IComparer<T> = (first: T, second: T) => boolean;
@@ -153,8 +152,9 @@ export function useCanvas2DUpdater(canvasRef: RefObject<HTMLCanvasElement>) {
 export function useResizeObserver(toObserve: RefObject<HTMLElement>, ...actions: Action[]) {
     const lastBoundingBox = useRef<DOMRect>( new DOMRect(0, 0, 0, 0) )
     const onDetect = () => {
-        const rect = getRefBoundingClientRect(toObserve)
-        if (rect !== null && rect !== undefined) {
+        if (toObserve.current !== null && toObserve.current !== undefined) {
+            const rect = toObserve.current.getBoundingClientRect()
+
             if (!isEqualDOMRect(lastBoundingBox.current, rect)) {
                 actions.forEach(action => action())
             }
@@ -199,61 +199,3 @@ export function useCanvasHolderUpdater(canvasRef: RefObject<HTMLCanvasElement>, 
         return () => window.removeEventListener('resize', updateCanvasSize);
     }, [])
   }
-
-// export function useEditModes(modes: { [key: string]: EditMode }, data: MutableRefObject<() => EditorData>, editMode: string, canvasRef: RefObject<HTMLElement>): void {
-//     const editorModes: MutableRefObject<{ [key: string]: EditMode }> = useRef(modes);
-
-//     const onPointerDown = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
-//         editorModes.current[editMode].onPointerDown?.(event);
-//     }, [])
-
-//     const onPointerUp = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
-//         editorModes.current[editMode].onPointerUp?.(event);
-//     }, [])
-
-//     const onPointerMove = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
-//         editorModes.current[editMode].onPointerMove?.(event);
-//     }, [])
-
-//     const onPointerLeave = useCallback((event: PointerEvent<Element>) => {
-//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
-//         editorModes.current[editMode].onPointerLeave?.(event);
-//     }, [])
-
-//     const onKeyDown = useCallback((event: KeyboardEvent<Element>) => {
-//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
-//         editorModes.current[editMode].onKeyDown?.(event);
-//     }, [])
-
-//     const onKeyUp = useCallback((event: KeyboardEvent<Element>) => {
-//         editorModes.current[editMode].sendUpdatedEditorData(data.current())
-//         editorModes.current[editMode].onKeyUp?.(event);
-//     }, [])
-
-//     function unbindEvents() {
-//         const canvas: HTMLCanvasElement | null = canvasRef.current;
-//         if (canvas !== null) {
-//             canvas.addEventListener('pointerdown', onPointerDown);
-//             canvas.addEventListener('pointerup', onPointerUp);
-//             canvas.addEventListener('pointerleave', onPointerLeave);
-//         }
-//     }
-
-//     function bindEvents() {
-//         const canvas: HTMLCanvasElement | null = canvasRef.current;
-//         if (canvas !== null) {
-//             canvas.addEventListener('pointerdown', setPointerTrue);
-//             canvas.addEventListener('pointerup', setPointerFalse);
-//             canvas.addEventListener('pointerleave', setPointerFalse);
-//         }
-//     }
-
-//     useEffect( () => {
-//         unbindEvents();
-//         bindEvents();
-//         return unbindEvents;
-//     })
-// }

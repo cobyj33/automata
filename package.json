@@ -12,6 +12,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "immer": "^9.0.18",
+    "jsutil": "github:cobyj33/jsutil",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.7.4",
