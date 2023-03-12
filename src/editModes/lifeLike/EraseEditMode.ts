@@ -1,8 +1,7 @@
 import { PointerEvent } from "react";
 import { EditMode } from "editModes/EditMode";
-import { getLine } from "common/shapes";
+import { getLine , Vector2} from "jsutil";
 import { StatefulData } from "common/StatefulData"
-import { IVector2 } from "common/Vector2"
 import { LifeLikeEditorData } from "common/EditorData";
 
 export class EraseEditMode extends EditMode<LifeLikeEditorData> {

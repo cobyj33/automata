@@ -1,4 +1,4 @@
-import { isError } from 'common/util'
+import { isError } from 'jsutil'
 import { createElementaryCAImageBlob, ImageMimeType, MAX_ELEMENTARY_IMAGE_DATA_URL_HEIGHT, requestWebDownload } from 'libca/fileOutput'
 import Description from './reuse/Description'
 import SideBarEditorTool from './reuse/editor/SideBarEditorTool'

@@ -1,7 +1,6 @@
 import { isValidElementaryRule } from "libca/generationFunctions"
 import { useResizeObserver } from "common/hooks";
-import { Vector2 } from "common/Vector2";
-import { View } from "common/View";
+import { Vector2, View } from "jsutil";
 import React from "react"
 import ElementaryBoardRender, { RenderController } from "./ElementaryBoardRender"
 import ActionButton from "./reuse/ActionButton";

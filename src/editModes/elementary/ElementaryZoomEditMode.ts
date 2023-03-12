@@ -1,10 +1,9 @@
 import { PointerEvent, WheelEvent } from "react";
 import {StatefulData} from "common/StatefulData";
-import { Vector2 } from "common/Vector2";
-import {View} from "common/View";
+import { Vector2, View } from "jsutil";
 import { EditMode } from "editModes/EditMode";
 import { EditorData, LifeLikeEditorData } from "common/EditorData";
-import { clamp } from "common/util";
+import { clamp } from "jsutil";
 import { MIN_CELL_SIZE, MAX_CELL_SIZE } from "data";
 import ZoomEditMode from "editModes/lifeLike/ZoomEditMode";
 

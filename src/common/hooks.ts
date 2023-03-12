@@ -1,7 +1,7 @@
 import { MutableRefObject, RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { HistoryStack } from "common/HistoryStack";
-import { StatefulData } from "common/StatefulData";
-import { isEqualDOMRect } from "./util";
+import { HistoryStack } from "jsutil";
+import { isEqualDOMRect } from "jsutil/browser";
+import { StatefulData } from "./StatefulData";
 
 type Action = () => void;
 type IComparer<T> = (first: T, second: T) => boolean;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IVector2 } from 'common/Vector2';
+import { IVector2 } from 'jsutil';
 import editorPageStyles from 'ui/pages/styles/EditorPage.module.css';
 
 import LifeLikeEditor from 'ui/components/LifeLikeEditor';

@@ -1,12 +1,9 @@
-import { IVector2 } from "common/Vector2";
-import { View } from "common/View";
-import { Box } from "common/Box";
+import { IVector2, View, Box, Dimension2D } from "jsutil";
 import { CellMatrix } from "common/CellMatrix";
 
 import gridVertexShader from "common/grid.vert?raw"
 import gridFragmentShader from "common/grid.frag?raw"
 import { compileProgramFromFiles, fetchTextFile } from "./webgl";
-import { Dimension2D } from "common/Dimension";
 
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
     return new Box(view.position, Dimension2D.fromData(canvas).scale(1/view.cellSize).ceil())

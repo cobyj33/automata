@@ -1,8 +1,6 @@
-import { isEqualNumberArray, isEqualNumberMatrix, isSimilarNumberArray } from "common/util";
+import { isEqualNumberArray, isEqualNumberMatrix, isSimilarNumberArray, Vector2, Box } from "jsutil";
 import { CellMatrix } from "common/CellMatrix";
 import { getNextLifeGeneration } from "libca/generationFunctions"
-import { Vector2 } from "common/Vector2";
-import { Box } from "common/Box";
 
 /**
  * Get a Acorn Conway's Game Of Life Pattern

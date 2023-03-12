@@ -1,6 +1,5 @@
 import { WheelEvent, useRef, useEffect, MutableRefObject, RefObject, PointerEvent, KeyboardEvent,  useState, ChangeEvent, useReducer } from "react";
-import { View } from "common/View"
-import { IVector2, Vector2 } from "common/Vector2"
+import { View, IVector2, Vector2, Box, Dimension2D } from "jsutil"
 import { BoardDrawing } from "ui/components/BoardDrawing";
 import { CellMatrix } from "common/CellMatrix";
 import { ElementaryDrawEditMode } from "editModes/elementary/ElementaryDrawEditMode";
@@ -16,11 +15,9 @@ import { ElementaryMoveEditMode } from 'editModes/elementary/ElementaryMoveEditM
 import { EditMode } from 'editModes/EditMode';
 import { ElementaryEraseEditMode } from 'editModes/elementary/ElementaryEraseEditMode';
 import elementaryStyles from 'ui/components/styles/Elementary.module.css'
-import { Box } from "common/Box";
-import { isEqualNumberArray } from "common/util";
+import { isEqualNumberArray } from "jsutil";
 import { EditorData, ElementaryEditorData } from "common/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
-import { Dimension2D } from "common/Dimension";
 import { isValidElementaryRule } from "libca/generationFunctions";
 import { preview } from "vite";
 import SubmitButton from "./reuse/SubmitButton";

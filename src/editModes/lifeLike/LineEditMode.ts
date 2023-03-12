@@ -1,10 +1,7 @@
 import { KeyboardEvent, PointerEvent } from "react";
-import { IVector2, filterVector2ListDuplicates, filterVector2ListMatches } from "common/Vector2";
+import { IVector2, filterVector2ListDuplicates, filterVector2ListMatches, Box, LineSegment, getLine } from "jsutil";
 import { EditMode } from "editModes/EditMode";
-import {getLine} from 'common/shapes';
 import {StatefulData} from "common/StatefulData";
-import { Box } from "common/Box";
-import { LineSegment } from "common/LineSegment";
 import { hover } from "@testing-library/user-event/dist/hover";
 import { LifeLikeEditorData } from "common/EditorData";
 import { ShapeEditMode } from "./ShapeEditMode";

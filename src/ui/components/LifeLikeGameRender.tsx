@@ -1,12 +1,8 @@
 import { Reducer, useEffect, useRef, useState } from 'react'
-import { IVector2 } from 'common/Vector2';
-import { View } from 'common/View';
-import { Box } from 'common/Box';
+import { IVector2, View, Box, Set2D, isError } from 'jsutil';
 import BoardDrawing from 'ui/components/BoardDrawing';
 import { CellMatrix } from 'common/CellMatrix';
 import {getNextLifeGeneration, getNextLifeGeneration2D} from 'libca/generationFunctions';
-import { Set2D } from 'common/Set2D';
-import { isError } from 'common/util';
 import { LifeLikeBoardRenderer } from 'libca/board';
 
 

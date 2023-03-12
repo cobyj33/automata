@@ -1,7 +1,5 @@
 import { CellMatrix } from 'common/CellMatrix';
-import { DelayedFreqMap2D, FreqMap2D } from 'common/FreqMap2D';
-import { Set2D } from 'common/Set2D';
-import { IVector2 } from 'common/Vector2';
+import { DelayedFreqMap2D, Set2D, IVector2 } from 'jsutil';
 import { getLifeStringError, isValidLifeString, LifeRuleData, parseLifeLikeString } from 'libca/liferule';
 
 export function getNextLifeLikeGenerationFunction(matrix: Uint8ClampedArray, index: number, lineSize: number, ruleData: LifeRuleData): number {

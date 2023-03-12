@@ -1,7 +1,4 @@
-import { isRectangularMatrix } from "common/util";
-import {Box, IBox} from "common/Box";
-import { Dimension2D, IDimension2D } from "./Dimension";
-import { IVector2, Vector2 } from "./Vector2";
+import { isRectangularMatrix, Box, IBox, Dimension2D, IDimension2D, IVector2, Vector2 } from "jsutil";
 
 
 export interface ICellMatrix {

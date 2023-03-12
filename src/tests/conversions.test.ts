@@ -1,7 +1,6 @@
-import { IVector2, vector2Equals } from "common/Vector2"
+import { IVector2, vector2Equals, Box } from "jsutil"
 import { CellMatrix } from "common/CellMatrix"
-import { isEqualNumberArray, isSimilarNumberArray } from "common/util";
-import { Box } from "common/Box";
+import { isEqualNumberArray, isSimilarNumberArray } from "jsutil";
 
 
 test('cells To Matrix', () => {

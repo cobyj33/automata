@@ -1,6 +1,5 @@
 import { PointerEvent, KeyboardEvent } from "react";
-import { IVector2, filterVector2ListDuplicates } from "common/Vector2";
-import { getEllipse } from "common/shapes";
+import { getEllipse, IVector2, filterVector2ListDuplicates } from "jsutil";
 import { EditMode } from "editModes/EditMode";
 import { StatefulData } from "common/StatefulData";
 import { LifeLikeEditorData } from "common/EditorData";

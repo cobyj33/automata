@@ -1,8 +1,5 @@
 import React, { useEffect } from "react"
-
-import {Box } from 'common/Box';
-import { IVector2, Vector2 } from 'common/Vector2';
-import { View } from 'common/View';
+import { IVector2, Vector2, View, Box } from 'jsutil';
 import { StatefulData } from 'common/StatefulData';
 
 import { EditMode } from "editModes/EditMode"
@@ -25,7 +22,7 @@ import { BsCircle } from "react-icons/bs"
 
 import gameBoardStyles from "ui/components/styles/GameBoard.module.css"
 import { EditorData, LifeLikeEditorData } from "common/EditorData";
-import { Dimension2D } from "common/Dimension";
+import { Dimension2D } from "jsutil";
 import TextAreaInput from "./reuse/TextAreaInput";
 import ActionButton from "./reuse/ActionButton";
 import ToggleButton from "./reuse/ToggleButton";

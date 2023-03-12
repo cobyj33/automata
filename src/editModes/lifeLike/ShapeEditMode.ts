@@ -1,6 +1,5 @@
 import { LifeLikeEditorData } from "common/EditorData";
-import { LineSegment } from "common/LineSegment";
-import { filterVector2ListDuplicates, IVector2, removeVector2ListMatches } from "common/Vector2";
+import { filterVector2ListDuplicates, IVector2, removeVector2ListMatches, LineSegment } from "jsutil";
 import EditMode from "editModes/EditMode";
 
 

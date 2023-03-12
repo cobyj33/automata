@@ -1,7 +1,4 @@
-import { Dimension2D, IDimension2D } from "common/Dimension";
-import { IVector2 } from "common/Vector2";
-import { IView } from "common/View";
-
+import { IDimension2D, IVector2, IView } from "jsutil";
 export interface ElementaryEditorState {
     readonly board: number[],
     readonly ghostBoard: number[],

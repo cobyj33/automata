@@ -3,7 +3,7 @@ import { EditMode } from "editModes/EditMode";
 import { StatefulData } from "common/StatefulData"
 import { CellMatrix } from "common/CellMatrix"
 import { ElementaryEditorData } from "common/EditorData";
-import { clamp } from "common/util";
+import { clamp } from "jsutil";
 
 function range(first: number, second: number): number[] {
     const min: number = Math.min(first, second);

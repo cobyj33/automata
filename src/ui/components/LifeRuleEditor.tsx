@@ -4,7 +4,7 @@ import React from "react";
 import { isValidLifeString, createLifeString, parseLifeLikeString, LifeRuleData, getLifeStringError } from "libca/liferule"
 import { getLifeRuleName, getNamedLifeRuleString, isNamedLifeRuleString, NamedLifeRule, NAMED_LIFE_RULES_LIST } from "data";
 import ToggleButton from "./reuse/ToggleButton";
-import { capitalized } from "common/util";
+import { capitalized } from "jsutil";
 import { SubmitButton } from "./reuse/SubmitButton";
 import TextInput from "./reuse/TextInput";
 import ErrorText from "./reuse/ErrorText";

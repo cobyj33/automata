@@ -1,6 +1,4 @@
-import { DelayedFreqMap2D, FreqMap2D } from "common/FreqMap2D";
-import { Set2D, } from "common/Set2D";
-import { IVector2 } from "common/Vector2";
+import { Set2D, } from "jsutil";
 import { createLifeString, getLifeStringError, isValidLifeString, LifeRuleData, parseLifeLikeString } from "libca/liferule";
 
 export class LifeLikeBoardRenderer {

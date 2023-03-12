@@ -1,8 +1,7 @@
 import { CellMatrix } from "common/CellMatrix";
-import { Vector2 } from "common/Vector2";
 import { LifeLikeBoardRenderer } from "libca/board";
 import { getNextLifeGeneration } from "libca/generationFunctions";
-import { isRectangularMatrix } from "common/util";
+import { Vector2, isRectangularMatrix } from "jsutil";
 
 interface Benchmark {
     readonly name: string

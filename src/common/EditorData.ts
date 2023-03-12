@@ -1,9 +1,6 @@
 import { StatefulData } from "common/StatefulData";
-import { IVector2 } from "common/Vector2";
-import { View } from "common/View";
+import { IVector2, View, Box, Dimension2D } from "jsutil";
 import { PointerEvent } from "react";
-import { Box } from "./Box";
-import { Dimension2D } from "./Dimension";
 
 export interface EditorData {
     readonly viewData: StatefulData<View>;
