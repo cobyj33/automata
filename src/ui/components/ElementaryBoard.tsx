@@ -6,7 +6,7 @@ import { ElementaryDrawEditMode } from "editModes/elementary/ElementaryDrawEditM
 import { ElementaryLineEditMode  } from "editModes/elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
-import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "common/hooks";
+import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "jsutil/react";
 import { ElementaryBoardRender, RenderController } from "ui/components/ElementaryBoardRender";
 import { StatefulData } from "jsutil/react"
 import { pointerPositionInElement, getHoveredCell } from 'common/editorFunctions';

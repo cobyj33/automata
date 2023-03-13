@@ -9,7 +9,7 @@ import { renderBoard, withCanvasAndContextWebGL2 } from 'common/drawing';
 import { createLifeString, isValidLifeString, parseLifeLikeString } from 'libca/liferule';
 import { parsePatternText, isValidPatternText } from "libca/generationFunctions";
 import { getHoveredCell, pointerPositionInElement } from 'common/editorFunctions';
-import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'common/hooks';
+import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'jsutil/react';
 
 import { BoardDrawing } from 'ui/components/BoardDrawing';
 import { LifeLikeGameRender, RenderData } from 'ui/components/LifeLikeGameRender';

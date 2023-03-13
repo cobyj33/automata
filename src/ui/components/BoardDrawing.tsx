@@ -1,7 +1,7 @@
 import React from 'react'
 import { IVector2, View, IBox, Box } from 'jsutil';
 import { getBoardMatrixShaderProgram, getGridShaderProgram, getViewArea, renderBoard, renderBoardFromMatrix, renderGrid, withCanvasAndContextWebGL2 } from 'common/drawing';
-import { useCanvasHolderUpdater, useWebGL2CanvasUpdater } from 'common/hooks';
+import { useCanvasHolderUpdater, useWebGL2CanvasUpdater } from 'jsutil/react';
 import { CellMatrix } from 'common/CellMatrix';
 import boardDrawingStyles from "ui/components/styles/BoardDrawing.module.css"
 import HeldCanvas from './reuse/HeldCanvas';
