@@ -1,8 +1,6 @@
 import { StatefulData } from "jsutil/react";
 import { IVector2, View, Box, Dimension2D } from "jsutil";
-import { PointerEvent } from "react";
-import fs from "fs/promises"
-import fsp from "fs"
+
 export interface EditorData {
     readonly viewData: StatefulData<View>;
     readonly viewportSize: Dimension2D

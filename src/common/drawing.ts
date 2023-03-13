@@ -3,7 +3,7 @@ import { CellMatrix } from "common/CellMatrix";
 
 import gridVertexShader from "common/grid.vert?raw"
 import gridFragmentShader from "common/grid.frag?raw"
-import { compileProgramFromFiles, fetchTextFile } from "./webgl";
+import { compileProgramFromFiles } from "jsutil/browser";
 
 export function getViewArea(canvas: HTMLCanvasElement | OffscreenCanvas, view: View): Box {
     return new Box(view.position, Dimension2D.fromData(canvas).scale(1/view.cellSize).ceil())

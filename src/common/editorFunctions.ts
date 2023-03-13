@@ -11,8 +11,6 @@ export function pointerPositionInElement(event: PointerEvent<Element>): Vector2 
     return new Vector2(Math.trunc(event.clientY - bounds.y), Math.trunc(event.clientX - bounds.x))
 }
 
-
-
 export function getHoveredCell(pointerPosition: Vector2, view: View): Vector2 {
     return pointerPosition.scale(1/view.cellSize).add(view.position)
 }
