@@ -199,8 +199,6 @@ export const ElementaryBoard = ({ boardData }: { boardData: StatefulData<number[
             </SideBarEditorTool>
             <SideBarEditorTool title={`W.I.P...`} />
 
-            <ElementaryImageDownloadTool rule={rule} board={board} />
-
         </SideBarToolContainer>
       </aside>
 

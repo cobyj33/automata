@@ -5,11 +5,9 @@ import { StatefulData } from 'jsutil/react';
 import { EditMode } from "editModes/EditMode"
 import { BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "editModes/lifeLike/LifeLikeEditModes";
 
-import { renderBoard, withCanvasAndContextWebGL2 } from 'common/drawing';
-import { createLifeString, isValidLifeString, parseLifeLikeString } from 'libca/liferule';
 import { parsePatternText, isValidPatternText } from "libca/generationFunctions";
 import { getHoveredCell, pointerPositionInElement } from 'common/editorFunctions';
-import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from 'jsutil/react';
+import { useHistory, useIsPointerDown } from 'jsutil/react';
 
 import { BoardDrawing } from 'ui/components/BoardDrawing';
 import { LifeLikeGameRender, RenderData } from 'ui/components/LifeLikeGameRender';
@@ -28,11 +26,9 @@ import ActionButton from "./reuse/ActionButton";
 import ToggleButton from "./reuse/ToggleButton";
 import SideBarEditorTool from "./reuse/editor/SideBarEditorTool";
 import Description from "./reuse/Description";
-import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import { DIAGRAM_NAMES, getDiagram } from "data";
 import { LifeLikeEditorEditMode } from "state/lifelike";
 import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
-import { runBenchmarks } from "benchmark";
 
 
 
@@ -231,9 +227,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             </SideBarEditorTool>
 
             <SideBarEditorTool title={`W.I.P...`} />
-            <SideBarEditorTool title="Temporary Benchmark">
-                <ActionButton onClick={runBenchmarks}>Run Benchmark</ActionButton>
-            </SideBarEditorTool>
+
           </SideBarToolContainer>
       </aside>
 
