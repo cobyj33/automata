@@ -1,6 +1,6 @@
 import { KeyboardEvent, PointerEvent } from "react";
 import {getLine, IVector2, filterVector2ListDuplicates, LineSegment, Box } from "jsutil";
-import { StatefulData } from "common/StatefulData";
+import { StatefulData } from "jsutil/react";
 import { EditMode } from "editModes/EditMode";
 import { LifeLikeEditorData } from "common/EditorData";
 import { ShapeEditMode } from "./ShapeEditMode";

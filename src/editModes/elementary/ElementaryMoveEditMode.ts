@@ -1,7 +1,7 @@
 import { PointerEvent } from "react";
 import { IVector2, Vector2, vector2ToLength, addVector2, View, clamp } from "jsutil";
 import { EditMode } from "editModes/EditMode";
-import { StatefulData } from 'common/StatefulData';
+import { StatefulData } from 'jsutil/react';
 import { EditorData, ElementaryEditorData, LifeLikeEditorData } from "common/EditorData";
 import MoveEditMode from "editModes/lifeLike/MoveEditMode";
 

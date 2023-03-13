@@ -1,7 +1,7 @@
 import { PointerEvent, KeyboardEvent } from "react";
 import { getEllipse, IVector2, filterVector2ListDuplicates } from "jsutil";
 import { EditMode } from "editModes/EditMode";
-import { StatefulData } from "common/StatefulData";
+import { StatefulData } from "jsutil/react";
 import { LifeLikeEditorData } from "common/EditorData";
 import { ShapeEditMode } from "./ShapeEditMode";
 

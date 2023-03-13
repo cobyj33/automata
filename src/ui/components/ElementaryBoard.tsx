@@ -8,7 +8,7 @@ import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRed
 
 import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "common/hooks";
 import { ElementaryBoardRender, RenderController } from "ui/components/ElementaryBoardRender";
-import { StatefulData } from "common/StatefulData"
+import { StatefulData } from "jsutil/react"
 import { pointerPositionInElement, getHoveredCell } from 'common/editorFunctions';
 import { ElementaryZoomEditMode } from 'editModes/elementary/ElementaryZoomEditMode';
 import { ElementaryMoveEditMode } from 'editModes/elementary/ElementaryMoveEditMode';
@@ -30,7 +30,6 @@ import Description from "./reuse/Description";
 import { ElementaryEditorEditMode } from "state/elementary";
 import ElementaryRuleEditor from "./ElementaryRuleEditor";
 import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
-import { createElementaryCAImageBlob, requestWebDownload } from "libca/fileOutput";
 import ElementaryImageDownloadTool from "./ElementaryImageDownloadTool";
 
 

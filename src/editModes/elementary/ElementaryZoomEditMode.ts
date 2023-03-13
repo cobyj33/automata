@@ -1,5 +1,5 @@
 import { PointerEvent, WheelEvent } from "react";
-import {StatefulData} from "common/StatefulData";
+import {StatefulData} from "jsutil/react";
 import { Vector2, View } from "jsutil";
 import { EditMode } from "editModes/EditMode";
 import { EditorData, LifeLikeEditorData } from "common/EditorData";

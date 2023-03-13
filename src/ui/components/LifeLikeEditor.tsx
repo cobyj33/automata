@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { IVector2, Vector2, View, Box } from 'jsutil';
-import { StatefulData } from 'common/StatefulData';
+import { StatefulData } from 'jsutil/react';
 
 import { EditMode } from "editModes/EditMode"
 import { BoxEditMode, DrawEditMode, EllipseEditMode, LineEditMode, MoveEditMode, ZoomEditMode, EraseEditMode } from "editModes/lifeLike/LifeLikeEditModes";

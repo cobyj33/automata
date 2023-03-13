@@ -1,6 +1,6 @@
 import { PointerEvent } from "react";
 import { EditMode } from "editModes/EditMode";
-import { StatefulData } from "common/StatefulData"
+import { StatefulData } from "jsutil/react"
 import { CellMatrix } from "common/CellMatrix"
 import { ElementaryEditorData } from "common/EditorData";
 import { clamp } from "jsutil";
