@@ -6,8 +6,8 @@ import { ElementaryDrawEditMode } from "editModes/elementary/ElementaryDrawEditM
 import { ElementaryLineEditMode  } from "editModes/elementary/ElementaryLineEditMode";
 import { FaPlay, FaBrush, FaArrowsAlt, FaSearch, FaEraser, FaLine, FaUndo, FaRedo } from "react-icons/fa"
 
-import { useCanvasHolderUpdater, useHistory, useIsPointerDown, useWebGL2CanvasUpdater } from "jsutil/react";
-import { ElementaryBoardRender, RenderController } from "ui/components/ElementaryBoardRender";
+import { useHistory, useIsPointerDown } from "jsutil/react";
+import { ElementaryBoardRender } from "ui/components/ElementaryBoardRender";
 import { StatefulData } from "jsutil/react"
 import { pointerPositionInElement, getHoveredCell } from 'common/editorFunctions';
 import { ElementaryZoomEditMode } from 'editModes/elementary/ElementaryZoomEditMode';
@@ -18,19 +18,13 @@ import elementaryStyles from 'ui/components/styles/Elementary.module.css'
 import { isEqualNumberArray } from "jsutil";
 import { EditorData, ElementaryEditorData } from "common/EditorData";
 import { GiStraightPipe } from "react-icons/gi";
-import { isValidElementaryRule } from "libca/generationFunctions";
-import { preview } from "vite";
-import SubmitButton from "./reuse/SubmitButton";
 import ActionButton from "./reuse/ActionButton";
-import TextInput from "./reuse/TextInput";
 import ToggleButton from "./reuse/ToggleButton";
 import SideBarEditorTool from "./reuse/editor/SideBarEditorTool";
-import SideBarToolTitle from "./reuse/editor/SideBarToolTitle";
 import Description from "./reuse/Description";
 import { ElementaryEditorEditMode } from "state/elementary";
 import ElementaryRuleEditor from "./ElementaryRuleEditor";
 import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
-import ElementaryImageDownloadTool from "./ElementaryImageDownloadTool";
 
 
 

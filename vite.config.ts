@@ -7,17 +7,21 @@ import svgrPlugin from 'vite-plugin-svgr';
 export default defineConfig({
     plugins: [react(), viteTsconfigPaths(), svgrPlugin()],
     // eslint-disable-next-line no-use-before-define
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/setupTests.ts',
-    coverage: {
-      reporter: ['text', 'html'],
-      exclude: [
-        'node_modules/',
-        'src/setupTests.ts',
-      ]
-    }
-  },
-  base: "/automata/"
+    appType: "spa",
+    base: "/automata/",
+    build: {
+        sourcemap: true
+    },
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/setupTests.ts',
+        coverage: {
+        reporter: ['text', 'html'],
+        exclude: [
+            'node_modules/',
+            'src/setupTests.ts',
+        ]
+        }
+    },
 });

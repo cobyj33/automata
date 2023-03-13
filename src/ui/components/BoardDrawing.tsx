@@ -23,7 +23,7 @@ interface BoardDrawingProps {
     bounds?: IBox
 }
 
-export const BoardDrawing = ({ board, view, grid: gridConfig = { show: true, minGridSize: 4 }, bounds: inputBounds = Box.MAX }: BoardDrawingProps) => {
+export const BoardDrawing = ({ board, view, grid: gridConfig = { show: true, minGridSize: 4 }, bounds: inputBounds = Box.fromData(Box.MAX) }: BoardDrawingProps) => {
     const canvasRef: React.RefObject<HTMLCanvasElement> = React.useRef<HTMLCanvasElement>(null);
     const boardMatrixShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);
     const gridShaderProgram: React.MutableRefObject<WebGLShader | null> = React.useRef<WebGLShader | null>(null);

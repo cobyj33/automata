@@ -1,10 +1,7 @@
-import { isError } from 'jsutil'
 import { requestWebDownload } from "jsutil/browser"
 import { createElementaryCAImageBlob, ImageMimeType, MAX_ELEMENTARY_IMAGE_DATA_URL_HEIGHT } from 'libca/fileOutput'
-import Description from './reuse/Description'
-import SideBarEditorTool from './reuse/editor/SideBarEditorTool'
-import SubmitButton from './reuse/SubmitButton'
-import TextInput from './reuse/TextInput'
+import SideBarEditorTool from 'ui/components/reuse/editor/SideBarEditorTool'
+import SubmitButton from 'ui/components/reuse/SubmitButton'
 
 
 interface ElementaryImageDownloadToolProps {
