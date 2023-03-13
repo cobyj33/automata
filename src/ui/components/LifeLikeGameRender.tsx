@@ -22,7 +22,7 @@ export const LifeLikeGameRender = ({ start, view, bounds, automata, getData }: {
         currentGeneration: 0
     });
 
-    const renderer = useRef<LifeLikeBoardRenderer>(new LifeLikeBoardRenderer(Set2D.fromVector2DArray(start), automata))
+    const renderer = useRef<LifeLikeBoardRenderer>(new LifeLikeBoardRenderer(Set2D.fromVector2DArray(start), automata, bounds))
 
     useEffect(() => {
         renderer.current.setRule(automata)

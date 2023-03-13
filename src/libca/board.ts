@@ -1,10 +1,11 @@
-import { Set2D, } from "jsutil";
+import { Set2D, Box } from "jsutil";
 import { createLifeString, getLifeStringError, isValidLifeString, LifeRuleData, parseLifeLikeString } from "libca/liferule";
 
 export class LifeLikeBoardRenderer {
     private start: Set2D;
     private current: Set2D;
     private changes: Set2D;
+    // private bounds: Box | null
     private _currentGeneration: number;
     private rule: LifeRuleData = { birth: [3], survival: [2, 3] }
 
@@ -13,11 +14,12 @@ export class LifeLikeBoardRenderer {
     private lifeLikeFreqMap2D: LifeLikeFreqMap2D;
 
    
-    constructor(data: Set2D, rule: string | LifeRuleData) {
+    constructor(data: Set2D, rule: string | LifeRuleData, bounds: Box | null = null) {
         this.start = new Set2D(data);
         this.current = new Set2D(data);
         this.changes = new Set2D();
         this._currentGeneration = 0;
+        // this.bounds = bounds;
 
         if (typeof(rule) === "string") {
             if (isValidLifeString(rule)) {
@@ -29,7 +31,7 @@ export class LifeLikeBoardRenderer {
             this.rule = rule;
         }
 
-        this.lifeLikeFreqMap2D = new LifeLikeFreqMap2D(this.rule)
+        this.lifeLikeFreqMap2D = new LifeLikeFreqMap2D(this.rule, bounds)
     }
 
     getRuleString(): string {
@@ -50,10 +52,6 @@ export class LifeLikeBoardRenderer {
 
     static fromNumberMatrix(data: number[][], rule: string | LifeRuleData): LifeLikeBoardRenderer {
         return new LifeLikeBoardRenderer(Set2D.fromNumberMatrix(data), rule)
-    }
-
-    setStart(start: Set2D) {
-        // this.cachedDeadToCheck.full_clear();
     }
 
     next() {
@@ -102,16 +100,18 @@ export class LifeLikeBoardRenderer {
 }
 
 export class LifeLikeFreqMap2D {
-    private survival_value_lookup: Map<number, Map<number, number>> = new Map()
-    private born_value_lookup: Map<number, Map<number, number>> = new Map()
+    private survival_value_lookup: Map<number, Map<number, number>> = new Map() // survival_value_lookup[row][col] == neighborCount for live cell at (row, col)
+    private born_value_lookup: Map<number, Map<number, number>> = new Map() // born_value_lookup[row][col] === neighborCount for dead cell at (row, col)
+    private bounds: Box | null
 
     // private survival_set: Set2D = new Set2D();
     // private born_set: Set2D = new Set2D();
 
     private rule: LifeRuleData;
 
-    constructor(rule: LifeRuleData) {
+    constructor(rule: LifeRuleData, bounds: Box | null) {
         this.rule = {...rule};
+        this.bounds = bounds
     }
 
     clear() {
@@ -129,7 +129,11 @@ export class LifeLikeFreqMap2D {
             for (const secondPair of pair[1]) {
                 const freq = secondPair[1]
                 if (this.rule.survival.some(inputFreq => inputFreq === freq)) {
-                    set.add(pair[0], secondPair[0]);
+                    
+                    if (this.bounds === null || (pair[0] >= this.bounds.top && pair[0] <= this.bounds.bottom && secondPair[0] >= this.bounds.left && secondPair[0] <= this.bounds.right)) {
+                        set.add(pair[0], secondPair[0]);
+                    } 
+
                 }
             }
         }
@@ -138,7 +142,11 @@ export class LifeLikeFreqMap2D {
             for (const secondPair of pair[1]) {
                 const freq = secondPair[1]
                 if (this.rule.birth.some(inputFreq => inputFreq === freq)) {
-                    set.add(pair[0], secondPair[0]);
+
+                    if (this.bounds === null || (pair[0] >= this.bounds.top && pair[0] <= this.bounds.bottom && secondPair[0] >= this.bounds.left && secondPair[0] <= this.bounds.right)) {
+                        set.add(pair[0], secondPair[0]);
+                    } 
+
                 }
             }
         }
