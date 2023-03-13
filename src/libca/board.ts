@@ -130,9 +130,7 @@ export class LifeLikeFreqMap2D {
                 const freq = secondPair[1]
                 if (this.rule.survival.some(inputFreq => inputFreq === freq)) {
                     
-                    if (this.bounds === null || (pair[0] >= this.bounds.top && pair[0] <= this.bounds.bottom && secondPair[0] >= this.bounds.left && secondPair[0] <= this.bounds.right)) {
-                        set.add(pair[0], secondPair[0]);
-                    } 
+                    set.add(pair[0], secondPair[0]);
 
                 }
             }
@@ -143,9 +141,7 @@ export class LifeLikeFreqMap2D {
                 const freq = secondPair[1]
                 if (this.rule.birth.some(inputFreq => inputFreq === freq)) {
 
-                    if (this.bounds === null || (pair[0] >= this.bounds.top && pair[0] <= this.bounds.bottom && secondPair[0] >= this.bounds.left && secondPair[0] <= this.bounds.right)) {
-                        set.add(pair[0], secondPair[0]);
-                    } 
+                    set.add(pair[0], secondPair[0]);
 
                 }
             }
@@ -155,6 +151,10 @@ export class LifeLikeFreqMap2D {
     }
 
     add(row: number, col: number, freqToAdd: number, state: 0 | 1) {
+        if (this.bounds !== null && (row < this.bounds.top || row > this.bounds.bottom || col < this.bounds.left || col > this.bounds.right)) {
+            return
+        }
+
         if (Number.isInteger(freqToAdd) === false) {
             throw new Error("Frequencies must be integers in FreqMap2D");
         }
