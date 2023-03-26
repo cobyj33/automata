@@ -12,7 +12,7 @@
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "immer": "^9.0.18",
-    "jsutil": "github:cobyj33/jsutil",
+    "jsutil": "github:cobyj33/jsutil#2b6a05e4672e36b01bbc9d7802b6a297965aaab5",
     "llcacodec": "github:cobyj33/llcacodec.js",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
