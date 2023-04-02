@@ -29,6 +29,7 @@ import Description from "./reuse/Description";
 import { DIAGRAM_NAMES, getDiagram } from "data";
 import { LifeLikeEditorEditMode } from "state/lifelike";
 import SideBarToolContainer from "ui/components/reuse/editor/SideBarToolContainer";
+import LifeLikeFileTool from "./LifeLikeFileTool";
 
 
 
@@ -43,7 +44,7 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
 
   const [board, setBoard] = boardData;
   const [rendering, setRendering] = React.useState<boolean>(false);
-  const [bounds, setBounds] = React.useState<Box>(Box.from(0, 0, INITIAL_BOUNDS_WIDTH, INITIAL_BOUNDS_HEIGHT));
+  const [bounds, setBounds] = React.useState<Box>(Box.from(Math.floor(-INITIAL_BOUNDS_HEIGHT / 2), Math.floor(-INITIAL_BOUNDS_WIDTH / 2), INITIAL_BOUNDS_WIDTH, INITIAL_BOUNDS_HEIGHT));
   const [ghostTilePositions, setGhostTilePositions] = React.useState<IVector2[]>([]);
   const [lastHoveredCell, setLastHoveredCell] = React.useState<IVector2>({ row: 0, col: 0 });
   const currentHoveredCell = React.useRef<Vector2>(Vector2.ZERO)
@@ -227,6 +228,12 @@ export const LifeLikeEditor = ({ boardData }: { boardData: StatefulData<IVector2
             </SideBarEditorTool>
 
             <SideBarEditorTool title={`W.I.P...`} />
+
+            <LifeLikeFileTool onFileLoad={(coordinates) => { 
+                    setBoard(coordinates);
+                    setBounds(Box.enclosed(coordinates).pad(50, 50).floor())
+                }
+            } />
 
           </SideBarToolContainer>
       </aside>
