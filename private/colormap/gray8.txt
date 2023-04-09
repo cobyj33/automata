@@ -1,0 +1,10 @@
+; Colormap used by gifsicle program to create minified gif assets of cellular automata
+; It's recommended to first convert gifs with "--use-colormap web" before using this colormap
+#000000
+#222222
+#444444
+#666666
+#888888
+#aaaaaa
+#cccccc
+#ffffff
